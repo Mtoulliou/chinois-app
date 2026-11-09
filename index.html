@@ -2217,7 +2217,7 @@ function applyTheme(){
 }
 function navHTML(active){
   const n=todoCount();
-  const a=(tab,ic,lab,extra="")=>`<a href="#" data-tab="${tab}"${active===tab?' aria-current="page"':""}>${ic}${lab}${extra}</a>`;
+  const a=(tab,ic,lab,extra="")=>`<a href="#" data-tab="${tab}"${active===tab?' aria-current="page"':""}>${ic}<span class="sr">${lab}</span>${extra}</a>`;
   return `<nav class="nav" aria-label="Navigation principale"><div class="nav-in">
     ${a("lessons",I.book(),"Leçons")}
     ${a("revision",I.redo(),"Révision",n?`<span class="badge" aria-label="${n} ${plural(n,"élément","éléments")} à réviser">${n}</span>`:"")}
@@ -2500,7 +2500,7 @@ function showFb(){
   if(s===1){
     box.innerHTML=`<section class="fb ok" role="status" aria-label="Bonne réponse"><div class="fb-in">
       <div class="fb-t"><span class="c32">${I.check(18)}</span><h2>${why==="manual"?"Validé par toi":"Bonne réponse"}</h2></div>
-      <p class="fb-line">${line}</p>${why==="typo"?`<p class="fb-small">Faute de frappe tolérée.</p>`:""}${combo>=3?`<p class="fb-small combo">${combo} bonnes réponses d'affilée</p>`:""}
+      ${combo>=3?`<p class="fb-small combo">${combo} bonnes réponses d'affilée</p>`:""}
       <button class="btn ok" id="cont">Continuer</button></div></section>`;
   }else{
     const notes=R.kind==="ctl"?[]:[...new Set(items.map(v=>v.note).filter(Boolean))];
