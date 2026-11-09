@@ -22,6 +22,9 @@ La progression est enregistrée dans le navigateur (`localStorage`). Le code de 
 
 Une fois ouverte une première fois en ligne, l'app fonctionne hors ligne.
 
+## Signaler un bug ou proposer une idée
+Dans l'app : Paramètres → « Aide et retours ». Un formulaire d'issue GitHub s'ouvre déjà rempli (il faut un compte GitHub). On peut aussi [ouvrir une issue](https://github.com/Mtoulliou/chinois-app/issues/new/choose) directement.
+
 ## Développer
 ```
 python3 -m http.server 8000

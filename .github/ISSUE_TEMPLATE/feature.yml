@@ -1,0 +1,22 @@
+name: Demander une fonctionnalité
+description: Une idée pour améliorer l'app
+title: "[Idée] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Quelle fonctionnalité ?
+      description: Ce que tu voudrais pouvoir faire.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Pourquoi ?
+      description: Le besoin ou le problème que ça résoudrait.
+  - type: input
+    id: context
+    attributes:
+      label: Contexte (rempli par l'app)
+      description: Version, mode d'utilisation et appareil. Tu peux le modifier ou l'effacer.
