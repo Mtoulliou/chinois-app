@@ -13,7 +13,7 @@ La progression est enregistrée dans le navigateur (`localStorage`). Le code de 
 | `manifest.webmanifest`, `sw.js`, `icons/` | Installation sur l'écran d'accueil et mode hors ligne |
 | `design/maquettes/` | Maquettes Claude Design de la refonte |
 | `cours/` | Le cours de chinois LV2 en Markdown |
-| `docs/` | Décisions de design, fonctionnalités, historique, prompt d'ajout de contenu |
+| `docs/` | Décisions de design, fonctionnalités, historique, prompt d'ajout de contenu, questionnaire de test utilisateur |
 | `tools/` | Audit automatique du contenu (`tools/run-audit.sh`) |
 | `CLAUDE.md` | Consignes pour travailler avec Claude Code |
 
