@@ -33,7 +33,7 @@ Mise au propre le 2026-11-09. Les résumés ci-dessous viennent des conversation
 7. Les caractères sortent des exercices (affichés au-dessus du pinyin, pour information). Descriptions au-dessus de « Traduire » supprimées.
 8. 08/11/2026: leçon 8 « Mon samedi » (100 éléments, 7 thèmes), 469 éléments. **La leçon 7 manque encore dans le cours.** Variantes générées: dates, météo, 想, 在 et 去, rendez-vous, prix. Pièges gérés: 两块, bú rè, mois avant le jour.
 9. Révision par thème (onglets « Séries » et « Par thème »): mini-cours de 2 à 4 règles pour chacun des 32 thèmes, tableau de vocabulaire, phrases modèles, quiz (tous les mots + 5 phrases), dernière chance, note sur 20.
-10. Reconstruction à partir des maquettes, 4 onglets (Leçons, Révision, Écriture, Paramètres). Onglet Écriture avec Hanzi Writer, 3 étapes (Observer, Guidé, Mémoire), 242 caractères disponibles hors ligne. **Pas encore testé au doigt sur un vrai téléphone.**
+10. Reconstruction à partir des maquettes, 4 onglets (Leçons, Révision, Écriture, Paramètres). Onglet Écriture avec Hanzi Writer, 3 étapes (Observer, Guidé, Mémoire), 242 caractères disponibles hors ligne. Testé au doigt sur téléphone le 09/11/2026: OK, bandeau « En travaux » retiré.
 
 ## 2. Design chinois (08/11/2026)
 
