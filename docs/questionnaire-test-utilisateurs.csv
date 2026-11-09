@@ -1,39 +1,23 @@
 id,section,question,type,choix,inversee
-P1,Profil,Ton âge,choix unique,moins de 18 ans | 18-30 | 31-50 | plus de 50,non
-P2,Profil,Ton niveau en chinois avant le test,choix unique,aucun | quelques mots | notions (environ 1 an) | plus,non
-P3,Profil,Ton appareil,choix unique,iPhone | Android | autre,non
-P4,Profil,Tu utilises déjà des apps d'apprentissage (type Duolingo) ?,choix unique,jamais | parfois | souvent,non
-P5,Profil,Tu as testé l'app,choix unique,installée sur l'écran d'accueil | dans le navigateur,non
+P1,Profil,Ton niveau en chinois avant le test,choix unique,aucun | quelques mots | notions (environ 1 an) | plus,non
+P2,Profil,Ton appareil,choix unique,iPhone | Android | autre,non
 A1,Introduction,L'introduction m'a aidé à comprendre ce que sont les caractères le pinyin et les tons.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-A2,Introduction,L'introduction avait la bonne longueur.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-A3,Introduction,Après l'introduction je savais ce que j'allais apprendre.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-A4,Introduction,La fenêtre « ajouter à l'écran d'accueil » m'a été utile ou ne m'a pas gêné(e).,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
+A2,Introduction,Après l'introduction je savais ce que j'allais apprendre.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 B1,Clarté et ergonomie,J'ai compris tout de suite comment commencer une leçon.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-B2,Clarté et ergonomie,Je savais toujours où appuyer pour continuer.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-B3,Clarté et ergonomie,Je me suis senti(e) perdu(e) à un moment.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,oui
-B4,Clarté et ergonomie,Le parcours (thèmes niveaux cadenas) est clair.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-B5,Clarté et ergonomie,La barre du bas (4 icônes sans texte) est facile à comprendre.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-B6,Clarté et ergonomie,Les messages après une réponse (juste ou fausse) sont clairs.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
+B2,Clarté et ergonomie,Je me suis senti(e) perdu(e) à un moment.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,oui
+B3,Clarté et ergonomie,Le parcours (thèmes niveaux cadenas) est clair.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 C1,Accessibilité et confort,Les textes sont faciles à lire (taille contraste).,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 C2,Accessibilité et confort,Les boutons sont assez grands pour appuyer sans me tromper.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-C3,Accessibilité et confort,Je peux utiliser l'app d'une seule main.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-C4,Accessibilité et confort,Écrire le pinyin avec les tons (barre d'accents) est facile.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-C5,Accessibilité et confort,Je trouve facilement les réglages (thème sons caractères).,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
+C3,Accessibilité et confort,Écrire le pinyin avec les tons (barre d'accents) est facile.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 D1,Apprentissage,Je comprends ce que j'apprends dans chaque niveau.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 D2,Apprentissage,Les corrections m'aident à comprendre mes erreurs.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 D3,Apprentissage,Les phrases ne contiennent que des mots que je connais déjà.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-D4,Apprentissage,Je pense retenir ce que j'ai appris pendant ce test.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-D5,Apprentissage,Les petits cours (icône de livre) m'aident à comprendre.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-D6,Apprentissage,La difficulté était :,choix unique,trop facile | bien dosée | un peu difficile | trop difficile,non
+D4,Apprentissage,La difficulté était :,choix unique,trop facile | bien dosée | un peu difficile | trop difficile,non
 E1,Motivation,J'ai envie de continuer à utiliser cette app.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 E2,Motivation,Je me sens progresser.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
 E3,Motivation,La flamme (série de jours) me donne envie de revenir chaque jour.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-E4,Motivation,La Collection de caractères (sombre jade or) me motive.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-E5,Motivation,Les médailles or sur les niveaux me donnent envie de bien faire.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-E6,Motivation,Globalement l'app est facile à utiliser.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
-E7,Motivation,Durée idéale d'une séance par jour :,choix unique,moins de 5 min | 5 à 10 min | 10 à 20 min | plus de 20 min,non
-E8,Motivation,Tu l'utiliserais :,choix unique,tous les jours | plusieurs fois par semaine | rarement | jamais,non
-E9,Motivation,Probabilité de recommander l'app à un(e) ami(e) (0 à 10),échelle 0-10,0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,non
-F1,Pour finir,Ce que j'ai le plus apprécié (2 maximum),choix multiple,l'introduction | le parcours en niveaux | la Collection | la flamme | les corrections | le design | les petits cours | rien de particulier,non
-F2,Pour finir,Ce qui m'a le plus gêné(e) (2 maximum),choix multiple,l'introduction | le parcours en niveaux | les niveaux trop longs | la saisie du pinyin | la navigation | les textes trop petits | les messages d'erreur | rien,non
+E4,Motivation,La Collection de caractères et les médailles or me motivent.,échelle 1-5 + N/A,1 | 2 | 3 | 4 | 5 | N/A,non
+E5,Motivation,Probabilité de recommander l'app à un(e) ami(e) (0 à 10),échelle 0-10,0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,non
+F1,Pour finir,Ce que j'ai le plus apprécié (2 maximum),choix multiple,l'introduction | le parcours en niveaux | la Collection | la flamme | les corrections | le design | rien de particulier,non
+F2,Pour finir,Ce qui m'a le plus gêné(e) (2 maximum),choix multiple,l'introduction | le parcours en niveaux | les niveaux trop longs | la saisie du pinyin | la navigation | les textes trop petits | rien,non
 F3,Pour finir,Un commentaire (facultatif une ligne),texte court facultatif,,non
