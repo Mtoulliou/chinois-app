@@ -17,7 +17,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Police : Noto Serif SC (caractères), Source Sans 3 (interface). Cible tactile ≥ 44 px.
 - Données : `LESSONS` (≈ ligne 616) liste leçons et thèmes ; le vocabulaire vient de la fonction qui remplit `V`.
 - Sauvegarde : `localStorage` clé `revisions-chinois-v1`. La synchro `window.claude` ne sert que dans l'artefact claude.ai, elle doit rester sans effet ailleurs.
-- Écriture des caractères : bibliothèque Hanzi Writer (MIT) intégrée + données chargées depuis jsdelivr.
+- Écriture des caractères : bibliothèque Hanzi Writer (MIT) intégrée, avec les données de traits de 242 caractères embarquées (`HANZI_DATA`).
 
 ## Règles métier (ne pas casser)
 - Un niveau est validé à 80 %. Les thèmes se débloquent dans l'ordre.
