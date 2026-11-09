@@ -485,10 +485,6 @@ li+li>.lrow{border-top:1px solid var(--line)}
 .ropt .errpill{white-space:nowrap}
 
 /* ---------- Écriture ---------- */
-.warnbox{background:#FCE38A;border:1.5px solid #B8860B;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;color:#3D2E00}
-.warnbox svg{flex-shrink:0;margin-top:1px}
-.warnbox>span{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:1.35}
-.warnbox b{font-size:15px}
 .resume{background:var(--jade);border:0;border-radius:16px;box-shadow:0 4px 0 var(--jade-sh);padding:14px 16px;display:flex;align-items:center;gap:12px;color:var(--on-jade);text-align:left;width:100%}
 .resume .tx{flex:1;display:flex;flex-direction:column;gap:2px}
 .resume .eyebrow,.resume .tx>span:last-child{color:var(--hd-eyebrow)}
@@ -583,8 +579,6 @@ li+li>.lrow{border-top:1px solid var(--line)}
 .wpl.m{background:var(--jade);color:var(--on-jade)}
 .wpl.ok{background:var(--ok-soft);color:var(--ok)}
 .wpl.err{background:var(--bad-soft);color:var(--bad)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warnbox{background:#3A3010;border-color:#B8860B;color:#F3E2A6}}
-:root[data-theme="dark"] .warnbox{background:#3A3010;border-color:#B8860B;color:#F3E2A6}
 .wlcard .wchips{flex-wrap:nowrap;gap:5px}
 .wlcard .wchip{width:36px;height:36px;font-size:21px}
 .wlcard .wmore{height:36px}
@@ -2725,8 +2719,7 @@ function renderWriting(){
   const run=state.wrun&&state.wrun.chars&&state.wrun.idx<state.wrun.chars.length?state.wrun:null;
   const runL=run&&LESSONS.find(l=>l.id===run.lid);
   let h=`<div class="tabscr"><main class="page">
-    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Écriture</h1><p>Tracer les caractères, leçon par leçon</p></div></header>
-    <div class="warnbox" role="note" aria-label="En travaux">${I.warn()}<span><b>En travaux</b><span>L'onglet Écriture est en cours de construction. Le tracé et le suivi peuvent changer ou mal fonctionner.</span></span></div>`;
+    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Écriture</h1><p>Tracer les caractères, leçon par leçon</p></div></header>`;
   if(!wrOk()) h+=`<p class="dashed">Le module de tracé n'a pas pu se charger. Recharge la page.</p>`;
   if(runL) h+=`<button class="resume" id="wres"><span class="tx"><span class="eyebrow">Reprendre</span><b>${esc(runL.n)}, ${esc(runL.t)}</b><span>Série de ${run.chars.length} ${plural(run.chars.length,"caractère","caractères")}, ${run.idx} ${plural(run.idx,"fait","faits")}</span></span>${svg(24,'<path d="M9 6l6 6-6 6"/>',2.2)}</button>`;
   h+=`<div class="wlegend" aria-label="Légende"><span><i class="m"></i>Maîtrisé</span><span><i class="c"></i>En cours</span><span><i class="n"></i>Nouveau</span></div>`;
