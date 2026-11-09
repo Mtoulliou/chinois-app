@@ -615,9 +615,6 @@ a.actrow{text-decoration:none;box-sizing:border-box}
 .flame.on svg{fill:var(--jade)}
 .flame.pend{border:1.5px dashed var(--jade);color:var(--jade)}
 .phead .flame{margin-left:auto}
-.lhead{display:flex;gap:10px;align-items:stretch}
-.lhead .lband{flex:1;min-width:0}
-.lhead .flame{min-height:0;align-self:stretch;min-width:54px}
 .week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
 .week div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}
 .week i{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);box-sizing:border-box}
@@ -2244,16 +2241,13 @@ function renderLessons(){
   const anyOk=Object.values(state.lv||{}).some(a=>a&&a.some(x=>(x??-1)>=PASS));
   const first=!anyOk&&LI(l)===0;
   let h=`<div class="tabscr">
+  <div class="page" style="padding-bottom:0"><header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Révisions chinois</h1><p>Parcours de leçons</p></div>${flameBtn()}</header></div>
   <header class="lhead" aria-label="Leçon en cours"><div class="lband">
     <div class="lband-main"><span class="eyebrow">${esc(l.n)}</span><h1>${esc(l.t)}</h1>
       <div class="lband-prog"><div class="lband-track"><i style="width:${tot?done/tot*100:0}%"></i></div><span>${done} / ${tot}</span></div></div>
-    <button class="lband-list" id="lessons" aria-label="Toutes les leçons">${I.list()}</button></div>${flameBtn()}</header>
+    <button class="lband-list" id="lessons" aria-label="Toutes les leçons">${I.list()}</button></div></header>
   <main class="path${first?" first":""}" aria-label="Parcours de la ${esc(lower(l.n))}">`;
   h+=dueStrip();
-  if(first) h+=`<section class="card how" aria-label="Comment ça marche"><h2>Comment ça marche</h2><ol>
-    <li><span class="num24">1</span><span>Chaque thème a 4 niveaux, du QCM jusqu'aux phrases.</span></li>
-    <li><span class="num24">2</span><span>80 % de bonnes réponses ouvrent l'îlot suivant. Les thèmes se débloquent dans l'ordre.</span></li>
-    <li><span class="num24">3</span><span>Le contrôle de fin de leçon (16/20) ouvre la leçon suivante.</span></li></ol></section>`;
   l.themes.forEach((th,ti)=>{
     const open=themeOpen(l,ti),k=nOk(th);
     let st,cls="";
@@ -2744,7 +2738,7 @@ function renderRevision(){
     <button class="rband" id="sel" aria-label="Changer la leçon à réviser, actuellement ${esc(si.t)}"><span class="tx"><span class="eyebrow">${esc(si.ey)}</span><b>${esc(si.t)}</b><small>${esc(si.s)}</small></span><span class="ic">${I.list()}</span></button>
     ${dueBlock()}${errBlock}
     <section class="card freecard" aria-label="Série libre">
-      <div class="hd"><h2>Série libre</h2><small>20 questions aléatoires sur la sélection du bandeau, mots et phrases.</small></div>
+      <div class="hd"><h2>Série libre</h2></div>
       <button class="btn md${pile.length?" sec":""}" id="go" ${N?"":"disabled"}>${N?`Lancer une série de ${N}`:"Aucun thème choisi"}</button></section>
     ${groups.length?`<section class="rsec" aria-label="Liste à retravailler"><h2 class="h17">Liste à retravailler</h2>
       ${groups.map(g=>`<div class="grp"><h3>${esc(g.l.n)}, ${esc(g.l.t)}</h3><ul>${g.items.map(id=>{const v=IT(id),e=state.errors[id];
@@ -2997,13 +2991,10 @@ function renderCollection(){
     <header class="phead"><div class="seal" aria-hidden="true">字</div><div><h1>Collection</h1><p>${st.g+st.j} / ${st.t} ${plural(st.t,"caractère appris","caractères appris")}</p></div>${flameBtn()}</header>
     <section class="card cstats" aria-label="Progression de la collection">
       <div class="cbar" role="img" aria-label="${st.g} en or, ${st.j} en jade, ${st.f} à corriger, ${st.n} pas encore appris"><i class="g" style="width:${pc("g")}%"></i><i class="j" style="width:${pc("j")}%"></i><i class="f" style="width:${pc("f")}%"></i></div>
-      <div class="ccount"><div><b class="g">${st.g}</b><span>or</span></div><div><b class="j">${st.j}</b><span>jade</span></div><div><b>${st.f}</b><span>à corriger</span></div><div><b>${st.n}</b><span>sombres</span></div></div>
-      <p class="note-p">Jade : niveau 2 du thème validé et aucune erreur en cours. Or : en plus, tracé de mémoire sans faute 2 fois. ${words?`Tu reconnais ${words} ${plural(words,"mot","mots")} grâce à tes niveaux validés.`:""}</p></section>`;
+      <div class="ccount"><div><b class="g">${st.g}</b><span>or</span></div><div><b class="j">${st.j}</b><span>jade</span></div><div><b>${st.f}</b><span>à corriger</span></div><div><b>${st.n}</b><span>sombres</span></div></div></section>`;
   if(!wrOk()) h+=`<p class="dashed">Le module de tracé n'a pas pu se charger. Recharge la page.</p>`;
   if(runL) h+=`<button class="resume" id="wres"><span class="tx"><span class="eyebrow">Reprendre</span><b>${esc(runL.n)}, ${esc(runL.t)}</b><span>Série de ${run.chars.length} ${plural(run.chars.length,"caractère","caractères")}, ${run.idx} ${plural(run.idx,"fait","faits")}</span></span>${svg(24,'<path d="M9 6l6 6-6 6"/>')}</button>`;
-  h+=`<button class="btn" id="cseries" ${wrOk()?"":"disabled"}>Lancer une série d'écriture</button>
-    <p class="note-p" style="text-align:center">Priorité aux caractères jade pas encore en or.</p>
-    <div class="clegend" aria-label="Légende"><span><i class="n"></i>Sombre</span><span><i class="f"></i>À corriger</span><span><i class="j"></i>Jade</span><span><i class="g"></i>Or</span></div>`;
+  h+=`<button class="btn" id="cseries" ${wrOk()?"":"disabled"}>Lancer une série d'écriture</button>`;
   groups.forEach(g=>{
     const tot=g.items.length,gg=g.items.filter(it=>charState(it.c)==="g").length,jj=g.items.filter(it=>charState(it.c)==="j").length;
     h+=`<section class="card cgroup" aria-label="${esc(g.l.n)}, ${esc(g.l.t)}"><div class="chead"><span class="tx"><span class="eyebrow">${esc(g.l.n)}</span><b>${esc(g.l.t)}</b></span><span class="sc">${gg} or · ${jj} jade · ${tot}</span></div>
