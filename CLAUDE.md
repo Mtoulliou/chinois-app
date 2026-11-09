@@ -28,6 +28,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Collection : caractère **jade** = niveau 2 (`LEARN_LV`) du thème d'un mot qui le contient validé ET aucune erreur en cours sur ces mots ; **à corriger** si une erreur reste ; **or** = jade + écriture maîtrisée. Niveau **or** = 100 %, contrôle or = 20/20.
 - Flamme : `state.days` (date locale). Compte une série **réussie** : niveau ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
 - Révision espacée : `state.srs[id]={b,d}`, intervalles `SRS_INT`. Seuls les éléments du cours (`BYID`) sont suivis, pas les phrases générées.
+- Phrases : un niveau « Phrases » ne propose que des phrases dont les caractères ont été enseignés comme **mots** (`W(...)`) dans la leçon ou avant (`phraseOk`, `taughtChars`), et les phrases générées n'utilisent que des caractères du cours jusqu'à la leçon du thème (`allKnown`). Si une phrase du cours contient un mot jamais enseigné, ajouter ce mot en `W(...)` dans le même thème.
 - Tout nouvel état persistant doit être ajouté à `freshState`, `exportCode` et `importCode`.
 
 ## Workflow Git
