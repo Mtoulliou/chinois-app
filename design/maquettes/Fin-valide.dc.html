@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fin de niveau, validé</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif; display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 30px; box-sizing: border-box">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 28px">
+    <span style="width: 72px; height: 72px; border-radius: 50%; background: #256E5E; display: flex; align-items: center; justify-content: center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+    <h1 style="margin: 0; font-size: 26px; font-weight: 700">Niveau 2 validé</h1>
+    <p style="margin: 0; font-size: 15px; color: #5E6C67">Membres de la famille, Reconnaissance</p>
+  </div>
+
+  <section aria-label="Score" style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-size: 34px; font-weight: 700; color: #256E5E; font-variant-numeric: tabular-nums">90 %</span>
+      <span style="font-size: 15px; color: #5E6C67">9 bonnes réponses sur 10</span>
+    </div>
+    <div style="position: relative; height: 26px">
+      <div style="position: absolute; left: 0; right: 0; top: 0; height: 10px; border-radius: 5px; background: #DCEDE7; overflow: hidden"><div style="width: 90%; height: 100%; background: #256E5E; border-radius: 5px"></div></div>
+      <div aria-hidden="true" style="position: absolute; left: 80%; top: -3px; width: 2px; height: 16px; background: #18221F"></div>
+      <span style="position: absolute; left: 80%; top: 13px; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: #5E6C67; white-space: nowrap">80 % requis</span>
+    </div>
+  </section>
+
+  <section aria-label="Niveau débloqué" style="background: #DCEDE7; border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+    <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: #FFFFFF; border: 2px solid #256E5E; color: #256E5E; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-sizing: border-box">3</span>
+    <span style="display: flex; flex-direction: column"><b style="font-size: 16px">Niveau 3 débloqué</b><span style="font-size: 14px; color: #3E4C47">Production : français vers pinyin avec les tons</span></span>
+  </section>
+
+  <section aria-label="Erreurs" style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+    <h2 style="margin: 0; font-size: 16px; font-weight: 700">1 erreur, ajoutée à ta révision</h2>
+    <div style="border-top: 1px solid #D3DCD8; padding-top: 10px; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 17px; font-weight: 700"><span lang="zh-Latn-pinyin">mèimei</span> <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 500; color: #5E6C67; font-size: 15px">妹妹</span></span>
+      <span style="font-size: 14px; color: #5E6C67">Ta réponse : <s>grande sœur</s></span>
+      <span style="font-size: 14px">Réponse : <b>petite sœur</b></span>
+    </div>
+  </section>
+
+  <div style="flex: 1"></div>
+  <a href="Ex-Pinyin.dc.html" style="height: 56px; border-radius: 14px; background: #256E5E; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">Passer au niveau 3</a>
+  <a href="Main.dc.html" style="height: 48px; border-radius: 14px; color: #256E5E; text-decoration: none; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">Retour aux leçons</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

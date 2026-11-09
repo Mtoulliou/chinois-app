@@ -1,0 +1,31 @@
+# Révisions chinois
+
+App web de révision de mandarin (LV2), en français. **Un seul fichier : `index.html`** (HTML + CSS + JS, sans build, sans dépendance à installer).
+
+## Commandes
+- Lancer en local : `python3 -m http.server 8000` puis http://localhost:8000
+- Pas de build, pas de tests automatisés (vérifier à la main sur mobile 390 px, clair et sombre).
+
+## Structure
+- `index.html` : l'app (prod = branche `main`, publiée sur GitHub Pages).
+- `design/maquettes/` : maquettes Claude Design (`*.dc.html`) + `canvas.json`. Référence visuelle, non publiée comme app. Elles réclament un `support.js` du moteur Design, donc elles ne s'ouvrent pas seules.
+- `cours/cours-chinois-lv2.md` : le cours (source du vocabulaire).
+- `docs/` : décisions de design, fonctionnalités, historique. Lire avant de changer une règle.
+
+## Conventions
+- Code : tout dans `index.html`. Thème par variables CSS `:root` (jade `#256E5E`), clair + sombre.
+- Police : Noto Serif SC (caractères), Source Sans 3 (interface). Cible tactile ≥ 44 px.
+- Données : `LESSONS` (≈ ligne 616) liste leçons et thèmes ; le vocabulaire vient de la fonction qui remplit `V`.
+- Sauvegarde : `localStorage` clé `revisions-chinois-v1`. La synchro `window.claude` ne sert que dans l'artefact claude.ai, elle doit rester sans effet ailleurs.
+- Écriture des caractères : bibliothèque Hanzi Writer (MIT) intégrée + données chargées depuis jsdelivr.
+
+## Règles métier (ne pas casser)
+- Un niveau est validé à 80 %. Les thèmes se débloquent dans l'ordre.
+- Tous les niveaux d'une leçon validés → contrôle (16/20 requis) → leçon suivante.
+- Révision : tout le vocabulaire accessible sans verrou.
+- Écriture : 3 étapes (observer, guidé, mémoire), maîtrisé après 2 tracés de mémoire sans faute, séries de 8.
+
+## Workflow Git
+- `main` = prod (Pages déploie à chaque push). `dev` = travail. Une feature = une branche `feature/nom` depuis `dev`, PR vers `dev`, puis `dev` → `main`.
+- Ne jamais pousser directement sur `main` pour une feature. Commits petits et clairs.
+- Ne jamais mettre de secret dans le repo (repo public).

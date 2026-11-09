@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Écriture, fin de série</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif; display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 30px; box-sizing: border-box">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 20px">
+    <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #256E5E">Écriture, leçon 4</span>
+    <h1 style="margin: 0; font-size: 26px; font-weight: 700">Série terminée</h1>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; align-items: center"><b style="font-size: 26px; font-variant-numeric: tabular-nums">8</b><span style="font-size: 13px; color: #5E6C67">caractères</span></div>
+    <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; align-items: center"><b style="font-size: 26px; color: #22744A; font-variant-numeric: tabular-nums">5</b><span style="font-size: 13px; color: #5E6C67">sans faute</span></div>
+    <div style="background: #DCEDE7; border: 1.5px solid #256E5E; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; align-items: center"><b style="font-size: 26px; color: #256E5E; font-variant-numeric: tabular-nums">+1</b><span style="font-size: 13px; color: #3E4C47">maîtrisé</span></div>
+  </div>
+
+  <ul style="list-style: none; margin: 0; padding: 0; background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; overflow: hidden">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+      <li style="display: flex; align-items: center; gap: 12px; padding: 8px 14px; border-top: 1px solid #D3DCD8; margin-top: -1px">
+        <span lang="zh" style="width: 40px; height: 40px; border-radius: 9px; background: #F2F5F3; font-family: 'Noto Serif SC', serif; font-size: 24px; display: flex; align-items: center; justify-content: center">{{r.ch}}</span>
+        <span style="flex: 1; display: flex; flex-direction: column">
+          <span lang="zh-Latn-pinyin" style="font-size: 15px; font-weight: 700">{{r.py}}</span>
+          <span style="font-size: 13px; color: #5E6C67">{{r.detail}}</span>
+        </span>
+        <sc-if value="{{r.ok}}" hint-placeholder-val="{{true}}"><span style="font-size: 12px; font-weight: 700; color: #22744A; background: #E0F1E7; border-radius: 999px; padding: 3px 10px">Sans faute</span></sc-if>
+        <sc-if value="{{r.master}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 700; color: #FFFFFF; background: #256E5E; border-radius: 999px; padding: 3px 10px">Maîtrisé</span></sc-if>
+        <sc-if value="{{r.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 700; color: #6E4B0C; background: #F6EBD3; border-radius: 999px; padding: 3px 10px">{{r.errText}}</span></sc-if>
+      </li>
+    </sc-for>
+  </ul>
+
+  <div style="flex: 1"></div>
+  <a href="Ecriture-demo.dc.html" style="height: 56px; border-radius: 14px; background: #256E5E; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">Nouvelle série</a>
+  <a href="Ecriture-lecon.dc.html" style="height: 48px; border-radius: 14px; color: #256E5E; text-decoration: none; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">Retour à la leçon</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const r = (ch, py, kind, detail, errText) => ({ ch, py, detail, errText: errText || '', ok: kind === 'ok', master: kind === 'master', err: kind === 'err' });
+    return {
+      rows: [
+        r('爸', 'bà', 'ok', 'Déjà maîtrisé'),
+        r('哥', 'gē', 'ok', 'Déjà maîtrisé'),
+        r('妈', 'mā', 'master', '2e essai sans faute'),
+        r('姐', 'jiě', 'ok', 'Sans faute 1 / 2'),
+        r('家', 'jiā', 'ok', 'Sans faute 1 / 2'),
+        r('弟', 'dì', 'err', 'Indice utilisé', '2 erreurs'),
+        r('妹', 'mèi', 'err', 'Ordre des traits', '1 erreur'),
+        r('没', 'méi', 'err', 'Indice utilisé', '3 erreurs')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

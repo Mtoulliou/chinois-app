@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Contrôle réussi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif; display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 30px; box-sizing: border-box">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 28px">
+    <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #256E5E">Contrôle, leçon 4</span>
+    <p style="margin: 0; font-size: 56px; font-weight: 700; line-height: 1; color: #256E5E; font-variant-numeric: tabular-nums">17<span style="font-size: 28px; color: #5E6C67"> / 20</span></p>
+    <h1 style="margin: 0; font-size: 26px; font-weight: 700">Leçon 4 validée</h1>
+    <p style="margin: 0; font-size: 15px; color: #5E6C67">Ma famille</p>
+  </div>
+
+  <section aria-label="Résultat par thème" style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 6px 16px 0; overflow: hidden">
+    <div style="display: flex; flex-direction: column; margin-bottom: -1px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #D3DCD8">
+        <span style="flex: 1; font-size: 15px; font-weight: 600">{{r.name}}</span>
+        <span aria-hidden="true" style="display: flex; gap: 3px">
+          <sc-for list="{{r.seg}}" as="s" hint-placeholder-count="5">
+            <sc-if value="{{s.on}}" hint-placeholder-val="{{true}}"><span style="width: 12px; height: 8px; border-radius: 2px; background: #256E5E"></span></sc-if>
+            <sc-if value="{{s.off}}" hint-placeholder-val="{{false}}"><span style="width: 12px; height: 8px; border-radius: 2px; background: #D3DCD8"></span></sc-if>
+          </sc-for>
+        </span>
+        <span style="width: 32px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums">{{r.score}}</span>
+      </div>
+    </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Leçon débloquée" style="background: #DCEDE7; border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+    <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: #FFFFFF; border: 2px solid #256E5E; display: flex; align-items: center; justify-content: center; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#256E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 7.6-1.7"></path></svg></span>
+    <span style="display: flex; flex-direction: column"><b style="font-size: 16px">Leçon suivante débloquée</b><span style="font-size: 14px; color: #3E4C47">Elle apparaît dès que tu ajoutes son vocabulaire.</span></span>
+  </section>
+
+  <a href="Revision.dc.html" style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; color: #18221F; text-decoration: none">
+    <span style="flex: 1; display: flex; flex-direction: column"><b style="font-size: 16px">3 erreurs ajoutées à ta révision</b><span style="font-size: 14px; color: #5E6C67">zhè shì, liǎng ge, jǐ ge</span></span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+  </a>
+
+  <div style="flex: 1"></div>
+  <a href="Main.dc.html" style="height: 56px; border-radius: 14px; background: #256E5E; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">Voir les leçons</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mk = (name, n) => ({
+      name, score: n + '/5',
+      seg: [0, 1, 2, 3, 4].map(i => ({ on: i < n, off: i >= n }))
+    });
+    return {
+      rows: [
+        mk('Membres de la famille', 5, false),
+        mk('Mon, ma, mes et avoir', 4, false),
+        mk('Compter les personnes', 4, false),
+        mk('Présenter sa famille', 4, true)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

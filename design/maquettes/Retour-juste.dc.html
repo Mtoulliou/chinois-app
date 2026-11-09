@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Retour, bonne réponse</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif">
+  <div style="display: flex; flex-direction: column; padding: 16px; box-sizing: border-box; gap: 18px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <a href="Main.dc.html" aria-label="Quitter le niveau" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18221F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6" aria-label="Progression du niveau" style="flex: 1; height: 10px; border-radius: 5px; background: #DCEDE7; overflow: hidden"><div style="width: 60%; height: 100%; border-radius: 5px; background: #256E5E"></div></div>
+      <span style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums">6 / 10</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 14px; color: #5E6C67">Membres de la famille</span>
+      <span style="font-size: 13px; font-weight: 700; color: #256E5E; background: #DCEDE7; border-radius: 999px; padding: 3px 10px; align-self: flex-start">Niveau 2, Reconnaissance</span>
+    </div>
+    <section style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 22px 18px; display: flex; flex-direction: column; align-items: center; gap: 12px">
+      <h1 style="margin: 0; font-size: 15px; font-weight: 600; color: #5E6C67">Traduis en français</h1>
+      <p lang="zh-Latn-pinyin" style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1.1">jiějie</p>
+      <p lang="zh" style="margin: 0; font-family: 'Noto Serif SC', serif; font-size: 22px; color: #5E6C67">姐姐</p>
+    </section>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="fr" style="font-size: 15px; font-weight: 700">Français</label>
+      <input id="fr" type="text" readonly value="grande soeur" style="height: 56px; padding: 0 16px; border: 2px solid #22744A; border-radius: 12px; background: #E0F1E7; color: #18221F; font-size: 20px; box-sizing: border-box; width: 100%; outline: none">
+    </div>
+  </div>
+
+  <section role="status" aria-label="Bonne réponse" style="position: absolute; left: 0; right: 0; bottom: 0; background: #E0F1E7; border-top: 2px solid #22744A; border-radius: 20px 20px 0 0; padding: 18px 16px 30px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #22744A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+      <h2 style="margin: 0; font-size: 21px; font-weight: 700; color: #22744A">Bonne réponse</h2>
+    </div>
+    <p style="margin: 0; font-size: 16px; line-height: 1.45"><b lang="zh-Latn-pinyin">jiějie</b> <span lang="zh" style="font-family: 'Noto Serif SC', serif">姐姐</span> : grande sœur</p>
+    <a href="Ex-Pinyin.dc.html" style="height: 56px; border-radius: 14px; background: #22744A; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">Continuer</a>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

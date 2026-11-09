@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Niveau 3, saisie du pinyin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif; display: flex; flex-direction: column; padding: 16px 16px 30px; box-sizing: border-box; gap: 18px">
+  <div style="display: flex; align-items: center; gap: 12px">
+    <a href="Main.dc.html" aria-label="Quitter le niveau" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18221F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <div role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1" aria-label="Progression du niveau" style="flex: 1; height: 10px; border-radius: 5px; background: #DCEDE7; overflow: hidden"><div style="width: 10%; height: 100%; border-radius: 5px; background: #256E5E"></div></div>
+    <span style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums">2 / 10</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <span style="font-size: 14px; color: #5E6C67">Mon, ma, mes et avoir</span>
+    <span style="font-size: 13px; font-weight: 700; color: #256E5E; background: #DCEDE7; border-radius: 999px; padding: 3px 10px; align-self: flex-start">Niveau 3, Production</span>
+  </div>
+
+  <section style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 26px 18px; display: flex; flex-direction: column; align-items: center; gap: 12px">
+    <h1 style="margin: 0; font-size: 15px; font-weight: 600; color: #5E6C67">Écris en pinyin, avec les tons</h1>
+    <p style="margin: 0; font-size: 32px; font-weight: 700; line-height: 1.15; text-align: center">ne pas avoir</p>
+  </section>
+
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <label for="py" style="font-size: 15px; font-weight: 700; display: flex; justify-content: space-between">Pinyin <span style="font-weight: 400; font-size: 13px; color: #5E6C67">accents ou chiffres</span></label>
+    <input id="py" type="text" readonly value="mei2you3" style="height: 56px; padding: 0 16px; border: 2px solid #256E5E; border-radius: 12px; background: #FFFFFF; color: #18221F; font-size: 20px; box-sizing: border-box; width: 100%; outline: none">
+    <span style="font-size: 14px; color: #5E6C67">Lu comme : <b lang="zh-Latn-pinyin" style="color: #18221F; font-size: 16px">méiyǒu</b></span>
+  </div>
+
+  <div role="group" aria-label="Ajouter un ton à la dernière voyelle" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{tones}}" as="t" hint-placeholder-count="5">
+      <button aria-label="{{t.aria}}" style="min-height: 56px; border: 1.5px solid #D3DCD8; border-radius: 12px; background: #FFFFFF; color: #18221F; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 4px 0">
+        <span style="font-size: 22px; font-weight: 600; line-height: 1.1">{{t.mark}}</span>
+        <span style="font-size: 11px; font-weight: 600; color: #5E6C67">{{t.label}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="flex: 1"></div>
+  <a href="Retour-erreur.dc.html" style="height: 56px; border-radius: 14px; background: #256E5E; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">Valider</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      tones: [
+        { mark: 'ā', label: '1er', aria: 'Premier ton' },
+        { mark: 'á', label: '2e', aria: 'Deuxième ton' },
+        { mark: 'ǎ', label: '3e', aria: 'Troisième ton' },
+        { mark: 'à', label: '4e', aria: 'Quatrième ton' },
+        { mark: 'a', label: 'léger', aria: 'Ton léger' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

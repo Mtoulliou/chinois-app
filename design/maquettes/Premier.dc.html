@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Premier lancement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif">
+
+  <header aria-label="Leçon en cours" style="padding: 12px 16px 8px; background: #F2F5F3">
+    <div style="background: #256E5E; border-radius: 16px; box-shadow: 0 4px 0 #1A4F43; display: flex; align-items: stretch; color: #FFFFFF">
+      <div style="flex: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #DCEDE7">Leçon 1</span>
+        <h1 style="margin: 0; font-size: 21px; font-weight: 700; line-height: 1.15">Se présenter</h1>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div style="flex: 1; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.25)"></div>
+          <span style="font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums">0 / 24</span>
+        </div>
+      </div>
+      <button aria-label="Toutes les leçons" style="width: 60px; border: 0; border-left: 1px solid rgba(255, 255, 255, 0.3); background: transparent; display: flex; align-items: center; justify-content: center; border-radius: 0 16px 16px 0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11"></path><path d="M9 12h11"></path><path d="M9 18h11"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main style="display: flex; flex-direction: column; align-items: center; padding: 8px 0 110px">
+    <section aria-label="Comment ça marche" style="width: calc(100% - 32px); box-sizing: border-box; background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">Comment ça marche</h2>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+        <li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: #DCEDE7; color: #256E5E; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span><span style="font-size: 15px; line-height: 1.35">Chaque thème a 4 niveaux, du QCM jusqu'aux phrases.</span></li>
+        <li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: #DCEDE7; color: #256E5E; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">2</span><span style="font-size: 15px; line-height: 1.35">80 % de bonnes réponses ouvrent l'îlot suivant. Les thèmes se débloquent dans l'ordre.</span></li>
+        <li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: #DCEDE7; color: #256E5E; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">3</span><span style="font-size: 15px; line-height: 1.35">Le contrôle de fin de leçon (16/20) ouvre la leçon suivante.</span></li>
+      </ol>
+    </section>
+
+    <a href="Theme.dc.html" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 16px; margin: 0 0 22px; text-decoration: none">
+      <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+      <span style="display: flex; flex-direction: column; align-items: center"><span style="font-size: 16px; font-weight: 700; color: #18221F">Salutations et présentation</span><span style="font-size: 13px; font-weight: 600; color: #5E6C67">À commencer</span></span>
+      <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+    </a>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 22px">
+      <span style="position: relative; background: #FFFFFF; border: 2px solid #256E5E; border-radius: 12px; padding: 6px 14px; font-size: 15px; font-weight: 700; color: #256E5E; margin-bottom: 8px">Commencer<span aria-hidden="true" style="position: absolute; left: 50%; bottom: -8px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #256E5E; border-bottom: 2px solid #256E5E; transform: translateX(-50%) rotate(45deg)"></span></span>
+      <a href="Ex-QCM.dc.html" aria-label="Niveau 1 Découverte, commencer" style="width: 68px; height: 68px; border-radius: 50%; background: #256E5E; box-shadow: 0 6px 0 #1A4F43, 0 0 0 8px #DCEDE7; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 26px; font-weight: 700; text-decoration: none">1</a>
+      <span style="font-size: 13px; font-weight: 700; color: #256E5E; margin-top: 4px">Découverte</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 22px; transform: translateX(50px)">
+      <button disabled aria-label="Niveau 2 Reconnaissance, verrouillé" style="width: 68px; height: 68px; padding: 0; border: 0; border-radius: 50%; background: #E7ECEA; box-shadow: 0 6px 0 #C4CEC9; display: flex; align-items: center; justify-content: center; cursor: default"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7974" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></button>
+      <span style="font-size: 13px; font-weight: 600; color: #5E6C67">Reconnaissance</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 22px; transform: translateX(80px)">
+      <button disabled aria-label="Niveau 3 Production, verrouillé" style="width: 68px; height: 68px; padding: 0; border: 0; border-radius: 50%; background: #E7ECEA; box-shadow: 0 6px 0 #C4CEC9; display: flex; align-items: center; justify-content: center; cursor: default"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7974" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></button>
+      <span style="font-size: 13px; font-weight: 600; color: #5E6C67">Production</span>
+    </div>
+  </main>
+
+  <nav aria-label="Navigation principale" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #FFFFFF; border-top: 1px solid #D3DCD8; display: flex; gap: 6px; padding: 8px 12px 26px; box-sizing: border-box">
+    <a href="Premier.dc.html" aria-current="page" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; background: #DCEDE7; color: #256E5E; text-decoration: none; font-size: 13px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#256E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"></path><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"></path></svg>
+      Leçons
+    </a>    <a href="Revision-vide.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4"></path><path d="M3 4v5h5"></path></svg>
+      Révision
+    </a>
+    <a href="Ecriture.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+      Écriture
+    </a>
+    <a href="Parametres.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9"></path><path d="M17 6h3"></path><circle cx="15" cy="6" r="2"></circle><path d="M4 12h3"></path><path d="M11 12h9"></path><circle cx="9" cy="12" r="2"></circle><path d="M4 18h11"></path><path d="M19 18h1"></path><circle cx="17" cy="18" r="2"></circle></svg>
+      Paramètres
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

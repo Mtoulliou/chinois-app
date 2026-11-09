@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Révision</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 1560px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif">
+  <main style="display: flex; flex-direction: column; gap: 12px; padding: 20px 16px 110px">
+    <header style="display: flex; align-items: center; gap: 12px; padding-bottom: 4px">
+      <div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 10px; background: #256E5E; color: #F2F5F3; font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center">复习</div>
+      <div style="display: flex; flex-direction: column">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 1.15">Révision</h1>
+        <p style="margin: 0; font-size: 14px; color: #5E6C67">Tout le vocabulaire, sans verrou</p>
+      </div>
+    </header>
+
+    <a href="Revision-choix.dc.html" aria-label="Changer la leçon à réviser" style="background: #256E5E; border-radius: 16px; box-shadow: 0 4px 0 #1A4F43; display: flex; align-items: stretch; color: #FFFFFF; text-decoration: none; margin-bottom: 4px">
+      <span style="flex: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #DCEDE7">Réviser</span>
+        <span style="font-size: 21px; font-weight: 700; line-height: 1.15">Toutes les leçons</span>
+        <span style="font-size: 13px; font-weight: 600; color: #DCEDE7">4 leçons, 18 thèmes</span>
+      </span>
+      <span style="width: 60px; border-left: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11"></path><path d="M9 12h11"></path><path d="M9 18h11"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg></span>
+    </a>
+
+    <section aria-label="Mes erreurs" style="background: #FFFFFF; border: 1.5px solid #256E5E; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 14px">
+        <span style="font-size: 44px; font-weight: 700; line-height: 1; color: #A93434; font-variant-numeric: tabular-nums">7</span>
+        <span style="display: flex; flex-direction: column"><h2 style="margin: 0; font-size: 19px; font-weight: 700">Mes erreurs</h2><span style="font-size: 14px; color: #5E6C67">éléments à retravailler</span></span>
+      </div>
+      <p style="margin: 0; font-size: 14px; color: #5E6C67">Un élément sort de la liste après 3 bonnes réponses d'affilée.</p>
+      <a href="Ex-Pinyin.dc.html" style="height: 52px; border-radius: 14px; background: #256E5E; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center">Réviser mes erreurs</a>
+    </section>
+
+    <section aria-label="Série libre" style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700">Série libre</h2>
+        <span style="font-size: 14px; color: #5E6C67">20 questions aléatoires sur la sélection du bandeau, mots et phrases.</span>
+      </div>
+      <a href="Ex-QCM.dc.html" style="height: 52px; border-radius: 14px; border: 2px solid #256E5E; color: #256E5E; text-decoration: none; font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-sizing: border-box">Lancer une série de 20</a>
+    </section>
+
+    <section aria-label="Liste à retravailler" style="display: flex; flex-direction: column; gap: 8px; padding-top: 6px">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 700">Liste à retravailler</h2>
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+        <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 14px; overflow: hidden">
+          <h3 style="margin: 0; padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #256E5E; background: #F4FAF8">{{g.lesson}}</h3>
+          <ul style="list-style: none; margin: 0; padding: 0">
+            <sc-for list="{{g.items}}" as="it" hint-placeholder-count="2">
+              <li style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid #D3DCD8">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+                  <span style="font-size: 16px; font-weight: 700"><span lang="zh-Latn-pinyin">{{it.py}}</span> <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 500; font-size: 14px; color: #5E6C67">{{it.zh}}</span></span>
+                  <span style="font-size: 14px; color: #5E6C67">{{it.fr}}</span>
+                </span>
+                <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+                  <span style="font-size: 12px; font-weight: 700; color: #A93434; background: #F6E1E1; border-radius: 999px; padding: 2px 8px">{{it.err}}</span>
+                  <span aria-label="{{it.aria}}" style="display: flex; gap: 4px">
+                    <sc-for list="{{it.dots}}" as="d" hint-placeholder-count="3">
+                      <sc-if value="{{d.on}}" hint-placeholder-val="{{false}}"><span style="width: 9px; height: 9px; border-radius: 50%; background: #256E5E"></span></sc-if>
+                      <sc-if value="{{d.off}}" hint-placeholder-val="{{true}}"><span style="width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid #B9C6C1; box-sizing: border-box"></span></sc-if>
+                    </sc-for>
+                  </span>
+                </span>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </sc-for>
+    </section>
+
+    <section aria-label="Dernières séries" style="display: flex; flex-direction: column; gap: 8px; padding-top: 6px">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 700">Dernières séries</h2>
+      <ul style="list-style: none; margin: 0; padding: 0 14px; background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 14px; overflow: hidden">
+        <sc-for list="{{hist}}" as="h" hint-placeholder-count="5">
+          <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #D3DCD8; margin-top: -1px">
+            <span style="width: 92px; font-size: 14px; color: #5E6C67; font-variant-numeric: tabular-nums">{{h.date}}</span>
+            <span style="flex: 1; font-size: 15px; font-weight: 600">{{h.kind}}</span>
+            <span style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums">{{h.score}}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+  </main>
+
+  <nav aria-label="Navigation principale" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #FFFFFF; border-top: 1px solid #D3DCD8; display: flex; gap: 8px; padding: 8px 24px 26px; box-sizing: border-box">
+    <a href="Main.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"></path><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"></path></svg>
+      Leçons
+    </a>    <a href="Revision.dc.html" aria-current="page" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; background: #DCEDE7; color: #256E5E; text-decoration: none; font-size: 13px; font-weight: 700; position: relative">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#256E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4"></path><path d="M3 4v5h5"></path></svg>
+      Révision
+      <span aria-label="7 erreurs à retravailler" style="position: absolute; top: 2px; left: calc(50% + 6px); min-width: 20px; height: 20px; border-radius: 10px; background: #A93434; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; box-sizing: border-box">7</span>
+    </a>
+    <a href="Ecriture.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+      Écriture
+    </a>
+    <a href="Parametres.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9"></path><path d="M17 6h3"></path><circle cx="15" cy="6" r="2"></circle><path d="M4 12h3"></path><path d="M11 12h9"></path><circle cx="9" cy="12" r="2"></circle><path d="M4 18h11"></path><path d="M19 18h1"></path><circle cx="17" cy="18" r="2"></circle></svg>
+      Paramètres
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const it = (py, zh, fr, err, ok) => ({
+      py, zh, fr, err: err + ' err.',
+      aria: ok + " bonne(s) réponse(s) d'affilée sur 3",
+      dots: [0, 1, 2].map(i => ({ on: i < ok, off: i >= ok }))
+    });
+    return {
+      groups: [
+        { lesson: 'Leçon 4, Ma famille', items: [
+          it('mèimei', '妹妹', 'petite sœur', 2, 1),
+          it('méiyǒu', '没有', 'ne pas avoir', 1, 2),
+          it('tā sìshíbā suì', '他四十八岁。', 'il a 48 ans', 1, 0)
+        ] },
+        { lesson: 'Leçon 3, Goûts et loisirs', items: [
+          it('xǐhuan', '喜欢', 'aimer', 3, 0),
+          it('yīnyuè', '音乐', 'musique', 1, 1)
+        ] },
+        { lesson: 'Leçon 1, Se présenter', items: [
+          it('xīngqī', '星期', 'semaine', 2, 2),
+          it('Fǎguó rén', '法国人', 'Français (personne)', 1, 0)
+        ] }
+      ],
+      hist: [
+        { date: '08/11/2026', kind: 'Série libre', score: '17/20' },
+        { date: '07/11/2026', kind: 'Mes erreurs', score: '14/20' },
+        { date: '05/11/2026', kind: 'Série libre', score: '18/20' },
+        { date: '04/11/2026', kind: 'Série libre', score: '12/20' },
+        { date: '02/11/2026', kind: 'Mes erreurs', score: '16/20' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

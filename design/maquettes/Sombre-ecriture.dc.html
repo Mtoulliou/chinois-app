@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Écriture, tracé guidé, thème sombre</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#62C2A6}a:hover{color:#8AD6BF}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #111816; color: #E4ECE8; font-family: 'Source Sans 3', system-ui, sans-serif; display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 30px; box-sizing: border-box">
+  <div style="display: flex; align-items: center; gap: 12px">
+    <a href="Ecriture-lecon.dc.html" aria-label="Quitter la série" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E4ECE8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <div role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="2" aria-label="Progression de la série" style="flex: 1; height: 10px; border-radius: 5px; background: #1E3530; overflow: hidden"><div style="width: 25%; height: 100%; border-radius: 5px; background: #62C2A6"></div></div>
+    <span style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums">3 / 8</span>
+  </div>
+
+  <ol aria-label="Étapes" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+    <li style="height: 36px; border-radius: 10px; background: #1E3530; color: #62C2A6; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#62C2A6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Observer</li>
+    <li aria-current="step" style="height: 36px; border-radius: 10px; background: #62C2A6; color: #0E1A17; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">2. Guidé</li>
+    <li style="height: 36px; border-radius: 10px; border: 1.5px solid #2E3A36; color: #97A6A0; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; box-sizing: border-box">3. Mémoire</li>
+  </ol>
+
+  <section aria-label="Mot" style="background: #19221F; border: 1px solid #2E3A36; border-radius: 16px; padding: 10px 12px; display: flex; align-items: center; gap: 12px">
+    <span style="display: flex; gap: 4px">
+      <span lang="zh" style="width: 42px; height: 42px; border-radius: 9px; border: 2px solid #62C2A6; box-sizing: border-box; font-family: 'Noto Serif SC', serif; font-size: 24px; display: flex; align-items: center; justify-content: center">妈</span>
+      <span lang="zh" style="width: 42px; height: 42px; border-radius: 9px; background: #222C29; color: #97A6A0; font-family: 'Noto Serif SC', serif; font-size: 24px; display: flex; align-items: center; justify-content: center">妈</span>
+    </span>
+    <span style="flex: 1; display: flex; flex-direction: column">
+      <span lang="zh-Latn-pinyin" style="font-size: 20px; font-weight: 700">māma</span>
+      <span style="font-size: 14px; color: #97A6A0">maman</span>
+    </span>
+    <button aria-label="Écouter la prononciation" style="width: 44px; height: 44px; border: 0; border-radius: 50%; background: #1E3530; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#62C2A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></button>
+  </section>
+
+  <div role="img" aria-label="Zone de tracé avec le modèle de 妈, 3 traits tracés sur 6" style="align-self: center; position: relative; width: 310px; height: 310px; background: #19221F; border: 2px solid #33423D; box-sizing: border-box">
+    <span aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1.5px dashed #2E3A36"></span>
+    <span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1.5px dashed #2E3A36"></span>
+    <span aria-hidden="true" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif SC', serif; font-size: 236px; line-height: 1; color: #2A3632">妈</span>
+    <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 47%; overflow: hidden">
+      <span style="position: absolute; left: 0; top: 0; width: 306px; height: 306px; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif SC', serif; font-size: 236px; line-height: 1; color: #E4ECE8">妈</span>
+    </span>
+    <span aria-hidden="true" style="position: absolute; left: 156px; top: 62px; width: 18px; height: 18px; border-radius: 50%; background: #62C2A6; box-shadow: 0 0 0 7px rgba(98, 194, 166, 0.25)"></span>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
+    <span style="font-size: 14px; font-weight: 600; color: #97A6A0">Trait 4 sur 6</span>
+    <span aria-hidden="true" style="display: flex; gap: 5px">
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #62C2A6"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #62C2A6"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #62C2A6"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; border: 2px solid #62C2A6; box-sizing: border-box"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #33423D"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #33423D"></span>
+    </span>
+  </div>
+  <p style="margin: 0; text-align: center; font-size: 14px; color: #97A6A0">Pars du point vert et suis le modèle.</p>
+
+  <div style="display: flex; gap: 10px; justify-content: center">
+    <button style="height: 46px; padding: 0 16px; border: 1.5px solid #2E3A36; border-radius: 12px; background: #19221F; color: #E4ECE8; font-size: 15px; font-weight: 600">Recommencer</button>
+    <button style="height: 46px; padding: 0 16px; border: 1.5px solid #2E3A36; border-radius: 12px; background: #19221F; color: #E4ECE8; font-size: 15px; font-weight: 600">Revoir l'animation</button>
+  </div>
+
+  <div style="flex: 1"></div>
+  <button disabled style="height: 56px; border: 0; border-radius: 14px; background: #2E3A36; color: #97A6A0; font-size: 18px; font-weight: 700; cursor: default">Continuer après le dernier trait</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

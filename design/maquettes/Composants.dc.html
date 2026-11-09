@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Composants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+</style>
+</helmet>
+<div style="width: 1240px; height: 1000px; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif; padding: 40px; box-sizing: border-box; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-content: start">
+
+  <div style="display: flex; flex-direction: column; gap: 24px">
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Îlot de niveau</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 22px 12px 18px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: end">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="width: 60px; height: 60px; border-radius: 50%; background: #256E5E; box-shadow: 0 6px 0 #1A4F43; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+          <span style="font-size: 13px; font-weight: 600">Validé</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="width: 60px; height: 60px; border-radius: 50%; background: #256E5E; box-shadow: 0 6px 0 #1A4F43, 0 0 0 7px #DCEDE7; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 24px; font-weight: 700">3</span>
+          <span style="font-size: 13px; font-weight: 600">En cours</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="width: 60px; height: 60px; border-radius: 50%; background: #FFFFFF; border: 3px solid #256E5E; box-shadow: 0 6px 0 #B9C6C1; display: flex; align-items: center; justify-content: center; color: #256E5E; font-size: 22px; font-weight: 700; box-sizing: border-box">1</span>
+          <span style="font-size: 13px; font-weight: 600">Disponible</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="width: 60px; height: 60px; border-radius: 50%; background: #E7ECEA; box-shadow: 0 6px 0 #C4CEC9; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B7974" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></span>
+          <span style="font-size: 13px; font-weight: 600">Verrouillé</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Bulle et contrôle</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 20px; display: flex; justify-content: space-around; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px">
+          <span style="position: relative; background: #FFFFFF; border: 2px solid #256E5E; border-radius: 12px; padding: 6px 14px; font-size: 15px; font-weight: 700; color: #256E5E; margin-bottom: 8px">Reprendre<span aria-hidden="true" style="position: absolute; left: 50%; bottom: -8px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #256E5E; border-bottom: 2px solid #256E5E; transform: translateX(-50%) rotate(45deg)"></span></span>
+          <span style="width: 60px; height: 60px; border-radius: 50%; background: #256E5E; box-shadow: 0 6px 0 #1A4F43, 0 0 0 7px #DCEDE7; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 24px; font-weight: 700">3</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="position: relative; width: 80px; height: 80px; border-radius: 50%; background: #E7ECEA; box-shadow: 0 6px 0 #C4CEC9; display: flex; align-items: center; justify-content: center"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6B7974" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h12l-2.5 4L17 12H5"></path></svg></span>
+          <span style="font-size: 13px; font-weight: 600">Contrôle verrouillé</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+          <span style="width: 80px; height: 80px; border-radius: 50%; background: #256E5E; box-shadow: 0 6px 0 #1A4F43; display: flex; align-items: center; justify-content: center"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h12l-2.5 4L17 12H5"></path></svg></span>
+          <span style="font-size: 13px; font-weight: 600">Contrôle ouvert</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Case de caractère (Écriture)</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 16px 20px; display: flex; gap: 22px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span lang="zh" style="width: 44px; height: 44px; border-radius: 9px; background: #DCEDE7; border: 1.5px solid #256E5E; box-sizing: border-box; color: #256E5E; font-family: 'Noto Serif SC', serif; font-size: 26px; display: flex; align-items: center; justify-content: center">爸</span><span style="font-size: 13px; font-weight: 600">Maîtrisé</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span lang="zh" style="width: 44px; height: 44px; border-radius: 9px; background: #FFFFFF; border: 2px solid #256E5E; box-sizing: border-box; font-family: 'Noto Serif SC', serif; font-size: 26px; display: flex; align-items: center; justify-content: center">妈</span><span style="font-size: 13px; font-weight: 600">En cours</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span lang="zh" style="width: 44px; height: 44px; border-radius: 9px; background: #E7ECEA; color: #5E6C67; font-family: 'Noto Serif SC', serif; font-size: 26px; display: flex; align-items: center; justify-content: center">弟</span><span style="font-size: 13px; font-weight: 600">Nouveau</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 44px; height: 44px; border-radius: 9px; border: 2px solid #256E5E; box-sizing: border-box; color: #256E5E; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center">?</span><span style="font-size: 13px; font-weight: 600">À écrire</span></div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Couleurs</h2>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="10">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <sc-if value="{{c.jade}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #256E5E"></span></sc-if>
+            <sc-if value="{{c.soft}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #DCEDE7"></span></sc-if>
+            <sc-if value="{{c.bg}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #F2F5F3; border: 1px solid #D3DCD8; box-sizing: border-box"></span></sc-if>
+            <sc-if value="{{c.surface}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #FFFFFF; border: 1px solid #D3DCD8; box-sizing: border-box"></span></sc-if>
+            <sc-if value="{{c.ink}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #18221F"></span></sc-if>
+            <sc-if value="{{c.muted}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #5E6C67"></span></sc-if>
+            <sc-if value="{{c.line}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #D3DCD8"></span></sc-if>
+            <sc-if value="{{c.ok}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #22744A"></span></sc-if>
+            <sc-if value="{{c.bad}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #A93434"></span></sc-if>
+            <sc-if value="{{c.half}}" hint-placeholder-val="{{false}}"><span style="height: 36px; border-radius: 8px; background: #9A6A12"></span></sc-if>
+            <span style="font-size: 12px; font-weight: 700">{{c.name}}</span>
+            <span style="font-size: 11px; color: #5E6C67">{{c.hex}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 24px">
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Bandeau de leçon (fixé en haut)</h2>
+      <div style="background: #256E5E; border-radius: 16px; box-shadow: 0 4px 0 #1A4F43; display: flex; align-items: stretch; color: #FFFFFF">
+        <div style="flex: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #DCEDE7">Leçon 4</span>
+          <span style="font-size: 21px; font-weight: 700; line-height: 1.15">Ma famille</span>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div style="flex: 1; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.25); overflow: hidden"><div style="width: 37.5%; height: 100%; border-radius: 4px; background: #FFFFFF"></div></div>
+            <span style="font-size: 13px; font-weight: 600">6 / 16</span>
+          </div>
+        </div>
+        <button aria-label="Toutes les leçons" style="width: 60px; border: 0; border-left: 1px solid rgba(255, 255, 255, 0.3); background: transparent; display: flex; align-items: center; justify-content: center; border-radius: 0 16px 16px 0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11"></path><path d="M9 12h11"></path><path d="M9 18h11"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Séparateur de thème</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 18px 0; display: flex; flex-direction: column; gap: 16px">
+        <a href="Theme.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 0 16px; text-decoration: none">
+          <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+          <span style="display: flex; flex-direction: column; align-items: center"><span style="font-size: 16px; font-weight: 700; color: #18221F">Membres de la famille</span><span style="font-size: 13px; font-weight: 700; color: #22744A">Validé</span></span>
+          <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+        </a>
+        <a href="Theme.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 0 16px; text-decoration: none">
+          <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+          <span style="display: flex; flex-direction: column; align-items: center"><span style="font-size: 16px; font-weight: 700; color: #18221F">Mon, ma, mes et avoir</span><span style="font-size: 13px; font-weight: 700; color: #256E5E">2 / 4 validés</span></span>
+          <span aria-hidden="true" style="flex: 1; height: 1px; background: #C7D3CE"></span>
+        </a>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Boutons</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <button style="height: 52px; border: 0; border-radius: 14px; background: #256E5E; color: #FFFFFF; font-size: 17px; font-weight: 700">Principal</button>
+        <button style="height: 52px; border: 2px solid #256E5E; border-radius: 14px; background: transparent; color: #256E5E; font-size: 17px; font-weight: 700">Secondaire</button>
+        <button style="height: 52px; border: 0; border-radius: 14px; background: transparent; color: #256E5E; font-size: 16px; font-weight: 700">Lien d'action</button>
+        <button disabled style="height: 52px; border: 0; border-radius: 14px; background: #D3DCD8; color: #5E6C67; font-size: 17px; font-weight: 700; cursor: default">Désactivé</button>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Interrupteur et thème</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; gap: 16px; align-items: center">
+          <span role="switch" aria-checked="false" aria-label="Désactivé" style="width: 52px; height: 32px; border-radius: 16px; background: #C7D3CE; padding: 3px; box-sizing: border-box; display: flex; justify-content: flex-start"><span style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25)"></span></span>
+          <span role="switch" aria-checked="true" aria-label="Activé" style="width: 52px; height: 32px; border-radius: 16px; background: #256E5E; padding: 3px; box-sizing: border-box; display: flex; justify-content: flex-end"><span style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF"></span></span>
+          <span style="font-size: 14px; color: #5E6C67">Désactivé, activé</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; background: #F2F5F3; border: 1px solid #D3DCD8; border-radius: 12px; padding: 4px">
+          <span style="min-height: 40px; border-radius: 9px; background: #256E5E; color: #FFFFFF; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center">Clair</span>
+          <span style="min-height: 40px; border-radius: 9px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center">Sombre</span>
+          <span style="min-height: 40px; border-radius: 9px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center">Système</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 24px">
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Panneau de correction</h2>
+      <div style="background: #E0F1E7; border-top: 2px solid #22744A; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 50%; background: #22744A; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><b style="font-size: 18px; color: #22744A">Bonne réponse</b></div>
+        <span style="font-size: 15px"><b>jiějie</b> <span lang="zh" style="font-family: 'Noto Serif SC', serif">姐姐</span> : grande sœur</span>
+      </div>
+      <div style="background: #F6E1E1; border-top: 2px solid #A93434; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 50%; background: #A93434; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><b style="font-size: 18px; color: #A93434">Pas tout à fait</b></div>
+        <span style="font-size: 14px; color: #5E6C67">Ta réponse : <s>tā shì sìshíbā suì</s></span>
+        <span style="font-size: 15px">Réponse : <b>tā sìshíbā suì</b></span>
+        <span style="background: #FFFFFF; border-radius: 10px; padding: 8px 10px; font-size: 14px"><b>Note du cours :</b> âge, pas de 是.</span>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Saisie et tons</h2>
+      <div style="background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+        <label for="c-py" style="font-size: 15px; font-weight: 700">Pinyin</label>
+        <input id="c-py" type="text" readonly value="mei2you3" style="height: 52px; padding: 0 14px; border: 2px solid #256E5E; border-radius: 12px; background: #FFFFFF; color: #18221F; font-size: 19px; box-sizing: border-box; width: 100%">
+        <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+          <button aria-label="Premier ton" style="min-height: 48px; border: 1.5px solid #D3DCD8; border-radius: 10px; background: #FFFFFF; color: #18221F; font-size: 20px; font-weight: 600">ā</button>
+          <button aria-label="Deuxième ton" style="min-height: 48px; border: 1.5px solid #D3DCD8; border-radius: 10px; background: #FFFFFF; color: #18221F; font-size: 20px; font-weight: 600">á</button>
+          <button aria-label="Troisième ton" style="min-height: 48px; border: 1.5px solid #D3DCD8; border-radius: 10px; background: #FFFFFF; color: #18221F; font-size: 20px; font-weight: 600">ǎ</button>
+          <button aria-label="Quatrième ton" style="min-height: 48px; border: 1.5px solid #D3DCD8; border-radius: 10px; background: #FFFFFF; color: #18221F; font-size: 20px; font-weight: 600">à</button>
+          <button aria-label="Ton léger" style="min-height: 48px; border: 1.5px solid #D3DCD8; border-radius: 10px; background: #FFFFFF; color: #18221F; font-size: 20px; font-weight: 600">a</button>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5E6C67">Barre de navigation</h2>
+      <nav aria-label="Exemple de navigation" style="height: 76px; background: #FFFFFF; border: 1px solid #D3DCD8; border-radius: 16px; display: flex; gap: 6px; padding: 8px 12px; box-sizing: border-box">
+        <a href="Main.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; background: #DCEDE7; color: #256E5E; text-decoration: none; font-size: 13px; font-weight: 700">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#256E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"></path><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"></path></svg>
+          Leçons
+        </a>        <a href="Revision.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600; position: relative">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4"></path><path d="M3 4v5h5"></path></svg>
+          Révision
+          <span style="position: absolute; top: 2px; left: calc(50% + 6px); min-width: 20px; height: 20px; border-radius: 10px; background: #A93434; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; box-sizing: border-box">7</span>
+        </a>
+        <a href="Ecriture.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+          Écriture
+        </a>
+        <a href="Parametres.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #5E6C67; text-decoration: none; font-size: 13px; font-weight: 600">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E6C67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9"></path><path d="M17 6h3"></path><circle cx="15" cy="6" r="2"></circle><path d="M4 12h3"></path><path d="M11 12h9"></path><circle cx="9" cy="12" r="2"></circle><path d="M4 18h11"></path><path d="M19 18h1"></path><circle cx="17" cy="18" r="2"></circle></svg>
+          Paramètres
+        </a>
+      </nav>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const c = (key, name, hex) => ({ [key]: true, name, hex });
+    return {
+      colors: [
+        c('jade', 'Jade', '#256E5E'),
+        c('soft', 'Jade clair', '#DCEDE7'),
+        c('bg', 'Fond', '#F2F5F3'),
+        c('surface', 'Surface', '#FFFFFF'),
+        c('ink', 'Texte', '#18221F'),
+        c('muted', 'Secondaire', '#5E6C67'),
+        c('line', 'Ligne', '#D3DCD8'),
+        c('ok', 'Juste', '#22744A'),
+        c('bad', 'Erreur', '#A93434'),
+        c('half', 'À refaire', '#9A6A12')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

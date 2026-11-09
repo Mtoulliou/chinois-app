@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Révision, choix de la leçon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#256E5E}a:hover{color:#1B5246}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F2F5F3; color: #18221F; font-family: 'Source Sans 3', system-ui, sans-serif">
+  <div aria-hidden="true" style="padding: 20px 16px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="width: 48px; height: 48px; border-radius: 10px; background: #256E5E"></div>
+      <span style="font-size: 24px; font-weight: 700">Révision</span>
+    </div>
+    <div style="height: 92px; background: #256E5E; border-radius: 16px; box-shadow: 0 4px 0 #1A4F43"></div>
+    <div style="height: 190px; background: #FFFFFF; border: 1.5px solid #256E5E; border-radius: 16px"></div>
+  </div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(17, 24, 22, 0.5)"></div>
+
+  <section role="dialog" aria-label="Choisir la leçon à réviser" style="position: absolute; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 24px 24px 0 0; padding: 10px 16px 30px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box">
+    <div aria-hidden="true" style="width: 40px; height: 5px; border-radius: 3px; background: #D3DCD8; align-self: center"></div>
+    <div style="display: flex; align-items: flex-start; gap: 12px">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 700">Que veux-tu réviser ?</h2>
+        <span style="font-size: 14px; color: #5E6C67">Toutes les leçons sont accessibles ici, même celles pas encore débloquées dans le parcours.</span>
+      </div>
+      <a href="Revision.dc.html" aria-label="Fermer" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: #F2F5F3; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18221F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    </div>
+
+    <div role="radiogroup" aria-label="Leçon" style="display: flex; flex-direction: column; border: 1px solid #D3DCD8; border-radius: 14px; overflow: hidden">
+      <sc-for list="{{opts}}" as="o" hint-placeholder-count="5">
+        <a href="Revision.dc.html" role="radio" aria-checked="{{o.aria}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-top: 1px solid #D3DCD8; margin-top: -1px; color: #18221F; text-decoration: none">
+          <sc-if value="{{o.on}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: 7px solid #256E5E; box-sizing: border-box"></span></sc-if>
+          <sc-if value="{{o.off}}" hint-placeholder-val="{{true}}"><span aria-hidden="true" style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: 2px solid #B9C6C1; box-sizing: border-box"></span></sc-if>
+          <span style="flex: 1; display: flex; flex-direction: column">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #256E5E">{{o.n}}</span>
+            <span style="font-size: 16px; font-weight: 700">{{o.t}}</span>
+            <span style="font-size: 13px; color: #5E6C67">{{o.s}}</span>
+          </span>
+          <sc-if value="{{o.hasErr}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 700; color: #A93434; background: #F6E1E1; border-radius: 999px; padding: 2px 8px; white-space: nowrap">{{o.err}}</span></sc-if>
+        </a>
+      </sc-for>
+    </div>
+
+    <button style="height: 48px; border: 1.5px solid #D3DCD8; border-radius: 14px; background: #FFFFFF; color: #256E5E; font-size: 16px; font-weight: 700">Choisir des thèmes précis</button>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const o = (n, t, s, err, on) => ({ n, t, s, err: err + ' err.', hasErr: err > 0, on, off: !on, aria: on ? 'true' : 'false' });
+    return {
+      opts: [
+        o('Tout', 'Toutes les leçons', '4 leçons, 18 thèmes', 7, true),
+        o('Leçon 1', 'Se présenter', '6 thèmes', 2, false),
+        o('Leçon 3', 'Qui suis-je', '5 thèmes', 0, false),
+        o('Leçon 3', 'Goûts et loisirs', '3 thèmes', 2, false),
+        o('Leçon 4', 'Ma famille', '4 thèmes', 3, false)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
