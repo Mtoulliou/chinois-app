@@ -1730,10 +1730,76 @@ TEMPLATES.push(
 
 function finishGen(o,th){
   const zh=[o.zh,...(o.zhAlt||[])], py=[...new Set([o.py,...(o.pyAlt||[])].flatMap(pyVariants))];
-  const fr=[...new Set(o.fr.map(f=>f.replace(/\s+/g," ").replace(/ \?$/," ?").trim()))];
+  const fr=[...new Set(o.fr.map(f=>f.replace(/\s+/g," ").replace(/ \?$/," ?").replace(/\b([lL])e (anglais|allemand|espagnol|italien|arabe)\b/g,"$1'$2").trim()))];
   fr[0]=cap(fr[0]);
   return {zh,py,fr,note:(o.note||"").trim(),t:o.t||"p",th,gen:true};
 }
+/* ----- Générateurs ajoutés : thèmes qui n'avaient que les phrases du cours -----
+   Chaque phrase mêle le thème au vocabulaire et à la grammaire des leçons précédentes
+   (nationalités, langues, famille, activités, heures). */
+SUBJ.push({zh:"你们",py:"nǐmen",c:7,ton:"vous",g:"mf",pl:true});
+Object.entries({aimer:"vous aimez",aimerN:"vous n'aimez pas",avoir:"vous avez",avoirN:"vous n'avez pas",etre:"vous êtes",etreN:"vous n'êtes pas",parler:"vous parlez",aller:"vous allez",acheter:"vous achetez"}).forEach(([k,v])=>{CJ[k][7]=v});
+CJ.parlerN=["je ne parle pas","tu ne parles pas","il ne parle pas","elle ne parle pas","nous ne parlons pas","ils ne parlent pas","elles ne parlent pas","vous ne parlez pas"];
+CJ.rentrer=["je rentre","tu rentres","il rentre","elle rentre","nous rentrons","ils rentrent","elles rentrent","vous rentrez"];
+const cloneTpl=(from,to,withVous)=>TEMPLATES.filter(t=>from.includes(t.th)&&!t.kind).map(t=>({...t,th:to,subj:withVous&&t.subj.length===7?[...t.subj,7]:t.subj}));
+const advAdj=(c,s)=>s.pl?(s.g==="m"?[c.mp]:s.g==="f"?[c.fp]:[c.mp,c.fp]):(s.g==="m"?[c.m]:s.g==="f"?[c.f]:[c.m,c.f]);
+const QWHO={0:["qui suis-je ?","qui je suis ?","je suis qui ?"],1:["qui es-tu ?","tu es qui ?","qui tu es ?"],2:["qui est-il ?","il est qui ?","c'est qui ?","qui est-ce ?"],3:["qui est-elle ?","elle est qui ?","c'est qui ?","qui est-ce ?"],4:["qui sommes-nous ?","nous sommes qui ?"],5:["qui sont-ils ?","ils sont qui ?"],6:["qui sont-elles ?","elles sont qui ?"],7:["qui êtes-vous ?","vous êtes qui ?"]};
+const PH_D=["零","幺","二","三","四","五","六","七","八","九"],PH_P=["líng","yāo","èr","sān","sì","wǔ","liù","qī","bā","jiǔ"];
+const WHERE={1:["où es-tu","tu es où"],2:["où est-il","il est où"],3:["où est-elle","elle est où"]};
+const STUD=[{zh:"大学生",py:"dàxuéshēng",m:["étudiant","étudiant à l'université"],f:["étudiante","étudiante à l'université"],mp:["étudiants","étudiants à l'université"],fp:["étudiantes","étudiantes à l'université"]},
+            {zh:"学生",py:"xuésheng",m:["étudiant","élève"],f:["étudiante","élève"],mp:["étudiants","élèves"],fp:["étudiantes","élèves"]}];
+const studFr=(k,s)=>s.pl?(s.g==="m"?k.mp:s.g==="f"?k.fp:[...k.mp,...k.fp]):(s.g==="m"?k.m:s.g==="f"?k.f:[...k.m,...k.f]);
+const POSS2={0:{zh:"我",py:"wǒ"},1:{zh:"你",py:"nǐ"},2:{zh:"他",py:"tā"},3:{zh:"她",py:"tā"}};
+
+TEMPLATES.push(
+  // ----- Pronoms : nationalités et langues avec tous les pronoms, y compris 你们
+  ...cloneTpl(["Pays et nationalités","Langues"],"Pronoms",true),
+  {th:"Pronoms",subj:[0,1,2,3,4,5,6,7],make(s,p){const l=p.l||(p.l=rnd(LANGS));
+    return {zh:s.zh+"不说"+l.zh+"。",py:join(s.py,"bù shuō",l.py),fr:combos(CJ.parlerN[s.c]+" ",["","le "],l.fr),note:"不 se place devant le verbe."}}},
+  {th:"Pronoms",subj:[0,2,3,4,5,6,7],make(s,p){const l=p.l||(p.l=rnd(LANGS));
+    return {zh:s.zh+"也说"+l.zh+"。",py:join(s.py,"yě shuō",l.py),fr:[...combos(s.ton+" aussi, "+CJ.parler[s.c]+" ",["","le "],l.fr),...combos(CJ.parler[s.c]+" aussi ",["","le "],l.fr)],note:"也 se place entre le sujet et le verbe."}}},
+  // ----- Nombres
+  {th:"Nombres",subj:[0],make(s,p){const n=p.n||(p.n=randInt(2,10));
+    return {zh:(n===2?"两":numZh(n))+"个人。",py:join(n===2?"liǎng":numPy(n),"ge rén"),fr:combos(nums(n),[" personnes"]),note:n===2?"两 devant un classificateur, pas 二.":""}}},
+  {th:"Nombres",subj:[0],make(s,p){const n=p.n||(p.n=randInt(2,11));
+    return {zh:(n===2?"两":numZh(n))+"个月。",py:join(n===2?"liǎng":numPy(n),"ge yuè"),fr:combos(nums(n),[" mois"]),note:n===2?"两 devant un classificateur, pas 二.":"三个月 = trois mois (durée) ; 三月 = mars."}}},
+  {th:"Nombres",subj:[0],make(s,p){const d=p.d||(p.d=Array.from({length:8},(_,i)=>i===0?randInt(1,9):randInt(0,9)));
+    return {zh:"电话号码是"+d.map(x=>PH_D[x]).join("")+"。",py:join("diànhuà hàomǎ shì",d.map(x=>PH_P[x]).join(" ")),
+      fr:[...combos(["le numéro de téléphone est ","le numéro est "],[d.join(""),d.join(" ")])],note:"Numéro de téléphone : chaque chiffre se lit seul, et 1 se dit 幺 yāo."}}},
+  // ----- Qui est-ce ?
+  {th:"Qui est-ce ?",subj:[0,1,2,3,4,5,6,7],make(s,p){
+    return {zh:s.zh+"是谁？",py:join(s.py,"shì shéi"),fr:QWHO[s.c],note:s.c===2||s.c===3?"他是谁 et 她是谁 se prononcent pareil.":""}}},
+  {th:"Qui est-ce ?",subj:[2,3,5,6],make(s,p){const c=p.c||(p.c=rnd(COUNTRIES));
+    return {zh:s.zh+"是谁？"+s.zh+"是"+c.zh+"人。",py:join(s.py,"shì shéi",s.py,"shì",c.py+"rén"),fr:combos(QWHO[s.c].slice(0,2)," ",CJ.etre[s.c]+" ",advAdj(c,s))}}},
+  // ----- Membres de la famille : possessif sans 的 avec les proches
+  {th:"Membres de la famille",subj:[0,1,2,3],make(s,p){const m=p.m||(p.m=rnd(FAM)),c=p.c||(p.c=rnd(COUNTRIES)),o=POSS[s.c];
+    return {zh:o.zh+m.zh+"是"+c.zh+"人。",py:join(o.py,m.py,"shì",c.py+"rén"),fr:combos(cap(o[m.g])+" ",m.sg," est ",m.g==="m"?c.m:c.f),note:"Avec les proches, 的 peut disparaître : 我妈妈 = 我的妈妈."}}},
+  {th:"Membres de la famille",subj:[0,1,2,3],make(s,p){const m=p.m||(p.m=rnd(FAM)),l=p.l||(p.l=rnd(LANGS)),o=POSS[s.c];
+    return {zh:o.zh+m.zh+"说"+l.zh+"。",py:join(o.py,m.py,"shuō",l.py),fr:combos(cap(o[m.g])+" ",m.sg," parle ",["","le "],l.fr)}}},
+  {th:"Membres de la famille",subj:[1,2,3],make(s,p){const m=p.m||(p.m=rnd(FAM)),c=p.c||(p.c=rnd(COUNTRIES)),o=POSS[s.c],adj=m.g==="m"?c.m:c.f;
+    return {zh:o.zh+m.zh+"是"+c.zh+"人吗？",py:join(o.py,m.py,"shì",c.py+"rén","ma"),
+      fr:[...combos(cap(o[m.g])+" ",m.sg," ",m.g==="m"?"est-il ":"est-elle ",adj,[" ?",""]),...combos(cap(o[m.g])+" ",m.sg," est ",adj,[" ?",""]),...combos("Est-ce que "+o[m.g]+" ",m.sg," est ",adj,[" ?",""])]}}},
+  {th:"Membres de la famille",subj:[0],make(s,p){const m=p.m||(p.m=rnd(FAM)),pr=m.g==="m"?"他":"她";
+    return {zh:pr+"是谁？"+pr+"是我"+m.zh+"。",py:join("tā shì shéi","tā shì wǒ",m.py),
+      fr:combos(m.g==="m"?["qui est-il ? ","c'est qui ? "]:["qui est-elle ? ","c'est qui ? "],["c'est ",m.g==="m"?"il est ":"elle est "],m.g==="m"?"mon ":"ma ",m.sg)}}},
+  // ----- La journée de Xiaoming : étudiant, week-end, et les activités des thèmes voisins
+  ...cloneTpl(["Activités du quotidien","D'abord, ensuite, enfin","Aussi, tous, mais"],"La journée de Xiaoming",false),
+  {th:"La journée de Xiaoming",subj:[0,1,2,3,4,5,6],make(s,p){const k=p.k||(p.k=rnd(STUD));
+    return {zh:s.zh+"是"+k.zh+"。",py:join(s.py,"shì",k.py),fr:combos(CJ.etre[s.c]+" ",studFr(k,s))}}},
+  {th:"La journée de Xiaoming",subj:[0,1,2,3,4,5,6],make(s,p){
+    return {zh:s.zh+"周末在家。",py:join(s.py,"zhōumò zài jiā"),fr:[...combos(CJ.etre[s.c]+" ",["à la maison",CHEZ[s.c]]," le week-end"),...combos("le week-end, "+CJ.etre[s.c]+" ",["à la maison",CHEZ[s.c]])]}}},
+  {th:"La journée de Xiaoming",subj:[0,1,2,3,4,5,6],make(s,p){
+    return {zh:s.zh+"周末回家。",py:join(s.py,"zhōumò huí jiā"),fr:[...combos(CJ.rentrer[s.c]+" ",["à la maison",CHEZ[s.c]]," le week-end"),...combos("le week-end, "+CJ.rentrer[s.c]+" ",["à la maison",CHEZ[s.c]])]}}},
+  {th:"La journée de Xiaoming",subj:[1,2,3],make(s,p){
+    return {zh:s.zh+"周末在哪里？",py:join(s.py,"zhōumò zài nǎlǐ"),fr:[...combos(WHERE[s.c]," le week-end",[" ?",""]),...combos("le week-end, ",WHERE[s.c],[" ?",""])]}}},
+  // ----- Dire l'heure : phrases complètes
+  {th:"Dire l'heure",subj:[0],make(s,p){const h=p.h||(p.h=randInt(1,12)),m=p.m!==undefined?p.m:(p.m=randMin()),z=zhTime(h,m,"");
+    return {zh:"现在"+z.zh[0]+"。",zhAlt:z.zh.slice(1).map(t=>"现在"+t+"。"),py:join("xiànzài",z.py[0]),pyAlt:z.py.slice(1).map(t=>join("xiànzài",t)),fr:combos("il est ",frTimes(h,m,"")),note:(h===2?"2 h : 两点, pas 二点. ":"")+NOTE_TIME(m)}}},
+  {th:"Dire l'heure",subj:[0],make(s,p){const h=p.h||(p.h=randInt(1,12)),m=p.m!==undefined?p.m:(p.m=randMin()),z=zhTime(h,m,"");
+    return {zh:"现在几点？现在"+z.zh[0]+"。",zhAlt:z.zh.slice(1).map(t=>"现在几点？现在"+t+"。"),py:join("xiànzài jǐ diǎn","xiànzài",z.py[0]),pyAlt:z.py.slice(1).map(t=>join("xiànzài jǐ diǎn","xiànzài",t)),
+      fr:combos(["quelle heure est-il ? ","il est quelle heure ? "],"il est ",frTimes(h,m,"")),note:(h===2?"2 h : 两点, pas 二点. ":"")+NOTE_TIME(m)}}}
+);
+
 function genOne(themesOn,kind){
   const tpl=TEMPLATES.filter(t=>themesOn.includes(t.th)&&(t.kind||"p")===(kind||"p"));
   if(!tpl.length) return null;
