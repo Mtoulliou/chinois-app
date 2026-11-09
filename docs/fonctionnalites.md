@@ -7,9 +7,11 @@
 - **Révision** : série libre, « Mes erreurs » (badge du nombre d'erreurs), choix d'une leçon ou de toutes.
 - **Écriture** : tracé avec Hanzi Writer, 3 étapes (observer, guidé, mémoire), 242 caractères dont les données de traits sont intégrées au fichier (hors ligne). Testé au doigt sur téléphone.
 - **Paramètres** : afficher les caractères, thème clair/sombre/système, code de transfert de progression, remise à zéro.
+- **Aide et retours** (Paramètres) : « Signaler un bug » et « Demander une fonctionnalité » ouvrent un formulaire d'issue GitHub prérempli (version, mode installé ou navigateur, taille d'écran, navigateur). Formulaires dans `.github/ISSUE_TEMPLATE/`. Pas de jeton ni d'envoi automatique : l'utilisateur relit puis valide, avec un compte GitHub.
 - **Sauvegarde** : `localStorage` ; synchro Claude seulement dans l'artefact.
 - **Installable et hors ligne** : `manifest.webmanifest`, `sw.js` (réseau d'abord, cache en secours, polices mises en cache) et `icons/` (习 blanc sur jade). Ajoutable à l'écran d'accueil sur Android et iOS.
 
 ## Idées / à faire
+- [ ] Retours sans compte GitHub : nécessiterait un petit service intermédiaire (ex. Cloudflare Worker) qui garde un jeton ; à éviter tant que l'app reste perso (spam, maintenance).
 - [ ] Séparer les données (vocabulaire) du code dans `data/` quand le fichier deviendra trop gros (≈ 785 Ko aujourd'hui, dont Hanzi Writer).
 - [ ] Compléter le cours (leçon 7 manquante) puis ajouter la leçon dans `LESSONS`.

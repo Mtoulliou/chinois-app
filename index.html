@@ -434,6 +434,7 @@ li+li>.lrow{border-top:1px solid var(--line)}
 .actrow b{font-size:16px;font-weight:700}
 .actrow small{font-size:14px;color:var(--muted)}
 .actrow.danger{color:var(--bad)}
+a.actrow{text-decoration:none;box-sizing:border-box}
 .xfer{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 .xfer>b{font-size:16px;font-weight:700}
 .xfer>small{font-size:14px;color:var(--muted)}
@@ -2600,6 +2601,15 @@ function selSheet(){
   return ov;
 }
 
+/* ===== Retours (bug / idée) : formulaire d'issue GitHub prérempli, aucun jeton ni envoi automatique ===== */
+const REPO="Mtoulliou/chinois-app";
+function fbURL(kind){
+  const standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
+  const ctx=`Vocabulaire du ${VOCAB_VERSION} · ${standalone?"app installée":"navigateur"} · écran ${innerWidth}x${innerHeight} · ${navigator.userAgent.slice(0,140)}`;
+  const q=new URLSearchParams({template:kind==="bug"?"bug.yml":"feature.yml",context:ctx});
+  return `https://github.com/${REPO}/issues/new?${q}`;
+}
+
 /* ===== Onglet Paramètres ===== */
 function renderSettings(){
   screen="settings";
@@ -2623,6 +2633,11 @@ function renderSettings(){
       <div class="xfer"><b>Code de transfert</b><small>Ta progression reste sur cet appareil${ON_CLAUDE?" et sur ton compte Claude":""}. Pour la passer sur un autre appareil ou sur la version GitHub Pages, copie ton code puis colle-le là-bas.</small>
         <div class="row-btns"><button class="btn sec sm grow" id="exp">Copier mon code</button><button class="btn sec sm grow" id="imp">Coller un code</button></div><div id="tr-out" class="stack8"></div></div>
       <button class="actrow danger" id="rs"><b>Réinitialiser ma progression</b><small>Efface niveaux, contrôles, erreurs et suivi de l'écriture. Une confirmation est demandée.</small></button>
+    </section>
+    <h2 class="sec-title">Aide et retours</h2>
+    <section class="card set">
+      <a class="actrow" id="fb-bug" href="${fbURL("bug")}" target="_blank" rel="noopener noreferrer"><b>Signaler un bug</b><small>Ouvre un formulaire GitHub déjà rempli. Il faut un compte GitHub gratuit.</small></a>
+      <a class="actrow" id="fb-feat" href="${fbURL("feature")}" target="_blank" rel="noopener noreferrer"><b>Demander une fonctionnalité</b><small>Même principe : tu relis le formulaire, puis tu l'envoies.</small></a>
     </section>
   </main></div>${navHTML("settings")}`;
   bindNav();
