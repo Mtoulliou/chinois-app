@@ -138,6 +138,17 @@ chk("export",()=>{
   okk?ok("export / import conservent séries, flamme, révision, réglages"):err("export / import perdent un champ (ajouter les nouveaux champs d'état à exportCode et importCode)");
 });
 
+/* 6bis. Barre de tons : un accent par syllabe, les précédents sont conservés */
+chk("barre de tons",()=>{
+  const inp=document.createElement("input");document.body.appendChild(inp);
+  const run=seq=>{inp.value="";inp.setSelectionRange(0,0);for(const a of seq){if(typeof a==="number")applyTone(inp,a);else{const p=inp.selectionStart;inp.value=inp.value.slice(0,p)+a+inp.value.slice(p);inp.setSelectionRange(p+a.length,p+a.length)}}return inp.value.normalize("NFC")};
+  const cases=[[["zai",4,"jian",4],"zàijiàn"],[["zàijian",4],"zàijiàn"],[["zai",4,"jian",4,2],"zàijián"],[["ni",3,"hao",3],"nǐhǎo"],[["wo",3,"men"],"wǒmen"],[["xie",4,"xie",4],"xièxiè"],[["lv",4],"lǜ"],[["xi",1,"'an",4],"xī'àn"]];
+  const bad=cases.filter(([seq,exp])=>run(seq)!==exp.normalize("NFC")).map(([seq,exp])=>JSON.stringify(seq)+" -> "+run(seq)+" (attendu "+exp+")");
+  inp.remove();
+  const m=[["zai4jian4","zàijiàn"],["mei2you3","méiyǒu"]].filter(([x,e])=>toMarks(x)!==e.normalize("NFC")).map(([x])=>"toMarks "+x);
+  bad.concat(m).length?err("barre de tons ou saisie avec chiffres en défaut : "+bad.concat(m).join(" ; ")):ok("barre de tons : plusieurs accents dans un même mot, saisie avec chiffres correcte");
+});
+
 /* 7. Caractères : données de tracé */
 chk("tracé",()=>{
   const miss=[];V.filter(v=>v.t==="w").forEach(v=>{const z=v.zh[0];if(!HAN_RE.test(z))return;[...new Set([...z])].forEach(c=>{if(!hasData(c))miss.push(c)})});
