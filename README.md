@@ -10,10 +10,17 @@ La progression est enregistrée dans le navigateur (`localStorage`). Le code de 
 | Chemin | Rôle |
 |---|---|
 | `index.html` | L'application complète (un seul fichier) |
+| `manifest.webmanifest`, `sw.js`, `icons/` | Installation sur l'écran d'accueil et mode hors ligne |
 | `design/maquettes/` | Maquettes Claude Design de la refonte |
 | `cours/` | Le cours de chinois LV2 en Markdown |
 | `docs/` | Décisions de design, fonctionnalités, historique |
 | `CLAUDE.md` | Consignes pour travailler avec Claude Code |
+
+## Installer sur le téléphone
+- **Android (Chrome)** : menu ⋮ → « Installer l'application » (ou « Ajouter à l'écran d'accueil »).
+- **iPhone (Safari)** : bouton Partager → « Sur l'écran d'accueil ».
+
+Une fois ouverte une première fois en ligne, l'app fonctionne hors ligne.
 
 ## Développer
 ```

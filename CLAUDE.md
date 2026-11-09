@@ -8,6 +8,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 
 ## Structure
 - `index.html` : l'app (prod = branche `main`, publiée sur GitHub Pages).
+- `manifest.webmanifest`, `sw.js`, `icons/` : installation sur l'écran d'accueil et hors-ligne. **Changer `VERSION` dans `sw.js`** si on renomme ou ajoute un fichier à mettre en cache (liste `SHELL`).
 - `design/maquettes/` : maquettes Claude Design (`*.dc.html`) + `canvas.json`. Référence visuelle, non publiée comme app. Elles réclament un `support.js` du moteur Design, donc elles ne s'ouvrent pas seules.
 - `cours/cours-chinois-lv2.md` : le cours (source du vocabulaire).
 - `docs/` : décisions de design, fonctionnalités, historique. Lire avant de changer une règle.

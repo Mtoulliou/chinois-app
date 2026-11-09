@@ -1,6 +1,6 @@
 # Historique du projet
 
-Mise au propre le 2026-11-09. Les résumés ci-dessous viennent des conversations « App chinois » et « Design chinois ». Le résumé de la conversation « Cours de chinois » n'a pas encore été fourni (voir la fin).
+Mise au propre le 2026-11-09. Les résumés ci-dessous viennent des conversations « App chinois » et « Design chinois ». Le contenu du cours vient uniquement du document « Cours de chinois LV2 » (`cours/`), sans historique de conversation.
 
 ## Origine des fichiers
 | Source d'origine | Devenu |
@@ -27,7 +27,7 @@ Mise au propre le 2026-11-09. Les résumés ci-dessous viennent des conversation
 1. V1: 98 mots et 22 phrases tirés du cours, au format artefact.
 2. Tri par thème, sélection des thèmes avant une série, icône d'accueil, thèmes repliables, accueil simplifié.
 3. Thèmes regroupés par leçon (1 à 4), leçons 3 et 4 ajoutées. Phrases générées à partir du vocabulaire, grammaticalement correctes. Série de 10 mots + 10 phrases.
-4. Préparation GitHub Pages: sources communes (`style.css`, `vocab.js`, `app.js`) et `build.py` produisant l'artefact et un dossier `site/` (manifest, service worker hors ligne, icône 习 sur fond vert, README). *Ces fichiers ne sont pas dans le dépôt actuel.*
+4. Préparation GitHub Pages: sources communes (`style.css`, `vocab.js`, `app.js`) et `build.py` produisant l'artefact et un dossier `site/` (manifest, service worker hors ligne, icône 习 sur fond vert, README). *Remplacé le 09/11/2026 par `manifest.webmanifest`, `sw.js` et `icons/` écrits directement pour le `index.html` unique, sans `build.py`.*
 5. Code de transfert (« Copier mon code » / « Coller un code ») pour passer sa progression d'une version à l'autre. Filtre par type d'exercice.
 6. Leçons 5 (Ma journée) et 6 (L'heure). L'ancienne leçon 3 devient la leçon 2 « Qui suis-je ». 239 → 364 éléments.
 7. Les caractères sortent des exercices (affichés au-dessus du pinyin, pour information). Descriptions au-dessus de « Traduire » supprimées.
@@ -58,9 +58,6 @@ Canvas de 19 écrans + planche de composants, puis 7 écrans Écriture et 5 écr
 
 ### Point de passage vers la prod
 La conversation s'est arrêtée à « Pousse en prod »: Claude ne pouvait pas créer le dépôt. Elle annonçait que la progression Claude ne passerait pas sur le site; or **le code de transfert de l'app (Paramètres) le permet.**
-
-## 3. Cours de chinois
-Résumé non fourni. Contenu du cours: voir [`cours.md`](cours.md) et `../cours/cours-chinois-lv2.md`. À compléter avec les décisions de la conversation (séances intégrées, points à retravailler).
 
 ## Organisation de travail
 - Réfléchir et décider: chat Claude. Coder: Claude Code, sur une branche.
