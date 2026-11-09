@@ -31,7 +31,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Flamme : `state.days` (date locale). Compte une série **réussie** : niveau ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
 - Révision espacée : `state.srs[id]={b,d}`, intervalles `SRS_INT`. Seuls les éléments du cours (`BYID`) sont suivis, pas les phrases générées.
 - Mots enseignés (règle impérative) : tout mot d'une phrase (niveau de phrases, contrôle, phrase générée, complément) doit être un `W` du même thème ou d'un thème précédent (`taughtDict`, `phraseOk`, `allKnown`, `segmentWords`). Pronoms de base 我你他她们 connus d'office. Si une phrase contient un mot jamais enseigné, l'ajouter en `W(...)` dans le même thème (pas de doublon : un mot = un seul `W`). L'ordre des thèmes dans `LESSONS` compte : le vocabulaire avant les structures. Ne jamais renommer un thème ni un id de leçon (clés de la progression).
-- Premier lancement : l'introduction (`INTRO`) passe avant tout ; la fenêtre d'installation (`installPopup`) ne doit jamais s'afficher pendant l'introduction ni dans l'app installée (`startupIntro`, `isStandalone`).
+- Fenêtre d'installation (`installPopup`) : s'ouvre à chaque démarrage dans le navigateur d'un téléphone, avant tout (même avant l'introduction du premier lancement), jamais dans l'app installée (`isStandalone`). Pas de limite de fréquence voulue.
 - Tout nouvel état persistant doit être ajouté à `freshState`, `exportCode` et `importCode`.
 
 ## Workflow Git
