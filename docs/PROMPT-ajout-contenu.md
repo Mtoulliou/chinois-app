@@ -28,24 +28,25 @@ pose la question avant de coder. Tu ne modifies pas ce qui n'est pas demandé.
 1. **Un mot = une seule entrée `W(...)` dans toute l'app.** L'identifiant d'un élément est son premier `zh`. Jamais de doublon.
    Si le mot existe déjà plus loin dans le parcours, DÉPLACE sa ligne `W` vers le thème qui l'utilise en premier (ne la copie pas).
 2. **Tout mot d'une phrase doit avoir été enseigné avant.** Chaque mot de chaque phrase (cours `P(...)`, phrases générées, compléments)
-   doit être un `W` du même thème ou d'un thème PRÉCÉDENT dans l'ordre du parcours (les mots de ce thème sont tous enseignés avant son niveau de phrases).
+   doit être un `W` du même thème ou d'un thème PRÉCÉDENT dans l'ordre du parcours (les mots de son chapitre sont tous enseignés avant sa série Phrases).
    Seuls 我 你 他 她 们 sont connus d'office. Si une phrase contient un mot jamais enseigné (particule 呢, 吗, 不, nom propre, complément, etc.),
    AJOUTE-LE en `W` dans le thème de la phrase (ou plus tôt). Un « mot » est un mot du cours : 多大 est un mot, pas deux caractères isolés.
 3. **Le vocabulaire avant les structures.** Dans une leçon, place les thèmes de vocabulaire (loisirs, nourriture…) AVANT les thèmes de structure qui les réutilisent.
 4. **Jamais de renommage ni de suppression** d'un nom de thème ou d'un `id` de leçon : ce sont les clés de la progression enregistrée.
 5. **Ajoute à la fin** : nouveaux mots à la fin de la liste `W` du thème, nouveaux thèmes à la fin de la liste `themes` de la leçon, nouvelles leçons à la fin de `LESSONS`.
-   (Insérer au milieu décale les groupes de 5 mots et l'ordre de déblocage ; à n'utiliser que si le cours l'exige, et à signaler.)
+   (Insérer au milieu décale la répartition des mots en groupes et l'ordre de déblocage ; à n'utiliser que si le cours l'exige, et à signaler.)
 6. **Complet ou rien** : un thème ajouté a des mots OU des phrases ET une entrée dans `RULES`, `CANDO` ; une leçon ajoutée a une entrée dans `CANDO_L`.
 7. **Pas de contenu non enseigné dans les générateurs** : les listes (`ACTS`, `FOODS`, `DRINKS`, `FAM`, `COUNTRIES`, `LANGS`…) ne contiennent que des mots qui existent en `W`.
 
 # COMMENT L'APP UTILISE LE CONTENU (à connaître avant de modifier)
 
-- Niveaux d'un thème : un thème de N mots a `ceil(N/5)` niveaux de mots puis 1 niveau de phrases. Niveau de mots k = ses ~5 nouveaux mots en QCM,
-  puis TOUS les mots des niveaux précédents (pinyin→français et français→pinyin). Un reste de moins de 3 mots est fondu dans le dernier niveau de mots.
-  Un thème sans mot propre n'a que le niveau de phrases. Scores rangés par identifiant stable `w1, w2, …, p` (`state.lv[theme]`).
-- Niveau de phrases : 10 phrases (cours + générées + compléments de thèmes précédents), filtrées pour que tous leurs mots soient enseignés.
-- Contrôle de leçon : 20 questions sur tous les thèmes de la leçon (16/20 pour valider) ; la leçon suivante s'ouvre à la réussite du contrôle.
-- Collection : un caractère devient jade quand le niveau qui introduit un mot le contenant est validé (et sans erreur en cours), or une fois tracé de mémoire.
+- Chapitres : un chapitre = un thème, ou plusieurs thèmes courts fusionnés (moins de 6 mots : le thème rejoint le chapitre précédent de la leçon, ou le suivant s'il est le premier). Le chapitre porte le nom de son premier thème.
+  Un thème qu'on ajoute avec moins de 6 mots n'aura donc pas de parcours à lui : il s'ajoute au chapitre précédent (qui peut passer à un groupe de plus).
+- Groupes et séries : les mots du chapitre sont répartis en groupes équilibrés de 8 au plus. Par groupe : Découverte (cartes de présentation, puis 20 questions), Renforcement, Révision (mélange du groupe et des précédents).
+  Puis une série Phrases (20 phrases) et une série Défi (tes erreurs du chapitre). Toutes les séries font 20 questions et se valident à 80 %. Scores rangés par identifiant stable `g1a, g1b, g1m, g2a, …, p, h` (`state.ser[chapitre]`).
+- Phrases : 20 phrases (cours + générées + compléments de thèmes précédents), filtrées pour que tous leurs mots soient enseignés. Un chapitre qui a peu de phrases (moins de 10) est complété par des mots : l'audit le signale ; ajoute des phrases de cours ou un générateur.
+- Contrôle de leçon : 30 questions jusqu'à 45 mots de vocabulaire dans la leçon, 40 au-delà (80 % pour valider), au moins 1 question par chapitre ; la leçon suivante s'ouvre à la réussite du contrôle.
+- Collection : un caractère devient jade quand la série Renforcement du groupe d'un mot le contenant est validée (et sans erreur en cours), or une fois tracé de mémoire.
   Seuls les caractères ayant des données de tracé (`window.HANZI_DATA`) apparaissent.
 - Révision espacée et séries libres piochent dans tous les éléments `V`.
 
@@ -73,7 +74,7 @@ const RULES={ "Thème A":["Règle 1…","Règle 2…"] };        // 2 à 4 règl
 const CANDO={ "Thème A":"dire ce que tu aimes" };         // complète « Tu sais maintenant … »
 const CANDO_L={ l9:"parler de … et de …" };               // idem pour la leçon
 ```
-Générateurs de phrases (facultatif, pour varier les niveaux de phrases) : entrées dans `TEMPLATES`
+Générateurs de phrases (facultatif, pour varier les séries Phrases) : entrées dans `TEMPLATES`
 `{th:"Thème",subj:[0,1,2,3],make(s,p){…return {zh,py,fr:[…],note}}}` (voir les exemples existants et les aides `combos`, `join`, `CJ`, `SUBJ`).
 Contraintes : n'utiliser que des mots enseignés au plus tard dans ce thème ; accords de genre et de nombre corrects en français ;
 toutes les variantes françaises raisonnables dans `fr` ; `kind:"w"` pour un générateur de mots (ex. heures). L'app écarte d'elle-même une phrase
@@ -91,14 +92,14 @@ sinon ils n'apparaîtront pas dans la Collection. Respecte la licence indiquée 
    - où chaque mot et chaque phrase sera placé (leçon, thème) et pourquoi ;
    - les mots qui existent déjà (à déplacer ou à réutiliser, pas à dupliquer) ;
    - pour chaque phrase, la liste de ses mots et le thème où chacun est enseigné ; les mots à AJOUTER pour que la règle 2 soit respectée ;
-   - l'impact sur les niveaux (nombre de niveaux avant / après pour chaque thème touché) et sur la progression existante ;
+   - l'impact sur les chapitres et les séries (chapitres fusionnés, nombre de groupes et de séries avant / après) et sur la progression existante ;
    - les doutes à trancher.
    Attends mon accord.
 4. Modifie `index.html` : `T/W/P`, `LESSONS` si besoin, `RULES`, `CANDO`, `CANDO_L`, générateurs et listes éventuels, `HANZI_DATA` si besoin.
 5. Mets à jour `cours/cours-chinois-lv2.md` (source de vérité du cours) avec le nouveau contenu, dans le même style que les chapitres existants.
 6. Lance `tools/run-audit.sh`. Corrige jusqu'à `RESULTAT: 0 erreur(s)`. Lis chaque AVERT : corrige-le ou explique pourquoi il est acceptable.
-7. Joue le parcours dans un navigateur sans écran (ou via Chrome si disponible) : ouvre l'écran Leçons, la feuille du nouveau thème, joue le premier niveau de mots
-   et le niveau de phrases du nouveau thème, ouvre le mini-cours (icône de livre), ouvre la Collection. Aucune erreur de console, aucun libellé vide.
+7. Joue le parcours dans un navigateur sans écran (ou via Chrome si disponible) : ouvre l'écran Leçons, la feuille du chapitre concerné, joue la première série Découverte (cartes comprises)
+   et la série Phrases du chapitre concerné, ouvre le mini-cours (icône de livre), ouvre la Collection. Aucune erreur de console, aucun libellé vide.
 8. Mets à jour la documentation : `docs/fonctionnalites.md` (contenu ajouté, nombre de leçons/thèmes/mots), `docs/historique.md` (une entrée datée),
    `README.md` si les chiffres y figurent, `CLAUDE.md` seulement si une règle change.
 9. Si un fichier est ajouté à la liste `SHELL` de `sw.js`, incrémente `VERSION` dans `sw.js` (sinon ne touche pas à `sw.js`).
@@ -112,13 +113,13 @@ sinon ils n'apparaîtront pas dans la Collection. Respecte la licence indiquée 
 - [ ] Aucun nom de thème ni `id` de leçon existant modifié ou supprimé.
 - [ ] `RULES`, `CANDO` (par thème) et `CANDO_L` (par leçon) renseignés.
 - [ ] `cours/cours-chinois-lv2.md` et la documentation à jour.
-- [ ] Parcours joué de bout en bout dans un navigateur : écrans Leçons, feuille du thème, niveaux de mots et de phrases, mini-cours, Collection.
+- [ ] Parcours joué de bout en bout dans un navigateur : écrans Leçons, feuille du chapitre, cartes de présentation, séries d'apprentissage et série Phrases, mini-cours, Collection.
 - [ ] Livré par branche et PR (feature → dev → main), version en ligne vérifiée.
 
 # CE QUE TU ME RENDS À LA FIN
 
 Un compte rendu court : ce qui a été ajouté (nombres de mots, phrases, thèmes, leçons), les mots ajoutés ou déplacés pour respecter la règle 2,
-le nombre de niveaux de chaque thème touché, le résultat final de `tools/run-audit.sh` (colle la dernière ligne et la liste des AVERT restants),
+le nombre de séries de chaque chapitre touché, le résultat final de `tools/run-audit.sh` (colle la dernière ligne et la liste des AVERT restants),
 et tout point à valider de mon côté (prononciations ou traductions incertaines, choix d'emplacement).
 ````
 
@@ -142,14 +143,14 @@ et tout point à valider de mon côté (prononciations ou traductions incertaine
 | Identifiants uniques ; champs `zh`, `py`, `fr` renseignés et cohérents | erreur |
 | Chaque thème : contenu, `RULES`, `CANDO` ; chaque leçon : `CANDO_L` ; pas de thème en double | erreur |
 | Générateurs : gabarits valides, réponse canonique jugée juste, listes couvertes par le vocabulaire | erreur / avertissement |
-| Niveaux : mots répartis sans trou ni doublon, nouveaux mots en tête, cumul complet des anciens mots | erreur |
+| Chapitres et séries : groupes sans trou ni doublon, 20 questions par série, QCM et QCM de ton bien formés, tous les mots du groupe présentés | erreur |
 | **Aucun mot de phrase non enseigné avant** (cours, générées, compléments, contrôles) | erreur |
 | Séries et contrôles se construisent ; export/import de la progression conserve tout | erreur |
-| Niveaux de phrases courts, thèmes de moins de 3 mots, caractères sans données de tracé | avertissement |
+| Peu de phrases pour la série Phrases, thèmes de moins de 3 mots, caractères sans données de tracé | avertissement |
 
 ### Pièges connus
 
 - Un mot présent dans une phrase d'un thème antérieur mais enseigné plus tard : l'audit l'erreur si la phrase est exclue, l'avertit sinon.
-- Modifier le contenu d'un thème déjà joué n'efface pas la progression (scores par identifiant `w1…p`), mais déplacer des mots entre thèmes peut
-  faire passer un caractère de « jade » à « sombre » tant que le niveau qui l'introduit n'est pas revalidé.
+- Modifier le contenu d'un thème déjà joué n'efface pas la progression (scores par identifiant de série `g1a…p`), mais déplacer des mots entre chapitres peut
+  faire passer un caractère de « jade » à « sombre » tant que la série Renforcement de son groupe n'est pas revalidée.
 - Ne pas oublier qu'un thème ajouté à une leçon déjà validée rend le contrôle de cette leçon de nouveau « ouvrable » : la leçon suivante reste ouverte (le contrôle déjà réussi compte).

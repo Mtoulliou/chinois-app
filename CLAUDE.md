@@ -4,7 +4,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 
 ## Commandes
 - Lancer en local : `python3 -m http.server 8000` puis http://localhost:8000
-- Pas de build. **Audit du contenu : `tools/run-audit.sh`** (navigateur sans écran ; code 0 = aucune erreur). À lancer avant toute livraison qui touche au vocabulaire, aux thèmes, aux leçons, aux phrases ou aux niveaux. Pour le reste, vérifier à la main sur mobile 390 px, clair et sombre.
+- Pas de build. **Audit du contenu : `tools/run-audit.sh`** (navigateur sans écran ; code 0 = aucune erreur). À lancer avant toute livraison qui touche au vocabulaire, aux thèmes, aux leçons, aux phrases ou aux séries. Pour le reste, vérifier à la main sur mobile 390 px, clair et sombre.
 
 ## Structure
 - `index.html` : l'app (prod = branche `main`, publiée sur GitHub Pages).
@@ -22,15 +22,16 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Écriture des caractères : bibliothèque Hanzi Writer (MIT) intégrée, avec les données de traits de 242 caractères embarquées (`HANZI_DATA`).
 
 ## Règles métier (ne pas casser)
-- Niveaux variables par thème : N mots → `ceil(N/5)` niveaux de mots (5 nouveaux mots en QCM puis TOUS les mots précédents) + 1 niveau de phrases (`levelsOf`, `levelNew`, `LV_NEW`). Scores rangés par identifiant stable `w1…`, `p` dans `state.lv[thème]` (`lvVer` = 2). Un niveau est validé à 80 %. Les thèmes se débloquent dans l'ordre. Aucun pourcentage n'est affiché sur le parcours ni dans la feuille d'un thème.
-- Tous les niveaux d'une leçon validés → contrôle (16/20 requis) → leçon suivante.
+- Parcours en chapitres et séries : un **chapitre** = un thème, ou plusieurs thèmes courts fusionnés (moins de `MIN_CHAPTER`=6 mots : rejoint le précédent, ou le suivant s'il ouvre la leçon). Mots répartis en groupes équilibrés de 8 au plus (`splitGroups`). Par groupe : **Découverte** (cartes de présentation, hors des 20 questions, puis 20 questions), **Renforcement**, **Révision** (mélange du groupe et des précédents) ; puis une série **Phrases** et une série **Défi** (erreurs du chapitre). Toutes les séries font `SER_LEN`=20 questions. Scores par identifiant stable dans `state.ser[chapitre][g1a, g1b, g1m, …, p, h]` (`lvVer`=3). Série validée à 80 % ; or à 100 %. Aucun pourcentage sur le parcours ni dans la feuille d'un chapitre. Le chapitre porte le nom de son premier thème : ne jamais renommer un thème.
+- Toutes les séries d'une leçon validées → contrôle (30 questions jusqu'à 45 mots, sinon 40 ; 80 % requis, note sur 20 conservée) → leçon suivante.
+- Échelle de difficulté d'un mot (`mkQ`) : QCM à 2 choix → QCM à 4 choix (sens inverse) → écrire le français → QCM de ton (2 puis 4 versions de la même syllabe, `toneVariants`) → écrire le pinyin. Rappel rapproché : une question ratée revient 3 ou 4 questions plus loin à la place d'une question prévue (max 4 par série, hors de la note).
 - Révision : tout le vocabulaire accessible sans verrou.
 - Écriture : 3 étapes (observer, guidé, mémoire), maîtrisé après 2 tracés de mémoire sans faute, séries de 8. Accessible depuis l'onglet **Collection**.
-- Collection : caractère **jade** = le niveau de mots qui introduit un mot le contenant est validé (`wordLearned`) ET aucune erreur en cours sur ces mots ; **à corriger** si une erreur reste ; **or** = jade + écriture maîtrisée. Niveau **or** = 100 %, contrôle or = 20/20.
-- Séries (niveau, contrôle, série libre, écriture) : jamais reprises. Quitter par la croix ou fermer l'app annule la série (`state.run` et `state.wrun` sont remis à null au chargement). Ne pas réintroduire de sauvegarde de série en cours.
-- Flamme : `state.days` (date locale). Compte une série **réussie** : niveau ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
+- Collection : caractère **jade** = la série Renforcement du groupe d'un mot le contenant est validée (`wordLearned`) ET aucune erreur en cours sur ces mots ; **à corriger** si une erreur reste ; **or** = jade + écriture maîtrisée. Niveau **or** = 100 %, contrôle or = 20/20.
+- Séries (apprentissage, contrôle, série libre, écriture) : jamais reprises. Quitter par la croix ou fermer l'app annule la série (`state.run` et `state.wrun` sont remis à null au chargement). Ne pas réintroduire de sauvegarde de série en cours.
+- Flamme : `state.days` (date locale). Compte une série **réussie** : série d'apprentissage ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
 - Révision espacée : `state.srs[id]={b,d}`, intervalles `SRS_INT`. Seuls les éléments du cours (`BYID`) sont suivis, pas les phrases générées.
-- Mots enseignés (règle impérative) : tout mot d'une phrase (niveau de phrases, contrôle, phrase générée, complément) doit être un `W` du même thème ou d'un thème précédent (`taughtDict`, `phraseOk`, `allKnown`, `segmentWords`). Pronoms de base 我你他她们 connus d'office. Si une phrase contient un mot jamais enseigné, l'ajouter en `W(...)` dans le même thème (pas de doublon : un mot = un seul `W`). L'ordre des thèmes dans `LESSONS` compte : le vocabulaire avant les structures. Ne jamais renommer un thème ni un id de leçon (clés de la progression).
+- Mots enseignés (règle impérative) : tout mot d'une phrase (série Phrases, contrôle, phrase générée, complément) doit être un `W` du même thème ou d'un thème précédent (`taughtDict`, `phraseOk`, `allKnown`, `segmentWords`). Pronoms de base 我你他她们 connus d'office. Si une phrase contient un mot jamais enseigné, l'ajouter en `W(...)` dans le même thème (pas de doublon : un mot = un seul `W`). L'ordre des thèmes dans `LESSONS` compte : le vocabulaire avant les structures. Ne jamais renommer un thème ni un id de leçon (clés de la progression).
 - Fenêtre d'installation (`installPopup`) : s'ouvre à chaque démarrage dans le navigateur d'un téléphone, avant tout (même avant l'introduction du premier lancement), jamais dans l'app installée (`isStandalone`). Pas de limite de fréquence voulue.
 - Tout nouvel état persistant doit être ajouté à `freshState`, `exportCode` et `importCode`.
 

@@ -64,49 +64,61 @@ chk("générateurs",()=>{
   miss.length?warn("entrées de listes de générateur absentes du vocabulaire (W) : "+miss.join(" ")):ok("listes des générateurs couvertes par le vocabulaire");
 });
 
-/* 4. Niveaux : partition, construction, structure */
-chk("niveaux",()=>{
-  const bad=[];let maxQ=0;
-  THEMES.forEach(th=>{
-    const ids=[];for(let i=0;i<wordLevels(th);i++)levelNew(th,i).forEach(v=>ids.push(v.id));
-    if(ids.join("|")!==ownWords(th).map(v=>v.id).join("|"))bad.push(th+" : les niveaux ne couvrent pas exactement les mots du thème");
-    for(let i=0;i<levelsOf(th);i++)for(let r=0;r<5;r++){
-      let qs;try{qs=buildLevel(th,i)}catch(e){bad.push(th+" N"+(i+1)+" : "+e.message);break}
-      maxQ=Math.max(maxQ,qs.length);
-      if(!qs.length){bad.push(th+" N"+(i+1)+" : niveau vide");break}
-      if(qs.some(q=>!IT(q.id)))bad.push(th+" N"+(i+1)+" : question sur un élément inconnu");
-      if(!isPhraseLevel(th,i)){
-        const nw=levelNew(th,i),prev=ownWords(th).slice(0,i*LV_NEW).map(v=>v.id);
-        const head=qs.slice(0,nw.length);
-        if(!head.every(q=>q.ex==="qcm"&&nw.some(v=>v.id===q.id)))bad.push(th+" N"+(i+1)+" : les nouveaux mots ne sont pas en tête en QCM");
-        const rest=qs.slice(nw.length).filter(q=>!IT(q.id).gen);
-        if(prev.some(id=>!rest.some(q=>q.id===id)))bad.push(th+" N"+(i+1)+" : un mot d'un niveau précédent manque (cumul incomplet)");
-      }
-    }
-    if(!ownWords(th).length&&!themePhrases([th],ctlWords(th),LEVEL_LEN).length)warn("« "+th+" » n'a ni mot ni phrase : niveau vide ou presque");
-    else if(themePhrases([th],ctlWords(th),LEVEL_LEN).length<5)warn("« "+th+" » : moins de 5 phrases disponibles pour le niveau de phrases (le niveau est complété avec des mots)");
-  });
-  bad.length?err("niveaux défectueux : "+uniq(bad).slice(0,10).join(" ; ")):ok("niveaux construits pour "+THEMES.length+" thèmes (plus long : "+maxQ+" questions)");
-  const tiny=THEMES.filter(t=>wordLevels(t)&&ownWords(t).length<3);if(tiny.length)warn("thèmes de moins de 3 mots (niveau de mots très court) : "+tiny.join(", "));
+/* 4. Chapitres, groupes et séries */
+chk("séries",()=>{
+  const bad=[],warnA=[];let nSer=0;
+  const allThemes=new Set();
+  LESSONS.forEach(l=>chaptersOf(l).forEach(ch=>{
+    ch.themes.forEach(t=>{if(allThemes.has(t))bad.push("thème dans deux chapitres : "+t);allThemes.add(t)});
+    const ids=ch.groups.flat().map(v=>v.id).join("|");
+    if(ids!==ch.words.map(v=>v.id).join("|"))bad.push(ch.name+" : les groupes ne couvrent pas exactement les mots du chapitre");
+    if(ch.groups.some(g=>g.length>MAX_GROUP||g.length<1))bad.push(ch.name+" : groupe de taille invalide");
+    if(ch.series.length!==3*ch.groups.length+2)bad.push(ch.name+" : "+ch.series.length+" séries au lieu de "+(3*ch.groups.length+2));
+    if(ch.words.length&&ch.words.length<MIN_CHAPTER&&chaptersOf(l).length>1)bad.push(ch.name+" : chapitre de moins de "+MIN_CHAPTER+" mots non fusionné");
+    nSer+=ch.series.length;
+    ch.series.forEach((S,i)=>{for(let r=0;r<4;r++){
+      let qs;try{qs=buildSer(ch,i)}catch(e){bad.push(ch.name+" "+S.id+" : "+e.message);break}
+      if(qs.length!==SER_LEN)bad.push(ch.name+" "+S.id+" : "+qs.length+" questions au lieu de "+SER_LEN);
+      qs.forEach(q=>{
+        const it=IT(q.id);if(!it){bad.push(ch.name+" "+S.id+" : question sur un élément inconnu");return}
+        if(q.ex==="qcm"&&(!q.opts.includes(it.fr[0])||![2,4].includes(q.opts.length)||new Set(q.opts).size!==q.opts.length))bad.push(ch.name+" "+S.id+" : QCM mal formé pour "+it.zh[0]);
+        if(q.ex==="qcmr"&&(!q.opts.includes(it.py[0])||![2,4].includes(q.opts.length)||new Set(q.opts).size!==q.opts.length))bad.push(ch.name+" "+S.id+" : QCM inverse mal formé pour "+it.zh[0]);
+        if(q.ex==="qton"){const tl=pyToneless(it.py[0]);if(!q.opts.includes(it.py[0])||![2,4].includes(q.opts.length)||q.opts.some(o=>pyToneless(o)!==tl)||new Set(q.opts).size!==q.opts.length)bad.push(ch.name+" "+S.id+" : QCM de ton mal formé pour "+it.py[0])}
+      });
+      if(S.kind==="a1"){const q2=qs.filter(q=>(q.ex==="qcm"||q.ex==="qcmr")&&q.opts.length===2);if(ch.groups[S.g].some(v=>!q2.some(q=>q.id===v.id)))bad.push(ch.name+" "+S.id+" : un mot du groupe n'est pas présenté en QCM à 2 choix")}
+      if(S.kind==="phr"&&qs.filter(q=>q.ex==="qcm").length!==8)bad.push(ch.name+" phrases : le nombre de QCM n'est pas 8");
+    }});
+    const phr=themePhrases(ch.themes,ch.words,SER_LEN).length;
+    if(phr<10)warnA.push(ch.name+" ("+phr+" phrases)");
+  }));
+  bad.length?err("chapitres ou séries défectueux : "+uniq(bad).slice(0,10).join(" ; ")):ok(nSer+" séries construites (20 questions chacune) pour "+LESSONS.reduce((n,l)=>n+chaptersOf(l).length,0)+" chapitres");
+  warnA.length?warn("peu de phrases pour la série Phrases (complétée par des mots) : "+warnA.join(", ")):ok("assez de phrases pour chaque série Phrases");
+  const tiny=THEMES.filter(t=>ownWords(t).length>0&&ownWords(t).length<3);if(tiny.length)warn("thèmes de moins de 3 mots : "+tiny.join(", "));
 });
 
 /* 5. RÈGLE IMPÉRATIVE : tout mot d'une phrase a été enseigné plus haut */
 chk("mots enseignés",()=>{
-  // phrases du cours
   const ex=V.filter(v=>v.t==="p"&&!phraseOk(v,v.th)).map(v=>{
     const d=new Set();THEMES.forEach(t=>{if(themeIdx(t)<=themeIdx(v.th))ownWords(t).forEach(w=>w.zh.forEach(z=>d.add(z)))});
     return v.zh[0]+" [mot(s) non enseigné(s) : "+segmentWords(d,v.zh[0]).unk.join("+")+"]"});
   ex.length?err("phrases du cours contenant des mots jamais enseignés avant leur thème (ajouter ces mots en W dans ce thème ou un thème précédent) : "+ex.join(" ; ")):ok("toutes les phrases du cours n'utilisent que des mots enseignés");
-  // niveaux de phrases réellement construits (cours, générées, compléments)
-  const viol=[];let n=0;
-  THEMES.forEach(th=>{const d=new Set();THEMES.forEach(t=>{if(themeIdx(t)<=themeIdx(th))for(let i=0;i<wordLevels(t);i++)levelNew(t,i).forEach(v=>v.zh.forEach(z=>d.add(z)))});
-    for(let r=0;r<40;r++)buildLevel(th,levelsOf(th)-1).forEach(q=>{const it=IT(q.id);if(!it||it.t!=="p")return;n++;const u=segmentWords(d,it.zh[0]).unk;if(u.length)viol.push(th+" : "+it.zh[0]+" ["+u.join("+")+"]")})});
-  viol.length?err("phrase de niveau de phrases avec un mot non enseigné : "+uniq(viol).slice(0,8).join(" ; ")):ok(n+" phrases de niveau de phrases testées : aucun mot non enseigné");
-  // contrôles de leçon
-  const cv=[];LESSONS.forEach((l,li)=>{const d=new Set();THEMES.forEach(t=>{if(LESSONS.indexOf(LESSON_OF[t])<=li)ownWords(t).forEach(w=>w.zh.forEach(z=>d.add(z)))});
-    for(let r=0;r<10;r++)buildCtl(l).forEach(q=>{const it=IT(q.id);if(!it)return;const u=segmentWords(d,it.zh[0]).unk;if(u.length)cv.push(l.n+" : "+it.zh[0]+" ["+u.join("+")+"]")})});
+  // séries de phrases réellement construites : dictionnaire = mots des groupes des chapitres jusqu'au chapitre courant
+  const viol=[];let n=0;const dict=new Set();
+  LESSONS.forEach(l=>chaptersOf(l).forEach(ch=>{
+    ch.words.forEach(w=>w.zh.forEach(z=>dict.add(z)));
+    const pi=ch.series.findIndex(S=>S.kind==="phr");
+    for(let r=0;r<20;r++)buildSer(ch,pi).forEach(q=>{const it=IT(q.id);if(!it||it.t!=="p")return;n++;const u=segmentWords(dict,it.zh[0]).unk;if(u.length)viol.push(ch.name+" : "+it.zh[0]+" ["+u.join("+")+"]")});
+  }));
+  viol.length?err("série Phrases avec un mot non enseigné : "+uniq(viol).slice(0,8).join(" ; ")):ok(n+" phrases de séries Phrases testées : aucun mot non enseigné");
+  // contrôles de leçon : taille et mots
+  const cv=[],sz=[];LESSONS.forEach((l,li)=>{const d=new Set();THEMES.forEach(t=>{if(LESSONS.indexOf(LESSON_OF[t])<=li)ownWords(t).forEach(w=>w.zh.forEach(z=>d.add(z)))});
+    const expect=chaptersOf(l).reduce((a,c)=>a+c.words.length,0)<=45?30:40;
+    for(let r=0;r<10;r++){const q=buildCtl(l);if(q.length!==expect)sz.push(l.n+" : "+q.length+" questions au lieu de "+expect);
+      if(chaptersOf(l).some(c=>!q.some(x=>c.themes.includes(IT(x.id).th))))sz.push(l.n+" : un chapitre n'a aucune question au contrôle");
+      q.forEach(x=>{const it=IT(x.id);if(!it)return;const u=segmentWords(d,it.zh[0]).unk;if(u.length)cv.push(l.n+" : "+it.zh[0]+" ["+u.join("+")+"]")})}});
+  sz.length?err("contrôle de leçon mal dimensionné : "+uniq(sz).slice(0,5).join(" ; ")):ok("contrôles de leçon : 30 questions (jusqu'à 45 mots) ou 40, au moins 1 question par chapitre");
   cv.length?err("contrôle de leçon avec un mot non enseigné : "+uniq(cv).slice(0,6).join(" ; ")):ok("contrôles de leçon : aucun mot non enseigné");
-  // un mot d'un thème ne doit pas être enseigné après sa première utilisation dans une phrase d'un thème précédent
+  // un mot enseigné après un thème dont une phrase le contient
   const late=[];V.filter(v=>v.t==="w").forEach(w=>{const wi=themeIdx(w.th);V.filter(p=>p.t==="p"&&themeIdx(p.th)<wi&&w.zh.some(z=>p.zh[0].includes(z)&&z.length>1)).slice(0,1).forEach(p=>late.push(w.zh[0]+" (thème "+w.th+") apparaît déjà dans la phrase « "+p.zh[0]+" » du thème « "+p.th+" »"))});
   late.length?warn("mot enseigné après un thème dont une phrase le contient (peut être normal si la phrase le décompose autrement) : "+late.slice(0,5).join(" ; ")):0;
 });
@@ -119,11 +131,11 @@ chk("séries",()=>{
 });
 chk("export",()=>{
   const keep=JSON.stringify(state);
-  state.lv={"Langues":{w1:100}};state.days={"2026-01-01":1};state.srs={};state.fx={vib:false};
+  state.ser={"Langues":{g1a:100}};state.days={"2026-01-01":1};state.srs={};state.fx={vib:false};
   const code=exportCode();importCode(code);
-  const okk=state.lv.Langues&&state.lv.Langues.w1===100&&state.days["2026-01-01"]===1&&state.fx.vib===false&&state.lvVer===2;
+  const okk=state.ser.Langues&&state.ser.Langues.g1a===100&&state.days["2026-01-01"]===1&&state.fx.vib===false&&state.lvVer===3;
   state=Object.assign(freshState(),JSON.parse(keep));
-  okk?ok("export / import conservent niveaux, flamme, révision, réglages"):err("export / import perdent un champ (ajouter les nouveaux champs d'état à exportCode et importCode)");
+  okk?ok("export / import conservent séries, flamme, révision, réglages"):err("export / import perdent un champ (ajouter les nouveaux champs d'état à exportCode et importCode)");
 });
 
 /* 7. Caractères : données de tracé */
