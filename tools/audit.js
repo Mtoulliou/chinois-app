@@ -1,0 +1,139 @@
+/* Audit du contenu de l'app. Exécuté DANS la page par tools/run-audit.sh (ne pas l'inclure dans index.html).
+   Affiche des lignes OK / AVERT / ERREUR. Toute ERREUR doit être corrigée avant de livrer. */
+(function(){
+const R=[];
+const err=m=>R.push("ERREUR: "+m),warn=m=>R.push("AVERT: "+m),ok=m=>R.push("OK: "+m);
+const chk=(name,f)=>{try{f()}catch(e){err(name+" a planté : "+e.message+" ("+(e.stack||"").split("\n")[1]+")")}};
+const uniq=a=>[...new Set(a)];
+const HAN=/[㐀-鿿]/;
+
+/* 1. Structure des données */
+chk("données",()=>{
+  const seen={},dup=[];V.forEach(v=>{if(seen[v.id])dup.push(v.id);seen[v.id]=1});
+  dup.length?err("identifiants en double (un mot ou une phrase défini deux fois, ou même zh) : "+uniq(dup).join(" ")):ok("identifiants uniques ("+V.length+" éléments, "+V.filter(v=>v.t==="w").length+" mots, "+V.filter(v=>v.t==="p").length+" phrases)");
+  const bad=[];
+  V.forEach(v=>{
+    if(!THEMES.includes(v.th))bad.push(v.zh[0]+" : thème inconnu "+v.th);
+    if(!v.zh.every(z=>z&&HAN.test(z)))bad.push(v.zh[0]+" : zh vide ou sans caractère chinois");
+    if(!v.py.every(p=>p&&p.trim()&&!HAN.test(p)))bad.push(v.zh[0]+" : pinyin vide ou contenant du chinois");
+    if(!v.fr.every(f=>f&&f.trim()))bad.push(v.zh[0]+" : traduction vide");
+    if(v.zh.length>1&&v.py.length!==v.zh.length)bad.push(v.zh[0]+" : "+v.zh.length+" écritures mais "+v.py.length+" pinyin (séparer par | dans le même ordre)");
+    if(v.zh.some(z=>z!==z.trim())||v.py.some(p=>p!==p.trim())||v.fr.some(f=>f!==f.trim()))bad.push(v.zh[0]+" : espace en début ou fin de variante");
+  });
+  bad.length?err("données mal formées : "+bad.slice(0,15).join(" ; ")+(bad.length>15?" …":"")):ok("champs zh / py / fr valides");
+});
+
+/* 2. Leçons, thèmes, mini-cours, compétences */
+chk("leçons",()=>{
+  const ids=LESSONS.map(l=>l.id),all=LESSONS.flatMap(l=>l.themes);
+  if(new Set(ids).size!==ids.length)err("identifiants de leçon en double");
+  if(new Set(all).size!==all.length)err("thème présent dans deux leçons : "+uniq(all.filter((t,i)=>all.indexOf(t)!==i)).join(", "));
+  const empty=all.filter(t=>!V.some(v=>v.th===t)&&!TEMPLATES.some(x=>x.th===t));
+  empty.length?err("thèmes sans aucun contenu (ni mot, ni phrase, ni générateur) : "+empty.join(", ")):ok(LESSONS.length+" leçons, "+all.length+" thèmes, tous avec du contenu");
+  const noRule=all.filter(t=>!RULES[t]||!RULES[t].length),noCan=all.filter(t=>!CANDO[t]),noCanL=LESSONS.filter(l=>!CANDO_L[l.id]).map(l=>l.id);
+  noRule.length?err("RULES (mini-cours) manquantes pour : "+noRule.join(", ")):ok("mini-cours présent pour chaque thème");
+  noCan.length?err("CANDO (« Tu sais maintenant… ») manquant pour : "+noCan.join(", ")):ok("compétence présente pour chaque thème");
+  noCanL.length?err("CANDO_L manquant pour les leçons : "+noCanL.join(", ")):ok("compétence présente pour chaque leçon");
+  const extra=Object.keys(RULES).filter(t=>!all.includes(t)).concat(Object.keys(CANDO).filter(t=>!all.includes(t)));
+  extra.length?warn("RULES/CANDO pour des thèmes qui n'existent pas : "+uniq(extra).join(", ")):0;
+});
+
+/* 3. Générateurs de phrases */
+chk("générateurs",()=>{
+  const bad=[];
+  TEMPLATES.forEach((t,k)=>{
+    if(!THEMES.includes(t.th)){bad.push("gabarit "+k+" : thème inconnu "+t.th);return}
+    if(typeof t.make!=="function"||!Array.isArray(t.subj)||!t.subj.length){bad.push("gabarit "+k+" ("+t.th+") : make ou subj manquant");return}
+    t.subj.forEach(si=>{for(let n=0;n<12;n++){try{const o=t.make(SUBJ[si],{});
+      if(!o||typeof o.zh!=="string"||typeof o.py!=="string"||!Array.isArray(o.fr)||!o.fr.length||o.fr.some(f=>typeof f!=="string"||!f.trim()))throw new Error("zh, py ou fr invalide");
+      if(!HAN.test(o.zh))throw new Error("zh sans caractère chinois")}catch(e){bad.push("gabarit "+k+" ("+t.th+", sujet "+si+") : "+e.message);return}}});
+  });
+  bad.length?err("générateurs en défaut : "+uniq(bad).slice(0,10).join(" ; ")):ok(TEMPLATES.length+" gabarits de phrases valides");
+  // correction : la réponse canonique d'une phrase générée doit être jugée juste
+  let n=0,fails=[];
+  THEMES.forEach(th=>{if(!TEMPLATES.some(t=>t.th===th))return;let g=0;
+    for(let i=0;i<40;i++){const it=genOne([th],TEMPLATES.some(t=>t.th===th&&!t.kind)?undefined:"w");if(!it||!it.gen)continue;g++;n++;
+      const a=gradePy(toMarks(it.py[0]),acceptedItems(it,1)),b=gradeFr(it.fr[0],acceptedItems(it,3));
+      if(a.s!==1||b.s!==1)fails.push(th+" : "+it.zh[0]+" (pinyin "+a.s+", français "+b.s+")")}
+    if(TEMPLATES.some(t=>t.th===th&&!t.kind)&&g<15)warn("générateur appauvri pour « "+th+" » : "+g+"/40 phrases acceptées (mots des listes non enseignés avant ce thème ?)")});
+  fails.length?err("phrases générées non acceptées avec leur propre réponse : "+uniq(fails).slice(0,8).join(" ; ")):ok(n+" phrases générées jugées justes avec leur réponse canonique");
+  // listes des générateurs : chaque entrée doit être un mot enseigné quelque part
+  const all=new Set();V.forEach(v=>{if(v.t==="w")v.zh.forEach(z=>all.add(z))});
+  const miss=[];[["ACTS",typeof ACTS!=="undefined"&&ACTS],["FOODS",typeof FOODS!=="undefined"&&FOODS],["DRINKS",typeof DRINKS!=="undefined"&&DRINKS],["FAM",typeof FAM!=="undefined"&&FAM],["LANGS",typeof LANGS!=="undefined"&&LANGS]].forEach(([nm,arr])=>{
+    (arr||[]).forEach(e=>{if(e&&typeof e.zh==="string"&&segmentWords(all,e.zh).unk.length)miss.push(nm+":"+e.zh)})});
+  miss.length?warn("entrées de listes de générateur absentes du vocabulaire (W) : "+miss.join(" ")):ok("listes des générateurs couvertes par le vocabulaire");
+});
+
+/* 4. Niveaux : partition, construction, structure */
+chk("niveaux",()=>{
+  const bad=[];let maxQ=0;
+  THEMES.forEach(th=>{
+    const ids=[];for(let i=0;i<wordLevels(th);i++)levelNew(th,i).forEach(v=>ids.push(v.id));
+    if(ids.join("|")!==ownWords(th).map(v=>v.id).join("|"))bad.push(th+" : les niveaux ne couvrent pas exactement les mots du thème");
+    for(let i=0;i<levelsOf(th);i++)for(let r=0;r<5;r++){
+      let qs;try{qs=buildLevel(th,i)}catch(e){bad.push(th+" N"+(i+1)+" : "+e.message);break}
+      maxQ=Math.max(maxQ,qs.length);
+      if(!qs.length){bad.push(th+" N"+(i+1)+" : niveau vide");break}
+      if(qs.some(q=>!IT(q.id)))bad.push(th+" N"+(i+1)+" : question sur un élément inconnu");
+      if(!isPhraseLevel(th,i)){
+        const nw=levelNew(th,i),prev=ownWords(th).slice(0,i*LV_NEW).map(v=>v.id);
+        const head=qs.slice(0,nw.length);
+        if(!head.every(q=>q.ex==="qcm"&&nw.some(v=>v.id===q.id)))bad.push(th+" N"+(i+1)+" : les nouveaux mots ne sont pas en tête en QCM");
+        const rest=qs.slice(nw.length).filter(q=>!IT(q.id).gen);
+        if(prev.some(id=>!rest.some(q=>q.id===id)))bad.push(th+" N"+(i+1)+" : un mot d'un niveau précédent manque (cumul incomplet)");
+      }
+    }
+    if(!ownWords(th).length&&!themePhrases([th],ctlWords(th),LEVEL_LEN).length)warn("« "+th+" » n'a ni mot ni phrase : niveau vide ou presque");
+    else if(themePhrases([th],ctlWords(th),LEVEL_LEN).length<5)warn("« "+th+" » : moins de 5 phrases disponibles pour le niveau de phrases (le niveau est complété avec des mots)");
+  });
+  bad.length?err("niveaux défectueux : "+uniq(bad).slice(0,10).join(" ; ")):ok("niveaux construits pour "+THEMES.length+" thèmes (plus long : "+maxQ+" questions)");
+  const tiny=THEMES.filter(t=>wordLevels(t)&&ownWords(t).length<3);if(tiny.length)warn("thèmes de moins de 3 mots (niveau de mots très court) : "+tiny.join(", "));
+});
+
+/* 5. RÈGLE IMPÉRATIVE : tout mot d'une phrase a été enseigné plus haut */
+chk("mots enseignés",()=>{
+  // phrases du cours
+  const ex=V.filter(v=>v.t==="p"&&!phraseOk(v,v.th)).map(v=>{
+    const d=new Set();THEMES.forEach(t=>{if(themeIdx(t)<=themeIdx(v.th))ownWords(t).forEach(w=>w.zh.forEach(z=>d.add(z)))});
+    return v.zh[0]+" [mot(s) non enseigné(s) : "+segmentWords(d,v.zh[0]).unk.join("+")+"]"});
+  ex.length?err("phrases du cours contenant des mots jamais enseignés avant leur thème (ajouter ces mots en W dans ce thème ou un thème précédent) : "+ex.join(" ; ")):ok("toutes les phrases du cours n'utilisent que des mots enseignés");
+  // niveaux de phrases réellement construits (cours, générées, compléments)
+  const viol=[];let n=0;
+  THEMES.forEach(th=>{const d=new Set();THEMES.forEach(t=>{if(themeIdx(t)<=themeIdx(th))for(let i=0;i<wordLevels(t);i++)levelNew(t,i).forEach(v=>v.zh.forEach(z=>d.add(z)))});
+    for(let r=0;r<40;r++)buildLevel(th,levelsOf(th)-1).forEach(q=>{const it=IT(q.id);if(!it||it.t!=="p")return;n++;const u=segmentWords(d,it.zh[0]).unk;if(u.length)viol.push(th+" : "+it.zh[0]+" ["+u.join("+")+"]")})});
+  viol.length?err("phrase de niveau de phrases avec un mot non enseigné : "+uniq(viol).slice(0,8).join(" ; ")):ok(n+" phrases de niveau de phrases testées : aucun mot non enseigné");
+  // contrôles de leçon
+  const cv=[];LESSONS.forEach((l,li)=>{const d=new Set();THEMES.forEach(t=>{if(LESSONS.indexOf(LESSON_OF[t])<=li)ownWords(t).forEach(w=>w.zh.forEach(z=>d.add(z)))});
+    for(let r=0;r<10;r++)buildCtl(l).forEach(q=>{const it=IT(q.id);if(!it)return;const u=segmentWords(d,it.zh[0]).unk;if(u.length)cv.push(l.n+" : "+it.zh[0]+" ["+u.join("+")+"]")})});
+  cv.length?err("contrôle de leçon avec un mot non enseigné : "+uniq(cv).slice(0,6).join(" ; ")):ok("contrôles de leçon : aucun mot non enseigné");
+  // un mot d'un thème ne doit pas être enseigné après sa première utilisation dans une phrase d'un thème précédent
+  const late=[];V.filter(v=>v.t==="w").forEach(w=>{const wi=themeIdx(w.th);V.filter(p=>p.t==="p"&&themeIdx(p.th)<wi&&w.zh.some(z=>p.zh[0].includes(z)&&z.length>1)).slice(0,1).forEach(p=>late.push(w.zh[0]+" (thème "+w.th+") apparaît déjà dans la phrase « "+p.zh[0]+" » du thème « "+p.th+" »"))});
+  late.length?warn("mot enseigné après un thème dont une phrase le contient (peut être normal si la phrase le décompose autrement) : "+late.slice(0,5).join(" ; ")):0;
+});
+
+/* 6. Séries, contrôles, export */
+chk("séries",()=>{
+  let e=0;LESSONS.forEach(l=>{for(let r=0;r<4;r++){try{const q=buildCtl(l);if(q.length<16)warn("contrôle de « "+l.n+" » court : "+q.length+" questions")}catch(x){e++}}});
+  for(let i=0;i<6;i++){try{buildSeries()}catch(x){e++}}
+  e?err(e+" construction(s) de contrôle ou de série en échec"):ok("contrôles et séries se construisent");
+});
+chk("export",()=>{
+  const keep=JSON.stringify(state);
+  state.lv={"Langues":{w1:100}};state.days={"2026-01-01":1};state.srs={};state.fx={vib:false};
+  const code=exportCode();importCode(code);
+  const okk=state.lv.Langues&&state.lv.Langues.w1===100&&state.days["2026-01-01"]===1&&state.fx.vib===false&&state.lvVer===2;
+  state=Object.assign(freshState(),JSON.parse(keep));
+  okk?ok("export / import conservent niveaux, flamme, révision, réglages"):err("export / import perdent un champ (ajouter les nouveaux champs d'état à exportCode et importCode)");
+});
+
+/* 7. Caractères : données de tracé */
+chk("tracé",()=>{
+  const miss=[];V.filter(v=>v.t==="w").forEach(v=>{const z=v.zh[0];if(!HAN_RE.test(z))return;[...new Set([...z])].forEach(c=>{if(!hasData(c))miss.push(c)})});
+  const u=uniq(miss);
+  u.length?warn(u.length+" caractère(s) sans données de tracé, absents de la Collection : "+u.join(" ")):ok("tous les caractères ont des données de tracé");
+});
+
+const nE=R.filter(x=>x.startsWith("ERREUR")).length,nW=R.filter(x=>x.startsWith("AVERT")).length;
+R.push("RESULTAT: "+nE+" erreur(s), "+nW+" avertissement(s)");
+return R.join("\n");
+})()

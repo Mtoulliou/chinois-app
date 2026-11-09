@@ -1,6 +1,6 @@
 # Révisions chinois
 
-Application de révision de mandarin (LV2) : parcours de leçons en îlots (médailles or à 100 %), exercices à 3 niveaux, contrôle de leçon, révision espacée et des erreurs, collection de caractères (sombre, jade, or) avec apprentissage de l'écriture, flamme de série quotidienne (ordre des traits), thème clair et sombre. Interface en français, pensée pour le mobile.
+Application de révision de mandarin (LV2) : parcours de leçons en îlots (médailles or à 100 %), niveaux adaptés à chaque thème (5 nouveaux mots par niveau, puis phrases), contrôle de leçon, révision espacée et des erreurs, collection de caractères (sombre, jade, or) avec apprentissage de l'écriture, flamme de série quotidienne (ordre des traits), thème clair et sombre. Interface en français, pensée pour le mobile.
 
 **App en ligne : https://mtoulliou.github.io/chinois-app/**
 
@@ -13,7 +13,8 @@ La progression est enregistrée dans le navigateur (`localStorage`). Le code de 
 | `manifest.webmanifest`, `sw.js`, `icons/` | Installation sur l'écran d'accueil et mode hors ligne |
 | `design/maquettes/` | Maquettes Claude Design de la refonte |
 | `cours/` | Le cours de chinois LV2 en Markdown |
-| `docs/` | Décisions de design, fonctionnalités, historique |
+| `docs/` | Décisions de design, fonctionnalités, historique, prompt d'ajout de contenu |
+| `tools/` | Audit automatique du contenu (`tools/run-audit.sh`) |
 | `CLAUDE.md` | Consignes pour travailler avec Claude Code |
 
 ## Installer sur le téléphone
