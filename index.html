@@ -698,7 +698,7 @@ const VOCAB_VERSION="29/10/2026";
 const LESSONS=[
   {id:"l1",n:"Leçon 1",t:"Se présenter",themes:["Salutations et présentation","Pays et nationalités","Langues","Mois et jours","Classificateurs","Tons et pinyin"]},
   {id:"l2",n:"Leçon 2",t:"Qui suis-je",themes:["Pronoms","Nombres","Âge","Qui est-ce ?","Caractères et vocabulaire"]},
-  {id:"l3b",n:"Leçon 3",t:"Goûts et loisirs",themes:["Aimer et demander","Loisirs","Nourriture et boissons"]},
+  {id:"l3b",n:"Leçon 3",t:"Goûts et loisirs",themes:["Loisirs","Nourriture et boissons","Aimer et demander"]},
   {id:"l4",n:"Leçon 4",t:"Ma famille",themes:["Membres de la famille","Mon, ma, mes et avoir","Compter les personnes","Présenter sa famille"]},
   {id:"l5",n:"Leçon 5",t:"Ma journée",themes:["Activités du quotidien","D'abord, ensuite, enfin","Aussi, tous, mais","La journée de Xiaoming"]},
   {id:"l6",n:"Leçon 6",t:"L'heure",themes:["Dire l'heure","Moments et questions","Mon emploi du temps"]},
@@ -828,6 +828,7 @@ const JOURS=["lundi","mardi","mercredi","jeudi","vendredi","samedi"];
 JOURS.forEach((j,i)=>W("星期"+NUMZ[i],"xīngqī "+NUMP[i],j));
 W("星期天|星期日","xīngqī tiān|xīngqī rì","dimanche","Les deux formes existent : 星期天 et 星期日.");
 T("Pays et nationalités");
+W("不","bù","ne pas|non|pas","不 se place devant le verbe : 不喜欢, 不看, 不听.");
 W("国","guó","pays");
 W("中国","Zhōngguó","Chine");
 W("法国","Fǎguó","France");
@@ -848,6 +849,8 @@ W("汉语","Hànyǔ","chinois (langue parlée)|chinois|langue chinoise");
 W("中文","Zhōngwén","chinois (langue écrite)|chinois|langue chinoise");
 W("法语","Fǎyǔ","français (langue)|français|langue française");
 W("日语","Rìyǔ","japonais (langue)|japonais","Forme usuelle : 日语, pas 日本语.");
+W("英语","Yīngyǔ","anglais (langue)|anglais|langue anglaise");
+W("德语","Déyǔ","allemand (langue)|allemand|langue allemande");
 T("Classificateurs");
 W("个","gè","classificateur général|classificateur","Nombre + 个 + nom : 三个人.");
 W("一个人","yí gè rén|yī gè rén","une personne|1 personne","一 devant un 4e ton (gè) se prononce yí.");
@@ -863,6 +866,8 @@ W("红色","hóngsè","rouge|couleur rouge");
 W("工作","gōngzuò","travail|travailler");
 
 T("Salutations et présentation");
+W("好","hǎo","bon|bien|d'accord|ok","好 : bon, bien. 好吗？ = d'accord ?");
+W("吗","ma","particule de question|question|est-ce que","Ton léger : pas d'accent. 吗 en fin de phrase transforme une affirmation en question.");
 W("呢","ne","et toi ? (particule)|et toi|et vous|et ... ?","呢 en fin de phrase reprend la question : 你呢？ = et toi ? Ton léger : pas d'accent.");
 W("多大","duō dà","quel âge (question générale)|quel âge|âge","多大 : question d'âge générale, 你多大？");
 W("几岁","jǐ suì","quel âge (à un enfant)|quel âge","几岁 : surtout pour un enfant.");
@@ -914,10 +919,8 @@ W("吐","tù","vomir|cracher");
 
 // ===== Leçon 3 : goûts et loisirs
 T("Aimer et demander");
-W("不","bù","ne pas|non|pas","不 se place devant le verbe : 不喜欢, 不看, 不听.");
 W("不喜欢","bù xǐhuan","ne pas aimer","Structure : sujet + 不 + 喜欢 + X.");
 W("做","zuò","faire");
-W("吗","ma","particule de question|question|est-ce que","Ton léger : pas d'accent. 吗 en fin de phrase transforme une affirmation en question.");
 W("蛇","shé","serpent|serpents");
 P("你喜欢做什么？","nǐ xǐhuan zuò shénme","qu'est-ce que tu aimes faire ?|tu aimes faire quoi|qu'aimes-tu faire|que aimes-tu faire","什么 reste à la place de la réponse.");
 P("我喜欢咖啡。","wǒ xǐhuan kāfēi","j'aime le café|j'aime café");
@@ -1037,6 +1040,7 @@ P("我们家姓王。","wǒmen jiā xìng Wáng","notre famille s'appelle Wang|n
 
 // ===== Leçon 5 : ma journée (我的一天)
 T("Activités du quotidien");
+W("饭","fàn","repas|riz cuit|nourriture","吃饭 : manger, prendre un repas.");
 W("起床","qǐchuáng","se lever");
 W("刷牙","shuā yá","se brosser les dents");
 W("洗脸","xǐ liǎn","se laver le visage");
@@ -1808,14 +1812,7 @@ TEMPLATES.push(
       fr:combos(["quelle heure est-il ? ","il est quelle heure ? "],"il est ",frTimes(h,m,"")),note:(h===2?"2 h : 两点, pas 二点. ":"")+NOTE_TIME(m)}}}
 );
 
-/* Caractères vus dans le cours jusqu'à une leçon : une phrase générée ne doit pas en contenir d'autres. */
-const _knownCh=[];
-function knownChars(li){
-  if(_knownCh[li])return _knownCh[li];
-  const set=new Set();V.forEach(v=>{if(LESSONS.indexOf(LESSON_OF[v.th])<=li)[...v.zh[0]].forEach(c=>set.add(c))});
-  return _knownCh[li]=set;
-}
-const allKnown=(th,zh)=>{const k=knownChars(LESSONS.indexOf(LESSON_OF[th]));return [...zh].every(c=>!/[㐀-鿿]/.test(c)||k.has(c))};
+const allKnown=(th,zh)=>segmentWords(taughtDict(th),zh).unk.length===0;
 function genOne(themesOn,kind){
   const tpl=TEMPLATES.filter(t=>themesOn.includes(t.th)&&(t.kind||"p")===(kind||"p"));
   if(!tpl.length) return null;
@@ -1823,7 +1820,7 @@ function genOne(themesOn,kind){
   for(let a=0;a<14&&!ok;a++){
     t=rnd(tpl);si=rnd(t.subj);s=SUBJ[si];picks={};
     item=finishGen(t.make(s,picks),t.th);
-    ok=BYID[item.zh[0]]||allKnown(t.th,item.zh[0]);
+    ok=allKnown(t.th,item.zh[0]);
   }
   if(!ok) return null;
   if(BYID[item.zh[0]]) return BYID[item.zh[0]]; // déjà une phrase du cours
@@ -2186,17 +2183,55 @@ function themeWords(ths){
 const themeCanGenW=ths=>TEMPLATES.some(x=>ths.includes(x.th)&&x.kind==="w");
 // Phrases : celles du thème (moitié cours, moitié variantes) ; s'il en manque,
 // des phrases d'autres thèmes qui utilisent son vocabulaire, en priorité des leçons déjà vues.
-/* Une phrase n'est proposée que si ses caractères ont été enseignés comme mots, dans la leçon ou avant
-   (plus les pronoms et 吗, connus dès la leçon 1). */
-const BASIC_CH=new Set([..."我你他她们吗"]),_taught=[];
-function taughtChars(li){
-  if(_taught[li])return _taught[li];
-  const set=new Set();V.forEach(v=>{if(v.t==="w"&&LESSONS.indexOf(LESSON_OF[v.th])<=li)[...v.zh[0]].forEach(c=>set.add(c))});
-  return _taught[li]=set;
+/* ===== Mots enseignés : garantie « tout mot d'une phrase a été vu plus haut » =====
+   Les niveaux 1 à 3 d'un thème présentent TOUS ses mots (shownWords), pas un tirage partiel.
+   Un niveau 4 (et toute phrase générée) ne contient que des mots présentés dans ce thème ou un thème précédent.
+   Sont considérés connus dès le départ : les pronoms de base 我 你 他 她 们. */
+const BASIC_CH=new Set([..."我你他她们"]),HAN_CH=/[㐀-鿿]/,LV_CAP=22;
+const themeIdx=th=>THEMES.indexOf(th);
+function segmentWords(dict,zh){
+  const chars=[...zh],words=[],unk=[];let i=0,cur="";
+  const flush=()=>{if(cur){unk.push(cur);cur=""}};
+  while(i<chars.length){
+    const c=chars[i];
+    if(!HAN_CH.test(c)){flush();i++;continue}
+    let best=0;for(let n=Math.min(8,chars.length-i);n>=1;n--){if(dict.has(chars.slice(i,i+n).join(""))){best=n;break}}
+    if(best){flush();words.push(chars.slice(i,i+best).join(""));i+=best}
+    else if(BASIC_CH.has(c)){flush();i++}
+    else{cur+=c;i++}
+  }
+  flush();return {words,unk};
 }
-const phraseOk=v=>{const k=taughtChars(LESSONS.indexOf(LESSON_OF[v.th]));return [...v.zh[0]].every(c=>!/[㐀-鿿]/.test(c)||k.has(c)||BASIC_CH.has(c))};
+const _shown={},_taught={};let _need=null;
+function neededWords(){
+  if(_need)return _need;
+  const d=new Set();V.forEach(v=>{if(v.t==="w")v.zh.forEach(z=>d.add(z))});
+  _need=new Set();
+  V.forEach(v=>{if(v.t==="p")segmentWords(d,v.zh[0]).words.forEach(w=>_need.add(w))});
+  TEMPLATES.filter(t=>!t.kind).forEach(t=>{for(let i=0;i<60;i++){try{segmentWords(d,t.make(SUBJ[rnd(t.subj)],{}).zh).words.forEach(w=>_need.add(w))}catch(e){}}});
+  return _need;
+}
+function shownWords(th){
+  if(_shown[th])return _shown[th];
+  const base=levelWords(th).filter(v=>!v.gen);
+  if(base.length<=LV_CAP)return _shown[th]=base;
+  // thème très riche : d'abord les mots utiles à des phrases (de ce thème ou de thèmes suivants), puis les autres, jusqu'à LV_CAP
+  const need=neededWords();
+  // un mot composé qui se décompose en mots déjà enseignés (三十 = 三 + 十) n'est pas indispensable
+  const prev=new Set();THEMES.forEach(t=>{if(themeIdx(t)<themeIdx(th))shownWords(t).forEach(v=>v.zh.forEach(z=>prev.add(z)))});
+  const redundant=v=>{const d=new Set(prev);base.forEach(o=>{if(o!==v)o.zh.forEach(z=>d.add(z))});return v.zh.every(z=>[...z].length>1&&segmentWords(d,z).unk.length===0)};
+  const sc=v=>v.zh.some(z=>need.has(z))?(redundant(v)?1:0):2;
+  return _shown[th]=base.map((v,i)=>({v,i})).sort((x,y)=>sc(x.v)-sc(y.v)||x.i-y.i).map(x=>x.v).slice(0,LV_CAP);
+}
+function taughtDict(th){
+  if(_taught[th])return _taught[th];
+  const s=new Set();THEMES.forEach(t=>{if(themeIdx(t)<=themeIdx(th))shownWords(t).forEach(v=>v.zh.forEach(z=>s.add(z)))});
+  return _taught[th]=s;
+}
+const phraseOk=(v,th)=>segmentWords(taughtDict(th),v.zh[0]).unk.length===0;
 function themePhrases(ths,words,n){
-  const course=shuffle(V.filter(v=>ths.includes(v.th)&&v.t==="p"&&phraseOk(v))),canGen=TEMPLATES.some(t=>ths.includes(t.th)&&!t.kind);
+  const cur=ths.reduce((x,t)=>themeIdx(t)>themeIdx(x)?t:x,ths[0]);
+  const course=shuffle(V.filter(v=>ths.includes(v.th)&&v.t==="p"&&phraseOk(v,cur))),canGen=TEMPLATES.some(t=>ths.includes(t.th)&&!t.kind);
   const out=[],used=new Set(),add=it=>{if(it&&it.t==="p"&&!used.has(it.id)&&out.length<n){used.add(it.id);out.push(it)}};
   course.slice(0,canGen?Math.ceil(n/2):n).forEach(add);
   let tries=0;while(canGen&&out.length<n&&tries++<100) add(genOne(ths));
@@ -2204,7 +2239,7 @@ function themePhrases(ths,words,n){
   if(out.length<n){
     const maxT=Math.max(...ths.map(t=>THEMES.indexOf(t))),keys=words.map(w=>w.zh[0]);
     // seulement des thèmes déjà vus (jamais un thème plus avancé du parcours)
-    shuffle(V.filter(v=>v.t==="p"&&THEMES.indexOf(v.th)<=maxT&&phraseOk(v)&&keys.some(k=>v.zh[0].includes(k)))).forEach(add);
+    shuffle(V.filter(v=>v.t==="p"&&THEMES.indexOf(v.th)<=maxT&&phraseOk(v,cur)&&keys.some(k=>v.zh[0].includes(k)))).forEach(add);
   }
   return out;
 }
@@ -2236,10 +2271,10 @@ const withGen=q=>{const it=IT(q.id);if(it&&it.gen)q.g=genCopy(it);return q};
 function restoreGen(r){if(r&&r.qs)r.qs.forEach(q=>{if(q.g&&!IT(q.id))GEN[q.id]={...q.g,id:q.id}})}
 function zhSome(qs,n){if(!zhExOn())return;shuffle(qs.filter(q=>q.ex!=="qcm"&&hasHan(IT(q.id)))).slice(0,n).forEach(q=>q.ex=2)}
 function buildLevel(th,i){
-  const words=shuffle(levelWords(th).slice());let qs;
+  const words=shuffle(shownWords(th).slice());let qs;
   if(i<3){
-    const ws=words.slice(0,LEVEL_LEN);
-    if(i>0&&themeCanGenW([th])){let k=0,t=0;while(k<2&&t++<30){const g=genOne([th],"w");if(g&&!ws.includes(g)){if(ws.length>=LEVEL_LEN)ws[ws.length-1-k]=g;else ws.push(g);k++}}}
+    const ws=words.slice();
+    if(i>0&&themeCanGenW([th])){let k=0,t=0;while(k<2&&t++<30){const g=genOne([th],"w");if(g&&!ws.includes(g)){ws.push(g);k++}}}
     qs=shuffle(ws).map(v=>({id:v.id,ex:i===0?"qcm":i===1?3:1}));
     if(i===0) qs.forEach(q=>q.opts=qcmOptions(IT(q.id),th));
     if(i===2) zhSome(qs,3);
@@ -2256,7 +2291,7 @@ function buildCtl(l){
   const ths=l.themes,base=Math.floor(CTL_LEN/ths.length),extra=CTL_LEN-base*ths.length,used=new Set(),qs=[];
   const plan=["qcm","p1",3,"p3",1];
   ths.forEach((th,ti)=>{
-    const k=base+(ti<extra?1:0),words=shuffle(levelWords(th).filter(v=>!v.gen)),phr=themePhrases([th],words,k);
+    const k=base+(ti<extra?1:0),words=shuffle(shownWords(th).slice()),phr=themePhrases([th],words,k);
     let wi=0,pi=0;
     for(let j=0;j<k;j++){
       let t=plan[j%plan.length],it=null;
