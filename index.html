@@ -1958,23 +1958,68 @@ function gradeFr(ans,items){
 
 /* ===== Saisie des tons ===== */
 const MARK={1:"̄",2:"́",3:"̌",4:"̀"};
+/* Découpage du pinyin en syllabes : un ton ne s'applique qu'à la DERNIÈRE syllabe avant le curseur,
+   les accents des syllabes précédentes sont conservés (zài + jiàn = zàijiàn). */
+const PY_FIN={
+  b:"a o ai ei ao an en ang eng i ie iao ian in ing u",p:"a o ai ei ao ou an en ang eng i ie iao ian in ing u",m:"a o e ai ei ao ou an en ang eng i ie iao iu ian in ing u",f:"a o ei ou an en ang eng u",
+  d:"a e ai ei ao ou an en ang eng ong i ia ie iao iu ian ing u uo ui uan un",t:"a e ai ei ao ou an ang eng ong i ie iao ian ing u uo ui uan un",
+  n:"a e ai ei ao ou an en ang eng ong i ie iao iu ian in iang ing u uo uan ü üe",l:"a e ai ei ao ou an ang eng ong i ia ie iao iu ian in iang ing u uo uan un ü üe",
+  g:"a e ai ei ao ou an en ang eng ong u ua uo uai ui uan un uang",k:"a e ai ei ao ou an en ang eng ong u ua uo uai ui uan un uang",h:"a e ai ei ao ou an en ang eng ong u ua uo uai ui uan un uang",
+  j:"i ia iao ie iu ian in iang ing iong u ue uan un",q:"i ia iao ie iu ian in iang ing iong u ue uan un",x:"i ia iao ie iu ian in iang ing iong u ue uan un",
+  zh:"a e ai ei ao ou an en ang eng ong i u ua uo uai ui uan un uang",ch:"a e ai ao ou an en ang eng ong i u ua uo uai ui uan un uang",sh:"a e ai ei ao ou an en ang eng i u ua uo uai ui uan un uang",
+  r:"e ao ou an en ang eng ong i u uo ui uan un",z:"a e ai ei ao ou an en ang eng ong i u uo ui uan un",c:"a e ai ao ou an en ang eng ong i u uo ui uan un",s:"a e ai ao ou an en ang eng ong i u uo ui uan un",
+  y:"a e ao ou an ang ong i in ing u ue uan un",w:"a o ai ei an en ang eng u","":"a o e ai ei ao ou an en ang eng er"
+};
+const PY_SYL=new Set(Object.entries(PY_FIN).flatMap(([i,f])=>f.split(" ").map(x=>i+x)));
+// plain : lettres en minuscules sans accent (ü pour ü et v) ; marks : indices des lettres accentuées.
+// Renvoie l'indice de début de la dernière syllabe (le préfixe doit pouvoir se découper en syllabes valides, une marque au plus par syllabe).
+function lastSylStart(plain,marks){
+  const n=plain.length,cnt=(a,b)=>marks.filter(m=>m>=a&&m<b).length,memo={};
+  const ok=(a,b)=>PY_SYL.has(plain.slice(a,b))&&cnt(a,b)<=1;
+  const seg=e=>{if(e===0)return true;if(e in memo)return memo[e];let r=false;for(let st=Math.max(0,e-6);st<e&&!r;st++)if(ok(st,e)&&seg(st))r=true;return memo[e]=r};
+  for(let st=Math.max(0,n-6);st<n;st++)if(ok(st,n)&&seg(st))return st;
+  for(let st=Math.max(0,n-6);st<n;st++)if(PY_SYL.has(plain.slice(st,n)))return st;
+  return 0;
+}
+// Décompose une suite de lettres (NFD) en lettres : {raw, plain, tone}
+function pyLetters(nfd){
+  const L=[];
+  for(const c of nfd){
+    if("\u0300\u0301\u0304\u030c".includes(c)){if(L.length)L[L.length-1].tone=c;continue}
+    if(c==="\u0308"){if(L.length){L[L.length-1].raw+=c;L[L.length-1].plain="ü"}continue}
+    L.push({raw:c==="v"?"ü":c==="V"?"Ü":c,plain:c==="v"||c==="V"?"ü":c.toLowerCase(),tone:""});
+  }
+  return L;
+}
+function toneVowelIdx(plain){
+  if(plain.includes("a"))return plain.indexOf("a");
+  if(plain.includes("e"))return plain.indexOf("e");
+  if(plain.includes("ou"))return plain.indexOf("o");
+  for(let i=plain.length-1;i>=0;i--)if("iouü".includes(plain[i]))return i;
+  return -1;
+}
+// run : lettres d'une même suite (sans espace ni apostrophe) ; renvoie la suite avec le ton appliqué à sa dernière syllabe
+function toneLastSyllable(run,tone){
+  const L=pyLetters(run.normalize("NFD"));
+  const plain=L.map(x=>x.plain).join(""),marks=L.map((x,i)=>x.tone?i:-1).filter(i=>i>=0);
+  const st=lastSylStart(plain,marks),syl=plain.slice(st);
+  const idx=toneVowelIdx(syl);
+  const out=L.map((x,i)=>{
+    if(i<st)return x.raw+x.tone;
+    if(tone!==0&&idx>=0&&i===st+idx)return x.raw+MARK[tone];
+    return x.raw;
+  }).join("");
+  return out.normalize("NFC");
+}
 function applyTone(input,tone){
   const pos=input.selectionStart??input.value.length;
   const before=input.value.slice(0,pos), after=input.value.slice(pos);
   if(tone==="u"){ setVal(input,before+"ü",after); return }
   const nfd=before.normalize("NFD");
-  const m=nfd.match(/[a-zA-Z̀́̄̌̈]+$/);
+  const m=nfd.match(/[a-zA-Z\u0300\u0301\u0304\u030c\u0308]+$/);
   if(!m) return;
-  let syl=m[0].replace(TONE_MARKS,""), head=nfd.slice(0,nfd.length-m[0].length);
-  const low=syl.toLowerCase(); let idx=-1;
-  if(low.includes("a")) idx=low.indexOf("a");
-  else if(low.includes("e")) idx=low.indexOf("e");
-  else if(low.includes("ou")) idx=low.indexOf("o");
-  else { for(let i=low.length-1;i>=0;i--){ if("iou".includes(low[i])){idx=i;break} } }
-  if(idx<0) return;
-  let end=idx+1; if(syl[end]==="̈") end++;
-  if(tone!==0) syl=syl.slice(0,end)+MARK[tone]+syl.slice(end);
-  setVal(input,(head+syl).normalize("NFC"),after);
+  const head=nfd.slice(0,nfd.length-m[0].length);
+  setVal(input,(head.normalize("NFC")+toneLastSyllable(m[0],tone)).normalize("NFC"),after);
 }
 function setVal(input,before,after){input.value=before+after;const p=before.length;try{input.setSelectionRange(p,p)}catch(e){}}
 
@@ -2462,7 +2507,7 @@ function markSyl(syl,tone){
   if(idx<0) return syl;
   return (syl.slice(0,idx+1)+MARK[tone]+syl.slice(idx+1)).normalize("NFC");
 }
-const toMarks=s=>(s||"").replace(/u:/g,"ü").replace(/([A-Za-zÀ-ɏ]+)([1-5])/g,(m,syl,t)=>markSyl(syl.replace(/v/g,"ü"),+t));
+const toMarks=s=>(s||"").replace(/u:/g,"ü").replace(/([A-Za-zÀ-ɏ]+)([1-5])/g,(m,run,t)=>{const L=pyLetters(run.normalize("NFD")),plain=L.map(x=>x.plain).join(""),st=lastSylStart(plain,L.map((x,i)=>x.tone?i:-1).filter(i=>i>=0));return (L.slice(0,st).map(x=>x.raw+x.tone).join("")+markSyl(L.slice(st).map(x=>x.raw).join(""),+t)).normalize("NFC")});
 
 /* ---------- Feuilles du bas ---------- */
 function openSheet(html,label,bind){
