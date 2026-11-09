@@ -734,6 +734,12 @@ a.actrow{text-decoration:none;box-sizing:border-box}
 .inst-steps .ic{display:inline-flex;vertical-align:middle;margin:0 2px;padding:3px;border-radius:7px;background:var(--jade-soft);color:var(--jade)}
 .inst-steps .ic svg{display:block}
 .inst-note{font-size:14px;line-height:1.4;color:var(--muted)}
+.wcard{display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 20px;border-radius:20px;background:var(--surface);border:1.5px solid var(--line);box-shadow:0 4px 0 var(--line);text-align:center}
+.wcard .wc-top{display:flex;align-items:center;gap:14px}
+.wcard .wc-zh{font-family:var(--f-han);font-size:64px;font-weight:700;line-height:1.1}
+.wcard .wc-py{font-size:40px;line-height:1.1;overflow-wrap:anywhere}
+.wcard .wc-fr{font-size:22px;font-weight:700;color:var(--jade)}
+.wcard .wc-note{margin:0;font-size:14px;line-height:1.4;color:var(--muted)}
 .imini .lg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;font-size:13px;color:var(--muted);text-align:center}
 
 
@@ -1982,12 +1988,12 @@ const LS_KEY="revisions-chinois-v1";
 const ON_CLAUDE=!!(window.claude&&window.claude.use);
 /* Champs ajoutés par la refonte : lv (scores des niveaux par thème), ctl (contrôles par leçon),
    run (toujours null : une série interrompue est annulée, jamais reprise), showZh, zhEx, theme, view (leçon affichée). */
-const freshState=()=>({days:{},srs:{},fx:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
+const freshState=()=>({ser:{},days:{},srs:{},fx:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
 let state=freshState();
 try{const raw=localStorage.getItem(LS_KEY);if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}
 // Ancienne version : pas encore de champs du parcours
 state=Object.assign(freshState(),state);
-if(state.lvVer!==2){state.lv={};state.lvVer=2} // modèle de niveaux v2 : les anciens scores (4 niveaux fixes) ne sont pas convertis
+if(state.lvVer!==3){state.lv={};state.ser={};state.lvVer=3} // modèle de séries v3 : les anciens scores de niveaux ne sont pas convertis
 function registerGen(){Object.entries(state.errors||{}).forEach(([id,e])=>{if(e.item&&!BYID[id]){GEN[id]={...e.item,id}}})}
 registerGen();
 let db=null,uid=null,writing=false,pending=false;
@@ -2016,7 +2022,7 @@ function save(){state.updated=Date.now();saveLocal();saveRemote()}
 /* ===== Code de transfert de progression ===== */
 const CODE_PREFIX="RC1-";
 function exportCode(){
-  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,lv:state.lv,lvVer:2,introSeen:true,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
+  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,ser:state.ser,lvVer:3,introSeen:true,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
   const bytes=new TextEncoder().encode(JSON.stringify(data));
   let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
   return CODE_PREFIX+btoa(bin);
@@ -2028,7 +2034,7 @@ function importCode(code){
   try{const bin=atob(c.slice(CODE_PREFIX.length));data=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))))}
   catch(e){throw new Error("Code incomplet ou abîmé. Recopie-le en entier.")}
   if(!data||typeof data.errors!=="object"||!Array.isArray(data.series)) throw new Error("Code illisible.");
-  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},introSeen:true,lvVer:2,lv:data.lvVer===2&&data.lv&&typeof data.lv==="object"?data.lv:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
+  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},introSeen:true,lvVer:3,ser:data.lvVer===3&&data.ser&&typeof data.ser==="object"?data.ser:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
   registerGen(); save();
 }
 
@@ -2133,52 +2139,70 @@ const I={
 };
 
 /* ---------- Parcours : niveaux, thèmes, contrôle ---------- */
-/* ---------- Niveaux : variables selon le thème ----------
-   Un thème de N mots a ceil(N/5) niveaux de mots, puis un niveau final de phrases.
-   Niveau de mots k : les ~5 nouveaux mots en QCM, puis TOUS les mots des niveaux précédents (pinyin vers français, français vers pinyin).
-   Un reste de moins de 3 mots est fondu dans le dernier niveau de mots. Un thème sans mot propre n'a que le niveau de phrases.
-   Les scores sont rangés par identifiant stable (w1, w2, … , p) : ajouter des mots à la fin d'un thème ne décale rien. */
-const LV_NEW=5;
+/* ---------- Parcours : chapitres, séries, contrôle ----------
+   Chapitre = un thème, ou plusieurs thèmes courts fusionnés (un thème de moins de MIN_CHAPTER mots rejoint le chapitre précédent ;
+   s'il ouvre la leçon, il rejoint le suivant). Les mots du chapitre sont répartis en groupes équilibrés de MAX_GROUP mots au plus.
+   Par groupe : Découverte, Renforcement, Révision (mélange). Puis une série de Phrases et une série Défi (les questions les plus difficiles).
+   Toutes les séries font SER_LEN questions. Scores rangés par identifiant stable : state.ser[chapitre][g1a, g1b, g1m, g2a, … , p, h].
+   Le chapitre porte le nom de son premier thème (c'est la clé de la progression : ne pas renommer un thème). */
+const SER_LEN=20, MAX_GROUP=8, MIN_CHAPTER=6, PASS=80;
 const ownWords=th=>V.filter(v=>v.th===th&&v.t==="w");
-function wordLevels(th){const n=ownWords(th).length;if(!n)return 0;let w=Math.ceil(n/LV_NEW);if(w>1&&n%LV_NEW>0&&n%LV_NEW<3)w--;return w}
-const levelsOf=th=>wordLevels(th)+1;
-const isPhraseLevel=(th,i)=>i>=wordLevels(th);
-function levelNew(th,i){const w=ownWords(th),W=wordLevels(th);if(i>=W)return[];return w.slice(i*LV_NEW,i===W-1?w.length:(i+1)*LV_NEW)}
-const levelId=(th,i)=>isPhraseLevel(th,i)?"p":"w"+(i+1);
-function levelName(th,i){if(isPhraseLevel(th,i))return"Phrases";const a=i*LV_NEW+1,b=a+levelNew(th,i).length-1;return a===b?`Mot ${a}`:`Mots ${a}-${b}`}
-function levelDesc(th,i){
-  if(isPhraseLevel(th,i))return"Phrases du thème, dans les deux sens";
-  const n=levelNew(th,i).length,nw=`${n} ${n>1?"nouveaux mots":"nouveau mot"}`;
-  return i===0?nw:`${nw} et tous les mots précédents`;
+const SER_KIND={a1:{name:"Découverte",desc:"Cartes de présentation, puis 20 questions"},a2:{name:"Renforcement",desc:"QCM, écriture et tons sur les mêmes mots"},mix:{name:"Révision",desc:"Mélange du groupe et des précédents"},phr:{name:"Phrases",desc:"20 phrases avec les mots appris"},hard:{name:"Défi",desc:"Tes questions les plus difficiles du chapitre"}};
+function splitGroups(words){
+  const W=words.length;if(!W)return[];
+  const G=Math.ceil(W/MAX_GROUP),base=Math.floor(W/G),r=W%G,out=[];let i=0;
+  for(let g=0;g<G;g++){const n=base+(g<r?1:0);out.push(words.slice(i,i+n));i+=n}
+  return out;
 }
-const PASS=80, LEVEL_LEN=10, CTL_LEN=20; // LEVEL_LEN : nombre de phrases du niveau de phrases
+const _chap={};
+function chaptersOf(l){
+  if(_chap[l.id])return _chap[l.id];
+  const out=[];let pending=[];
+  l.themes.forEach(th=>{
+    if(ownWords(th).length<MIN_CHAPTER){if(out.length)out[out.length-1].themes.push(th);else pending.push(th)}
+    else{out.push({themes:[...pending,th]});pending=[]}
+  });
+  if(!out.length&&pending.length)out.push({themes:pending});
+  out.forEach(c=>{
+    c.id=c.themes[0];c.name=c.themes[0];c.sub=c.themes.slice(1).join(", ");c.lesson=l;
+    c.words=c.themes.flatMap(ownWords);c.groups=splitGroups(c.words);
+    c.groupOf=new Map();c.groups.forEach((g,gi)=>g.forEach(v=>c.groupOf.set(v.id,gi)));
+    c.series=[];
+    c.groups.forEach((g,gi)=>{const n=c.groups.length>1?" "+(gi+1):"";
+      c.series.push({id:`g${gi+1}a`,kind:"a1",g:gi,name:SER_KIND.a1.name+n},{id:`g${gi+1}b`,kind:"a2",g:gi,name:SER_KIND.a2.name+n},{id:`g${gi+1}m`,kind:"mix",g:gi,name:SER_KIND.mix.name+n})});
+    c.series.push({id:"p",kind:"phr",name:SER_KIND.phr.name},{id:"h",kind:"hard",name:SER_KIND.hard.name});
+  });
+  return _chap[l.id]=out;
+}
+const chapterOfTheme=th=>chaptersOf(LESSON_OF[th]).find(c=>c.themes.includes(th));
 const LI=l=>LESSONS.indexOf(l);
 const lessonNo=l=>l.n.replace(/^Leçon\s*/,"");
-const lvScore=(th,i)=>{const o=state.lv[th],k=levelId(th,i);return o&&!Array.isArray(o)&&o[k]!=null?o[k]:null};
-const lvOk=(th,i)=>(lvScore(th,i)??-1)>=PASS;
-const lvIdx=th=>Array.from({length:levelsOf(th)},(_,i)=>i);
-const nOk=th=>lvIdx(th).filter(i=>lvOk(th,i)).length;
-const themeDone=th=>nOk(th)===levelsOf(th);
+const serScore=(ch,i)=>{const o=(state.ser||{})[ch.id],v=o&&o[ch.series[i].id];return v==null?null:v};
+const serOk=(ch,i)=>(serScore(ch,i)??-1)>=PASS;
+const serIdx=ch=>ch.series.map((_,i)=>i);
+const nOk=ch=>serIdx(ch).filter(i=>serOk(ch,i)).length;
+const chapDone=ch=>nOk(ch)===ch.series.length;
 const ctlPassed=l=>!!(state.ctl[l.id]&&state.ctl[l.id].passed);
 const lessonOpen=l=>LI(l)===0||ctlPassed(LESSONS[LI(l)-1]);
-const themeOpen=(l,ti)=>lessonOpen(l)&&(ti===0||themeDone(l.themes[ti-1]));
-const levelOpen=(l,ti,i)=>themeOpen(l,ti)&&(i===0||lvOk(l.themes[ti],i-1));
-const lessonDone=l=>l.themes.reduce((s,th)=>s+nOk(th),0);
-const lessonTotal=l=>l.themes.reduce((s,th)=>s+levelsOf(th),0);
+const chapOpen=(l,ci)=>lessonOpen(l)&&(ci===0||chapDone(chaptersOf(l)[ci-1]));
+const serOpen=(l,ci,i)=>chapOpen(l,ci)&&(i===0||serOk(chaptersOf(l)[ci],i-1));
+const lessonDone=l=>chaptersOf(l).reduce((n,c)=>n+nOk(c),0);
+const lessonTotal=l=>chaptersOf(l).reduce((n,c)=>n+c.series.length,0);
 const ctlOpen=l=>lessonOpen(l)&&lessonDone(l)===lessonTotal(l);
-function curLevel(l){
-  for(let ti=0;ti<l.themes.length;ti++) for(let i=0;i<levelsOf(l.themes[ti]);i++) if(levelOpen(l,ti,i)&&!lvOk(l.themes[ti],i)) return {ti,i,th:l.themes[ti]};
+function curSeries(l){
+  const cs=chaptersOf(l);
+  for(let ci=0;ci<cs.length;ci++)for(let i=0;i<cs[ci].series.length;i++)if(serOpen(l,ci,i)&&!serOk(cs[ci],i))return {ci,i,ch:cs[ci]};
   return null;
 }
 const curLesson=()=>LESSONS.find(l=>lessonOpen(l)&&!ctlPassed(l))||[...LESSONS].reverse().find(lessonOpen);
 function viewLesson(){const l=LESSONS.find(x=>x.id===state.view);return l&&lessonOpen(l)?l:curLesson()}
-// « started » : le niveau a déjà été tenté (un score existe) ; une série interrompue n'est jamais reprise.
-const started=(th,i)=>lvScore(th,i)!=null;
+// « started » : la série a déjà été tentée (un score existe) ; une série interrompue n'est jamais reprise.
+const started=(ch,i)=>serScore(ch,i)!=null;
 const pileIdsAll=()=>Object.keys(state.errors).filter(id=>IT(id));
 
-/* ---------- Or : niveau à 100 %, contrôle à 20/20 ---------- */
-const lvGold=(th,i)=>(lvScore(th,i)??-1)>=100;
-const themeGold=th=>lvIdx(th).every(i=>lvGold(th,i));
+/* ---------- Or : série à 100 %, contrôle parfait ---------- */
+const serGold=(ch,i)=>(serScore(ch,i)??-1)>=100;
+const chapGold=ch=>serIdx(ch).every(i=>serGold(ch,i));
 const ctlGold=l=>!!(state.ctl[l.id]&&state.ctl[l.id].best>=20);
 
 /* ---------- Flamme : au moins une série réussie par jour (date locale) ---------- */
@@ -2303,24 +2327,11 @@ function themePhrases(ths,words,n){
   }
   return out;
 }
-// Mots d'un thème pour l'affichage (vocabulaire du thème) : ses mots, sinon ceux de ses phrases.
-function levelWords(th){
-  const w=themeWords([th]).slice();
-  if(w.length)return w;
-  const txt=V.filter(v=>v.th===th&&v.t==="p").map(v=>v.zh[0]).join("");
-  return V.filter(v=>v.t==="w"&&THEMES.indexOf(v.th)<=THEMES.indexOf(th)&&txt.includes(v.zh[0])).sort((a,b)=>b.zh[0].length-a.zh[0].length).slice(0,12);
-}
-// Mots d'appoint (contrôle, niveau de phrases) : mots du thème, complétés par ceux des thèmes précédents de la leçon (déjà enseignés).
-function ctlWords(th){
-  const w=ownWords(th).slice(),l=LESSON_OF[th];
-  if(w.length<5)l.themes.slice(0,l.themes.indexOf(th)).reverse().forEach(t=>ownWords(t).forEach(v=>{if(w.length<5)w.push(v)}));
-  return w;
-}
 // 4 propositions : la bonne et 3 sens proches (même thème, puis même leçon, puis tout le cours)
-function qcmOptions(item,th){
+function qcmOptions(item,th,n=4){
   const acc=new Set([...item.fr,...acceptedItems(item,3).flatMap(v=>v.fr)].map(frBase));
   const seen=new Set([frBase(item.fr[0])]),out=[];
-  const tryAdd=v=>{if(out.length>=3||v===item||v.t!==item.t)return;const k=frBase(v.fr[0]);
+  const tryAdd=v=>{if(out.length>=n-1||v===item||v.t!==item.t)return;const k=frBase(v.fr[0]);
     if(seen.has(k)||v.fr.some(x=>acc.has(frBase(x))))return;seen.add(k);out.push(v.fr[0])};
   const l=LESSON_OF[th];
   shuffle(V.filter(v=>v.th===th)).forEach(tryAdd);
@@ -2332,47 +2343,114 @@ const genCopy=it=>({zh:it.zh,py:it.py,fr:it.fr.slice(0,80),note:it.note,th:it.th
 const withGen=q=>{const it=IT(q.id);if(it&&it.gen)q.g=genCopy(it);return q};
 function restoreGen(r){if(r&&r.qs)r.qs.forEach(q=>{if(q.g&&!IT(q.id))GEN[q.id]={...q.g,id:q.id}})}
 function zhSome(qs,n){if(!zhExOn())return;shuffle(qs.filter(q=>q.ex!=="qcm"&&hasHan(IT(q.id)))).slice(0,n).forEach(q=>q.ex=2)}
-function buildLevel(th,i){
-  let qs;
-  if(isPhraseLevel(th,i)){
-    const words=ctlWords(th);
-    const items=themePhrases([th],words,LEVEL_LEN);
-    for(const w of shuffle(words.slice())){if(items.length>=LEVEL_LEN)break;if(!items.includes(w))items.push(w)}
-    let one=Math.random()<.5;
-    qs=shuffle(items).map(v=>{one=!one;return {id:v.id,ex:one?1:3}});
-    zhSome(qs,2);
-  }else{
-    // 1) les nouveaux mots en QCM ; 2) tous les mots des niveaux précédents, moitié pinyin→français, moitié français→pinyin
-    const nw=shuffle(levelNew(th,i).slice()).map(v=>({id:v.id,ex:"qcm"}));
-    nw.forEach(q=>q.opts=qcmOptions(IT(q.id),th));
-    const prev=shuffle(ownWords(th).slice(0,i*LV_NEW));
-    let one=Math.random()<.5;
-    const old=prev.map(v=>{one=!one;return {id:v.id,ex:one?1:3}});
-    if(i>0&&themeCanGenW([th])){let k=0,t=0;while(k<2&&t++<30){const g=genOne([th],"w");if(g&&!old.some(q=>q.id===g.id)){old.push({id:g.id,ex:Math.random()<.5?1:3});k++}}}
-    zhSome(old,3);
-    qs=[...nw,...shuffle(old)];
-  }
-  return qs.map(withGen);
+/* ---------- Questions d'une série ----------
+   Échelle de difficulté d'un mot : q2 (QCM à 2 choix) → q4 (QCM à 4 choix, sens inverse) → wfr (écrire le français)
+   → t2 → t4 (QCM de ton, 2 puis 4 versions de la même syllabe) → wpy (écrire le pinyin).
+   Types de question (q.ex) : "qcm" (pinyin → français), "qcmr" (français → pinyin), "qton", 1 (écrire le pinyin), 3 (écrire le français), 2 (caractères). */
+const TONE_CM=["","̄","́","̌","̀"];
+function toneVariants(py,n){
+  const d=py.normalize("NFD"),pos=[];
+  for(let i=0;i<d.length;i++)if(TONE_CM.indexOf(d[i])>0)pos.push(i);
+  if(!pos.length)return[];
+  const mk=ch=>{const a=d.split("");ch.forEach(([p,t])=>{a[p]=TONE_CM[t]});return a.join("").normalize("NFC")};
+  const seen=new Set([py.normalize("NFC")]),out=[],singles=[],pairs=[];
+  pos.forEach(p=>[1,2,3,4].forEach(t=>{if(TONE_CM[t]!==d[p])singles.push([[p,t]])}));
+  for(let a=0;a<pos.length;a++)for(let b=a+1;b<pos.length;b++)[1,2,3,4].forEach(t1=>[1,2,3,4].forEach(t2=>pairs.push([[pos[a],t1],[pos[b],t2]])));
+  for(const c of [...shuffle(singles),...shuffle(pairs)]){const v=mk(c);if(!seen.has(v)){seen.add(v);out.push(v);if(out.length>=n)break}}
+  return out;
 }
-function buildCtl(l){
-  const ths=l.themes,base=Math.floor(CTL_LEN/ths.length),extra=CTL_LEN-base*ths.length,used=new Set(),qs=[];
-  const plan=["qcm","p1",3,"p3",1];
-  ths.forEach((th,ti)=>{
-    const k=base+(ti<extra?1:0),words=shuffle(ctlWords(th)),phr=themePhrases([th],words,k);
-    let wi=0,pi=0;
-    for(let j=0;j<k;j++){
-      let t=plan[j%plan.length],it=null;
-      if(typeof t==="string"&&t[0]==="p"){while(pi<phr.length&&used.has(phr[pi].id))pi++;it=phr[pi++]||null;t=t==="p1"?1:3}
-      if(!it){while(wi<words.length&&used.has(words[wi].id))wi++;it=words[wi++]||null}
-      if(!it){while(pi<phr.length&&used.has(phr[pi].id))pi++;it=phr[pi++]||null;if(t==="qcm")t=3}
-      if(!it)continue;
-      if(t==="qcm"&&it.t!=="w")t=3;
-      used.add(it.id);
-      const q={id:it.id,ex:t,th};if(t==="qcm")q.opts=qcmOptions(it,th);qs.push(q);
-    }
+const hasTone=v=>v.t==="w"&&toneVariants(v.py[0],1).length>0;
+function pyOptions(item,th,n){
+  const seen=new Set([item.py[0]]),out=[],l=LESSON_OF[th],base=pyToneless(item.py[0]);
+  const add=v=>{if(out.length>=n-1||v===item||v.t!==item.t)return;const p=v.py[0];if(seen.has(p)||pyToneless(p)===base)return;seen.add(p);out.push(p)};
+  shuffle(V.filter(v=>v.th===th)).forEach(add);
+  shuffle(V.filter(v=>LESSON_OF[v.th]===l)).forEach(add);
+  shuffle(V.slice()).forEach(add);
+  return shuffle([item.py[0],...out]);
+}
+// v : mot ou phrase ; rung : barreau de l'échelle ; dir : true = chinois → français (QCM), false = français → chinois
+function mkQ(v,rung,dir){
+  if((rung==="t2"||rung==="t4")&&!hasTone(v))rung="q4";
+  if(v.t==="p"&&(rung==="t2"||rung==="t4"))rung="q4";
+  switch(rung){
+    case "q2":case "q4":{const n=rung==="q2"?2:4;return dir?{id:v.id,ex:"qcm",opts:qcmOptions(v,v.th,n)}:{id:v.id,ex:"qcmr",opts:pyOptions(v,v.th,n)}}
+    case "wfr":return {id:v.id,ex:3};
+    case "wpy":return {id:v.id,ex:1};
+    default:{const n=rung==="t2"?1:3;return {id:v.id,ex:"qton",opts:shuffle([v.py[0],...toneVariants(v.py[0],n)])}}
+  }
+}
+const weak=v=>{const e=state.errors[v.id],r=(state.srs||{})[v.id];return (e?Math.max(0,e.n-e.ok)*3:0)+(r?5-r.b:3)+Math.random()*.5};
+const byWeak=ws=>ws.map(v=>[weak(v),v]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
+const cycle=(ws,n)=>{const a=[];while(a.length<n)a.push(...ws);return a.slice(0,n)};
+const rungList=spec=>spec.flatMap(([r,n])=>Array(n).fill(r));
+// Affecte les mots (les plus faibles d'abord) aux barreaux (du plus facile au plus dur) sans répéter la même paire mot + barreau.
+function assignRungs(words,rungs){
+  const pool=cycle(words,rungs.length),used=new Set();let dir=Math.random()<.5;
+  return rungs.map((r,k)=>{
+    let j=k,v=pool[j],t=0;
+    while(used.has(v.id+r)&&t++<pool.length){j=(j+1)%pool.length;v=pool[j]}
+    used.add(v.id+r);dir=!dir;return mkQ(v,r,dir);
   });
-  zhSome(qs,3);
-  return shuffle(qs).map(withGen);
+}
+// Découverte : chaque mot du groupe une fois en QCM à 2 choix, puis QCM à 4 choix (sens inverse), écrire le français, QCM de ton à 2 choix.
+function buildA1(words){
+  const N=words.length,rest=SER_LEN-N,r1=Math.min(N,Math.round(rest*.4)),r2=Math.round(rest*.3),r3=rest-r1-r2;
+  let dir=Math.random()<.5;const first=shuffle(words.slice()).map(v=>{dir=!dir;return {v,d:dir}});
+  const dirOf=new Map(first.map(x=>[x.v.id,x.d])),qs=first.map(x=>mkQ(x.v,"q2",x.d));
+  shuffle(words.slice()).slice(0,r1).forEach(v=>qs.push(mkQ(v,"q4",!dirOf.get(v.id))));
+  cycle(shuffle(words.slice()),r2).forEach(v=>qs.push(mkQ(v,"wfr")));
+  cycle(shuffle(words.slice()),r3).forEach(v=>qs.push(mkQ(v,"t2")));
+  return qs;
+}
+// Renforcement : les mots les plus faibles d'abord, du QCM à 4 choix jusqu'à l'écriture du pinyin.
+const buildA2=words=>assignRungs(byWeak(words),rungList([["q4",3],["wfr",4],["t2",3],["t4",4],["wpy",6]]));
+// Révision : 12 questions sur le groupe qui vient d'être appris, 8 sur les précédents (tout le groupe s'il n'y en a pas).
+function buildMix(ch,g){
+  const cur=ch.groups[g],prev=ch.groups.slice(0,g).flat();
+  const list=prev.length?[...cycle(byWeak(cur),12),...cycle(byWeak(prev),8)]:cycle(byWeak(cur),SER_LEN);
+  return assignRungs(list.map(v=>[weak(v),v]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]),rungList([["q4",5],["wfr",5],["t4",4],["wpy",6]]));
+}
+// Phrases : 20 phrases qui emploient le vocabulaire du chapitre (8 QCM, 6 en français, 6 en pinyin).
+function buildPhr(ch){
+  const items=themePhrases(ch.themes,ch.words,SER_LEN);
+  let t=0;while(items.length<SER_LEN&&t++<400){const g=genOne(ch.themes);if(g&&g.t==="p"&&!items.some(x=>x.id===g.id))items.push(g)}
+  for(const w of byWeak(ch.words)){if(items.length>=SER_LEN)break;items.push(w)}
+  const base=items.slice();
+  for(let k=0;items.length<SER_LEN&&base.length;k++)items.push(base[k%base.length]);
+  const qs=shuffle(items.slice(0,SER_LEN)).map((v,i)=>i<8?{id:v.id,ex:"qcm",opts:qcmOptions(v,v.th,4)}:{id:v.id,ex:i<14?3:1});
+  zhSome(qs,2);return qs;
+}
+// Défi : tes vraies erreurs du chapitre (mots et phrases), complétées par les mots les plus faibles sur des types difficiles.
+function buildHard(ch){
+  const out=[],seen=new Set(),hardOf=v=>v.t==="p"?["wpy","wfr"]:["t4","wpy","wfr","q4"];
+  const push=(v,r)=>{const k=v.id+r;if(seen.has(k)||out.length>=SER_LEN)return;seen.add(k);out.push(mkQ(v,r,Math.random()<.5))};
+  Object.keys(state.errors).filter(id=>IT(id)&&ch.themes.includes(IT(id).th)).sort((a,b)=>errScore(b)-errScore(a)).forEach(id=>{const v=IT(id);push(v,hardOf(v)[0])});
+  for(let r=0;out.length<SER_LEN&&r<8;r++)byWeak(ch.words).forEach(v=>{const h=hardOf(v);push(v,h[r%h.length])});
+  const rank=q=>q.ex==="qcm"||q.ex==="qcmr"?1:q.ex==="qton"?2:q.ex===3?3:4;
+  const qs=shuffle(out).sort((a,b)=>rank(a)-rank(b));zhSome(qs,2);return qs;
+}
+function buildSer(ch,i){
+  const S=ch.series[i];
+  const qs=S.kind==="a1"?buildA1(ch.groups[S.g]):S.kind==="a2"?buildA2(ch.groups[S.g]):S.kind==="mix"?buildMix(ch,S.g):S.kind==="phr"?buildPhr(ch):buildHard(ch);
+  return qs.slice(0,SER_LEN);
+}
+// Contrôle de leçon : 30 questions jusqu'à 45 mots, 40 au-delà ; au moins 1 question par chapitre, proportionnel au vocabulaire, mots les plus faibles d'abord.
+const ctlLen=l=>chaptersOf(l).reduce((n,c)=>n+c.words.length,0)<=45?30:40;
+function buildCtl(l){
+  const chs=chaptersOf(l),N=ctlLen(l),tw=chs.reduce((n,c)=>n+c.words.length,0)||1;
+  const quota=chs.map(c=>Math.max(1,Math.round(N*c.words.length/tw)));
+  const sum=()=>quota.reduce((a,b)=>a+b,0);
+  while(sum()>N){let m=0;quota.forEach((q,i)=>{if(q>quota[m])m=i});if(quota[m]<=1)break;quota[m]--}
+  while(sum()<N){let m=0;chs.forEach((c,i)=>{if(c.words.length/quota[i]>chs[m].words.length/quota[m])m=i});quota[m]++}
+  const qs=[],rungs=["q4","wfr","t4","wpy"];
+  chs.forEach((c,ci)=>{
+    const k=quota[ci],kp=Math.round(k*.25),ws=byWeak(c.words),ph=kp?themePhrases(c.themes,ws,kp):[];
+    const kw=k-ph.length;
+    for(let n=0;n<kw&&ws.length;n++)qs.push(mkQ(ws[n%ws.length],rungs[(n+ci)%4],n%2===0));
+    ph.forEach((v,j)=>qs.push(j%3===0?{id:v.id,ex:"qcm",opts:qcmOptions(v,v.th,4)}:{id:v.id,ex:j%3===1?3:1}));
+  });
+  const all=shuffle(qs);zhSome(all,3);
+  return all.map(withGen);
 }
 
 /* ---------- Saisie du pinyin avec chiffres (mei2you3 → méiyǒu) ---------- */
@@ -2437,8 +2515,8 @@ function onRemoteLoad(){applyTheme();restoreGen(state.run);if(["lessons","revisi
 /* ===== Onglet Leçons ===== */
 function renderLessons(){
   screen="lessons";
-  const l=viewLesson(),done=lessonDone(l),tot=lessonTotal(l),cl=curLevel(l);
-  const anyOk=Object.values(state.lv||{}).some(o=>o&&Object.values(o).some(x=>(x??-1)>=PASS));
+  const l=viewLesson(),done=lessonDone(l),tot=lessonTotal(l),cl=curSeries(l);
+  const anyOk=Object.values(state.ser||{}).some(o=>o&&Object.values(o).some(x=>(x??-1)>=PASS));
   const first=!anyOk&&LI(l)===0;
   let h=`<div class="tabscr">
   <div class="page" style="padding-bottom:0"><header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Révisions chinois</h1><p>Parcours de leçons</p></div>${flameBtn()}</header></div>
@@ -2448,37 +2526,37 @@ function renderLessons(){
     <button class="lband-list" id="lessons" aria-label="Toutes les leçons">${I.list()}</button></div></header>
   <main class="path${first?" first":""}" aria-label="Parcours de la ${esc(lower(l.n))}">`;
   h+=dueStrip();
-  l.themes.forEach((th,ti)=>{
-    const open=themeOpen(l,ti),k=nOk(th),N=levelsOf(th);
+  chaptersOf(l).forEach((ch,ci)=>{
+    const open=chapOpen(l,ci),k=nOk(ch),N=ch.series.length;
     let st,cls="";
-    if(!open) st=ti>0&&themeOpen(l,ti-1)?"Termine d'abord le thème précédent":"Verrouillé";
-    else if(k===N){if(themeGold(th)){st="Parfait, tous les niveaux en or";cls="gold"}else{st="Validé";cls="ok"}}
-    else if(k===0&&!started(th,0)) st="À commencer";
+    if(!open) st=ci>0&&chapOpen(l,ci-1)?"Termine d'abord le chapitre précédent":"Verrouillé";
+    else if(k===N){if(chapGold(ch)){st="Parfait, toutes les séries en or";cls="gold"}else{st="Validé";cls="ok"}}
+    else if(k===0&&!started(ch,0)) st="À commencer";
     else if(k===0){st="En cours";cls="part"}
-    else {st=`${k} / ${N} ${plural(k,"validé","validés")}`;cls="part"}
-    h+=`<div class="tsep${open?"":" locked"}${first&&ti===0?" first":""}"><i aria-hidden="true"></i><button class="tsep-t" data-th="${ti}"><b>${esc(th)}</b><small class="${cls}">${esc(st)}</small></button><button class="tsep-b" data-cours="${ti}" aria-label="Cours du thème ${esc(th)}">${I.book()}</button><i aria-hidden="true"></i></div>`;
-    const off=ti%2===0?[0,50,80,50]:[0,-50,-80,-50];
-    lvIdx(th).forEach(i=>{
-      const L={name:levelName(th,i)};
-      const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i;
+    else {st=`${k} / ${N} ${plural(k,"série validée","séries validées")}`;cls="part"}
+    h+=`<div class="tsep${open?"":" locked"}${first&&ci===0?" first":""}"><i aria-hidden="true"></i><button class="tsep-t" data-ci="${ci}"><b>${esc(ch.name)}</b>${ch.sub?`<small>avec ${esc(ch.sub)}</small>`:""}<small class="${cls}">${esc(st)}</small></button><button class="tsep-b" data-cours="${ci}" aria-label="Cours du chapitre ${esc(ch.name)}">${I.book()}</button><i aria-hidden="true"></i></div>`;
+    const off=ci%2===0?[0,50,80,50]:[0,-50,-80,-50];
+    ch.series.forEach((S,i)=>{
+      const L={name:S.name};
+      const ok=serOk(ch,i),lo=serOpen(l,ci,i),isCur=cl&&cl.ch===ch&&cl.i===i;
       const cls2=`isl${isCur?" cur":""}${i===N-1?" last":""}`,sty=`style="transform:translateX(${off[i%4]}px)"`;
-      if(isCur){const re=started(th,i);
-        h+=`<div class="${cls2}" ${sty}><span class="bubble">${re?"Réessayer":"Commencer"}</span><button class="isl-b" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${re?"à refaire":"commencer"}">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
+      if(isCur){const re=started(ch,i);
+        h+=`<div class="${cls2}" ${sty}><span class="bubble">${re?"Réessayer":"Commencer"}</span><button class="isl-b" data-lv="${ci}:${i}" aria-label="Série ${i+1} ${L.name}, ${re?"à refaire":"commencer"}">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
       }else if(ok){
-        const gd=lvGold(th,i);
-        h+=`<div class="${cls2}" ${sty}><button class="isl-b${gd?" gold":""}" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait":"validé"}, refaire">${gd?I.star(30):I.check()}</button><span class="isl-l${gd?" gold":""}">${L.name}</span></div>`;
+        const gd=serGold(ch,i);
+        h+=`<div class="${cls2}" ${sty}><button class="isl-b${gd?" gold":""}" data-lv="${ci}:${i}" aria-label="Série ${i+1} ${L.name}, ${gd?"parfaite":"validée"}, refaire">${gd?I.star(30):I.check()}</button><span class="isl-l${gd?" gold":""}">${L.name}</span></div>`;
       }else if(lo){
-        h+=`<div class="${cls2}" ${sty}><button class="isl-b av" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, disponible">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
+        h+=`<div class="${cls2}" ${sty}><button class="isl-b av" data-lv="${ci}:${i}" aria-label="Série ${i+1} ${L.name}, disponible">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
       }else{
-        h+=`<div class="${cls2}" ${sty}><button class="isl-b" disabled aria-label="Niveau ${i+1} ${L.name}, verrouillé">${I.lock()}</button><span class="isl-l">${L.name}</span></div>`;
+        h+=`<div class="${cls2}" ${sty}><button class="isl-b" disabled aria-label="Série ${i+1} ${L.name}, verrouillée">${I.lock()}</button><span class="isl-l">${L.name}</span></div>`;
       }
     });
   });
   const cO=ctlOpen(l),cP=ctlPassed(l),best=state.ctl[l.id]?state.ctl[l.id].best:null;
   if(!cO) h+=`<div class="ctl"><button class="ctl-b" disabled aria-label="Contrôle de la ${esc(lower(l.n))}, verrouillé">${I.flag()}<span class="ctl-badge" aria-hidden="true">${I.lock(15,2.2)}</span></button>
-    <span class="ctl-t"><b>Contrôle de la leçon</b><span>Valide les ${tot} niveaux pour le débloquer</span></span></div>`;
+    <span class="ctl-t"><b>Contrôle de la leçon</b><span>Valide les ${tot} séries pour le débloquer</span></span></div>`;
   else if(!cP) h+=`<div class="ctl cur"><span class="bubble">${best!=null?"Repasser":"Commencer"}</span><button class="ctl-b" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ouvert">${I.flag()}</button>
-    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:"20 questions, 16 / 20 pour valider"}</span></span></div>`;
+    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:`${ctlLen(l)} questions, 16 / 20 pour valider`}</span></span></div>`;
   else{const cg=ctlGold(l);h+=`<div class="ctl"><button class="ctl-b${cg?" gold":""}" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ${cg?"parfait":"validé"}">${I.flag()}<span class="ctl-badge ok" aria-hidden="true">${I.check(15,3)}</span></button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span class="${cg?"gold":"ok"}">${cg?"Parfait, 20 / 20":"Validé, "+best+" / 20"}</span></span></div>`}
   const nx=LESSONS[LI(l)+1];
@@ -2490,9 +2568,9 @@ function renderLessons(){
   app.innerHTML=h;bindNav();
   document.getElementById("lessons").onclick=lessonsSheet;bindFlame();
   const dg=document.getElementById("duego");if(dg)dg.onclick=()=>startSeries("due");
-  app.querySelectorAll(".tsep-t").forEach(b=>b.onclick=()=>themeSheet(l,+b.dataset.th));
+  app.querySelectorAll(".tsep-t").forEach(b=>b.onclick=()=>chapterSheet(l,+b.dataset.ci));
   app.querySelectorAll(".tsep-b").forEach(b=>b.onclick=()=>renderCours(l,+b.dataset.cours,true));
-  app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ti,i]=b.dataset.lv.split(":").map(Number);startLevel(l,ti,i)});
+  app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ci,i]=b.dataset.lv.split(":").map(Number);startSer(l,ci,i)});
   const c=document.getElementById("ctl");if(c)c.onclick=()=>renderCtlIntro(l);
   app.querySelectorAll(".nextl[data-view]").forEach(b=>b.onclick=()=>{state.view=b.dataset.view;save();window.scrollTo(0,0);renderLessons()});
 }
@@ -2509,62 +2587,89 @@ function lessonsSheet(){
       ov.querySelectorAll(".lrow").forEach(b=>b.onclick=()=>{state.view=b.dataset.l;save();closeSheet();window.scrollTo(0,0);renderLessons()});
     });
 }
-function themeActions(l,ti){
-  const th=l.themes[ti];
-  if(!themeOpen(l,ti)) return {label:"Termine d'abord le thème précédent",disabled:true};
-  const i=lvIdx(th).find(x=>!lvOk(th,x));
-  if(i===undefined) return {label:"Refaire le niveau 1",go:()=>startLevel(l,ti,0)};
-  return {label:`${started(th,i)?"Recommencer":"Commencer"} le niveau ${i+1}`,go:()=>startLevel(l,ti,i)};
+function chapterActions(l,ci){
+  const ch=chaptersOf(l)[ci];
+  if(!chapOpen(l,ci)) return {label:"Termine d'abord le chapitre précédent",disabled:true};
+  const i=serIdx(ch).find(x=>!serOk(ch,x));
+  if(i===undefined) return {label:"Refaire la première série",go:()=>startSer(l,ci,0)};
+  return {label:`${started(ch,i)?"Recommencer":"Commencer"} : ${ch.series[i].name}`,go:()=>startSer(l,ci,i)};
 }
-function themeSheet(l,ti){
-  const th=l.themes[ti],k=nOk(th),open=themeOpen(l,ti),cl=curLevel(l);
-  const rows=lvIdx(th).map(i=>{
-    const L={name:levelName(th,i),desc:levelDesc(th,i)};
-    const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i;
-    if(ok){const gd=lvGold(th,i);return `<li><button class="lvrow" data-i="${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait":"validé"}, refaire"><span class="c40${gd?" gold":""}">${gd?I.star(18):I.check(18,2.6)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt${gd?" gold":""}">${gd?"Parfait":"Validé"}</span></button></li>`}
-    if(lo) return `<li><button class="lvrow${isCur?" cur":""}" data-i="${i}"><span class="c40 ring">${i+1}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt cur">${started(th,i)?"À refaire":"À faire"}</span></button></li>`;
-    return `<li><button class="lvrow" disabled><span class="c40 lk">${I.lock(16)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt lk">Verrouillé</span></button></li>`;
+function chapterSheet(l,ci){
+  const ch=chaptersOf(l)[ci],k=nOk(ch),N=ch.series.length,open=chapOpen(l,ci),cl=curSeries(l);
+  const rows=serIdx(ch).map(i=>{
+    const S=ch.series[i],kind=SER_KIND[S.kind],desc=S.kind==="a1"?`${ch.groups[S.g].length} nouveaux mots : cartes, puis 20 questions`:kind.desc;
+    const ok=serOk(ch,i),lo=serOpen(l,ci,i),isCur=cl&&cl.ch===ch&&cl.i===i;
+    if(ok){const gd=serGold(ch,i);return `<li><button class="lvrow" data-i="${i}" aria-label="Série ${i+1} ${S.name}, ${gd?"parfaite":"validée"}, refaire"><span class="c40${gd?" gold":""}">${gd?I.star(18):I.check(18,2.6)}</span><span class="tx"><b>${i+1}. ${S.name}</b><small>${desc}</small></span><span class="rt${gd?" gold":""}">${gd?"Parfait":"Validée"}</span></button></li>`}
+    if(lo) return `<li><button class="lvrow${isCur?" cur":""}" data-i="${i}"><span class="c40 ring">${i+1}</span><span class="tx"><b>${i+1}. ${S.name}</b><small>${desc}</small></span><span class="rt cur">${started(ch,i)?"À refaire":"À faire"}</span></button></li>`;
+    return `<li><button class="lvrow" disabled><span class="c40 lk">${I.lock(16)}</span><span class="tx"><b>${i+1}. ${S.name}</b><small>${desc}</small></span><span class="rt lk">Verrouillée</span></button></li>`;
   }).join("");
-  const words=themeWords([th]).length?themeWords([th]):levelWords(th);
-  const act=themeActions(l,ti);
-  const N=levelsOf(th),sub=k===N?(themeGold(th)?`Thème parfait, ${N} niveaux en or`:`Thème validé, ${N} niveaux sur ${N}`):k===0?`Aucun niveau validé sur ${N}`:`${k} ${plural(k,"niveau validé","niveaux validés")} sur ${N}`;
-  openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h2>${esc(th)}</h2><p>${open?sub:"Termine d'abord le thème précédent"}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+  const act=chapterActions(l,ci);
+  const sub=k===N?(chapGold(ch)?`Chapitre parfait, ${N} séries en or`:`Chapitre validé, ${N} séries sur ${N}`):k===0?`Aucune série validée sur ${N}`:`${k} ${plural(k,"série validée","séries validées")} sur ${N}`;
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h2>${esc(ch.name)}</h2><p>${open?sub:"Termine d'abord le chapitre précédent"}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+    ${ch.sub?`<p class="inst-note">Ce chapitre regroupe aussi : ${esc(ch.sub)}.</p>`:""}
     <ol class="lvlist">${rows}</ol>
-    ${words.length?`<div class="vocab"><h3>Vocabulaire du thème</h3><div class="chips">${words.map(w=>`<span class="vchip"><b>${PY(w.py[0])}${ZH(w.zh[0])}</b><small>${esc(w.fr[0])}</small></span>`).join("")}</div></div>`:""}
-    <div class="stack8"><button class="btn" id="th-go" ${act.disabled?"disabled":""}>${esc(act.label)}</button><button class="btn link" id="th-cours">Revoir le cours</button></div>`,th,ov=>{
-      ov.querySelectorAll(".lvrow[data-i]").forEach(b=>b.onclick=()=>startLevel(l,ti,+b.dataset.i));
+    ${ch.words.length?`<div class="vocab"><h3>Vocabulaire du chapitre (${ch.words.length} mots)</h3><div class="chips">${ch.words.map(w=>`<span class="vchip"><b>${PY(w.py[0])}${ZH(w.zh[0])}</b><small>${esc(w.fr[0])}</small></span>`).join("")}</div></div>`:""}
+    <div class="stack8"><button class="btn" id="th-go" ${act.disabled?"disabled":""}>${esc(act.label)}</button><button class="btn link" id="th-cours">Revoir le cours</button></div>`,ch.name,ov=>{
+      ov.querySelectorAll(".lvrow[data-i]").forEach(b=>b.onclick=()=>startSer(l,ci,+b.dataset.i));
       if(act.go) ov.querySelector("#th-go").onclick=act.go;
-      ov.querySelector("#th-cours").onclick=()=>renderCours(l,ti);
+      ov.querySelector("#th-cours").onclick=()=>renderCours(l,ci);
     });
 }
 
 /* ===== Mini-cours d'un thème ===== */
-function renderCours(l,ti,fromBook){
+function renderCours(l,ci,fromBook){
   screen="cours";closeSheet();
-  const th=l.themes[ti],own=V.some(v=>v.th===th&&v.t==="w"),words=themeWords([th]);
-  const ex=V.filter(v=>v.th===th&&v.t==="p").slice(0,3);
-  for(let i=0;i<8&&ex.length<2;i++){const it=genOne([th]);if(it&&!ex.includes(it))ex.push(it)}
-  const rules=RULES[th]||[],act=themeActions(l,ti);
-  app.innerHTML=`<div class="cours">
-    <div class="extop"><button class="xlink" id="cx" aria-label="Fermer le cours">${I.x()}</button></div>
-    <header class="cours-h"><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h1>${esc(th)}</h1></header>
+  const ch=chaptersOf(l)[ci],act=chapterActions(l,ci),multi=ch.themes.length>1;
+  const sections=ch.themes.map(th=>{
+    const own=V.some(v=>v.th===th&&v.t==="w"),words=themeWords([th]);
+    const ex=V.filter(v=>v.th===th&&v.t==="p").slice(0,3);
+    for(let i=0;i<8&&ex.length<2;i++){const it=genOne([th]);if(it&&!ex.includes(it))ex.push(it)}
+    const rules=RULES[th]||[];
+    return `${multi?`<h2 class="sub-h" style="margin-top:6px">${esc(th)}</h2>`:""}
     ${rules.length?`<section class="card cs"><h3>Règles</h3><ul class="rules">${rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></section>`:""}
     ${words.length?`<section class="card cs"><h3>${own?"Vocabulaire":"Mots utilisés"}</h3><table class="vt"><tbody>${words.map(w=>`<tr><td>${PY(w.py[0])}${ZH(w.zh[0])}</td><td>${esc(w.fr[0])}</td></tr>`).join("")}</tbody></table></section>`:""}
-    ${ex.length?`<section class="card cs"><h3>Phrases modèles</h3><ul class="exs">${ex.map(p=>`<li><b>${PY(p.py[0])}</b>${zhOn()?`<span lang="zh">${esc(p.zh[0])}</span>`:""}<small>${esc(p.fr[0])}</small></li>`).join("")}</ul></section>`:""}
+    ${ex.length?`<section class="card cs"><h3>Phrases modèles</h3><ul class="exs">${ex.map(p=>`<li><b>${PY(p.py[0])}</b>${zhOn()?`<span lang="zh">${esc(p.zh[0])}</span>`:""}<small>${esc(p.fr[0])}</small></li>`).join("")}</ul></section>`:""}`;
+  }).join("");
+  app.innerHTML=`<div class="cours">
+    <div class="extop"><button class="xlink" id="cx" aria-label="Fermer le cours">${I.x()}</button></div>
+    <header class="cours-h"><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h1>${esc(ch.name)}</h1></header>
+    ${sections}
     <div class="spacer"></div>
     <button class="btn" id="cgo" ${act.disabled?"disabled":""}>${esc(act.label)}</button>
   </div>`;
-  document.getElementById("cx").onclick=()=>{screen="lessons";if(fromBook){state.view=l.id;renderLessons();return}renderLessons();themeSheet(l,ti)};
+  document.getElementById("cx").onclick=()=>{screen="lessons";if(fromBook){state.view=l.id;renderLessons();return}renderLessons();chapterSheet(l,ci)};
   if(act.go) document.getElementById("cgo").onclick=act.go;
   window.scrollTo(0,0);
 }
 
 /* ===== Lancement des exercices ===== */
-function startLevel(l,ti,i){
+function startSer(l,ci,i,noCards){
   closeSheet();
-  const th=l.themes[ti];
-  R={kind:"level",th,lv:i,lid:l.id,qs:buildLevel(th,i),res:[],qi:0};
-  window.scrollTo(0,0);renderQ();
+  const ch=chaptersOf(l)[ci],S=ch.series[i];
+  const go=()=>{R={kind:"ser",lid:l.id,chId:ch.id,chName:ch.name,si:i,sName:S.name,sN:ch.series.length,qs:buildSer(ch,i).map(withGen),res:[],qi:0,retries:0};window.scrollTo(0,0);renderQ()};
+  if(S.kind==="a1"&&!noCards){renderCards(ch,S.g,started(ch,i),go);return}
+  go();
+}
+// Cartes de présentation : une par nouveau mot, avant la première série d'un groupe (hors des 20 questions).
+function renderCards(ch,g,canSkip,onStart){
+  screen="cards";closeSheet();
+  const ws=ch.groups[g];let k=0;
+  const draw=()=>{
+    const v=ws[k],last=k===ws.length-1;
+    app.innerHTML=`<div class="intro">
+      <div class="intro-top"><button class="xlink" id="cx" aria-label="Quitter">${I.x()}</button><span>Mot ${k+1} / ${ws.length}</span>${canSkip?`<button class="intro-skip" id="csk">Passer</button>`:`<span style="min-height:44px"></span>`}</div>
+      <div class="intro-txt"><h1>Nouveau mot</h1><p>Regarde-le et écoute-le : tu vas le retrouver dans la série.</p></div>
+      <div class="intro-vis"><div class="wcard"><div class="wc-top">${zhOn()?`<span class="wc-zh" lang="zh">${esc(v.zh[0])}</span>`:""}${spkBtn(v.zh[0],"Écouter "+v.py[0])}</div>
+        <b class="wc-py" lang="zh-Latn-pinyin">${esc(v.py[0])}</b><span class="wc-fr">${esc(v.fr[0])}</span>${v.note?`<p class="wc-note">${esc(v.note)}</p>`:""}</div></div>
+      <div class="intro-dots" aria-hidden="true">${ws.map((_,j)=>`<i class="${j===k?"on":""}"></i>`).join("")}</div>
+      <button class="btn" id="cnx">${last?"Commencer la série (20 questions)":"Suivant"}</button></div>`;
+    document.getElementById("cx").onclick=()=>go("lessons");
+    const sk=document.getElementById("csk");if(sk)sk.onclick=onStart;
+    document.getElementById("cnx").onclick=()=>{if(last)onStart();else{k++;draw()}};
+    app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say));
+    window.scrollTo(0,0);
+  };
+  draw();
 }
 function renderCtlIntro(l){
   screen="ctlintro";closeSheet();
@@ -2574,13 +2679,13 @@ function renderCtlIntro(l){
     <div class="end-top intro"><span class="c72 soft">${I.flag(34)}</span><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h1>Contrôle de la leçon</h1>
       <p>${passed?`Déjà validé avec ${best} / 20. Tu peux le repasser pour t'entraîner.`:"Vérifie tes acquis avant de passer à la leçon suivante."}</p></div>
     <section class="card rules-box" aria-label="Règles du contrôle"><dl>
-      <div><dt>Questions</dt><dd>20, sur les ${l.themes.length} thèmes</dd></div>
+      <div><dt>Questions</dt><dd>${ctlLen(l)}, sur les ${chaptersOf(l).length} chapitres</dd></div>
       <div><dt>Exercices</dt><dd>Tous types mélangés</dd></div>
       <div><dt>Aide</dt><dd>Aucune note de cours</dd></div>
-      <div><dt>Pour valider</dt><dd>16 / 20</dd></div></dl></section>
-    <section class="stack8" aria-label="Thèmes couverts"><h2 class="sub-h">Thèmes couverts</h2>
-      <div class="chips">${l.themes.map(t=>`<span class="tchip"><span class="c20">${I.check(12,3.2)}</span>${esc(t)}</span>`).join("")}</div></section>
-    <p class="note-p">En cas d'échec, tes niveaux restent validés et tu peux repasser le contrôle quand tu veux.</p>
+      <div><dt>Pour valider</dt><dd>${Math.round(ctlLen(l)*.8)} / ${ctlLen(l)}</dd></div></dl></section>
+    <section class="stack8" aria-label="Chapitres couverts"><h2 class="sub-h">Chapitres couverts</h2>
+      <div class="chips">${chaptersOf(l).map(c=>`<span class="tchip"><span class="c20">${I.check(12,3.2)}</span>${esc(c.name)}</span>`).join("")}</div></section>
+    <p class="note-p">En cas d'échec, tes séries restent validées et tu peux repasser le contrôle quand tu veux.</p>
     <div class="spacer"></div>
     <button class="btn" id="go">Commencer le contrôle</button>
   </div>`;
@@ -2598,6 +2703,7 @@ function startSeries(mode){
 
 /* ===== Écran d'exercice ===== */
 const FIELDS2={1:"py",2:"zh",3:"fr"};
+const isOptQ=q=>q.ex==="qcm"||q.ex==="qcmr"||q.ex==="qton";
 function renderQ(){
   screen="q";closeSheet();
   let q=R.qs[R.qi],item=q&&IT(q.id);
@@ -2607,10 +2713,11 @@ function renderQ(){
   const isP=item.t==="p",last=!!q.last;
   const total=R.kind==="series"?(last?R.qs.length-R.main:R.main):R.qs.length,pos=last?R.qi-R.main:R.qi;
   const l=R.kind==="ctl"?LESSONS.find(x=>x.id===R.lid):null;
-  const thName=R.kind==="level"?R.th:(q.th||item.th);
-  const pills=[R.kind==="level"?`Niveau ${R.lv+1}, ${levelName(R.th,R.lv)}`:R.kind==="ctl"?`Contrôle, ${lower(l.n)}`:R.mode==="errors"?"Mes erreurs":R.mode==="due"?"Révision du jour":"Série libre"];
+  const thName=R.kind==="ser"?R.chName:(q.th||item.th);
+  const pills=[R.kind==="ser"?`Série ${R.si+1} sur ${R.sN}, ${R.sName}`:R.kind==="ctl"?`Contrôle, ${lower(l.n)}`:R.mode==="errors"?"Mes erreurs":R.mode==="due"?"Révision du jour":"Série libre"];
   let pillsH=`<span class="pill">${esc(pills[0])}</span>`;
-  if(last) pillsH+=`<span class="pill half">Dernière chance</span>`;
+  if(q.retry) pillsH+=`<span class="pill half">Rappel</span>`;
+  else if(last) pillsH+=`<span class="pill half">Dernière chance</span>`;
   else if(q.review) pillsH+=`<span class="pill half">À retravailler</span>`;
   else if(q.due) pillsH+=`<span class="pill half">À réviser</span>`;
   const py=item.py[0],zh=item.zh[0],fr=item.fr[0],longPy=isP||py.length>16,longFr=isP||fr.length>22;
@@ -2618,7 +2725,14 @@ function renderQ(){
     if(!isP&&ch.length&&ch.length<=4&&ch.length===[...zh].length) return `<div class="tzg" aria-label="Caractères : ${esc(zh)}">${ch.map(c=>`<span><em lang="zh">${esc(c)}</em></span>`).join("")}</div>`;
     return `<p lang="zh" class="q-zh${isP?" long":""}">${esc(zh)}</p>`};
   let card,body;
-  if(q.ex==="qcm"){
+  const optBody=(legend,lang)=>`<fieldset class="opts"><legend class="sr">${legend}</legend>${q.opts.map((o,k)=>`<button type="button" class="opt" data-o="${k}" aria-pressed="false"${lang?` lang="${lang}"`:""}>${esc(o)}</button>`).join("")}</fieldset>`;
+  if(q.ex==="qcmr"){
+    card=`<section class="qcard fr"><h1>Quel est le pinyin ?</h1><p class="q-fr${longFr?" long":""}">${esc(fr)}</p></section>`;
+    body=optBody("Choisis le pinyin","zh-Latn-pinyin");
+  }else if(q.ex==="qton"){
+    card=`<section class="qcard fr"><h1>Quel est le bon ton ?</h1><p class="q-fr${longFr?" long":""}">${esc(fr)}</p>${spkBtn(zh,"Écouter le mot")}</section>`;
+    body=optBody("Choisis la bonne version","zh-Latn-pinyin");
+  }else if(q.ex==="qcm"){
     card=`<section class="qcard"><h1>${isP?"Que signifie cette phrase ?":"Que signifie ce mot ?"}</h1><p lang="zh-Latn-pinyin" class="q-py${longPy?" long":""}">${esc(py)}</p>${zhGrid()}</section>`;
     body=`<fieldset class="opts"><legend class="sr">Choisis la traduction</legend>${q.opts.map((o,k)=>`<button type="button" class="opt" data-o="${k}" aria-pressed="false">${esc(o)}</button>`).join("")}</fieldset>`;
   }else{
@@ -2639,7 +2753,7 @@ function renderQ(){
         <button type="button" data-t="0" aria-label="Ton léger"><b>a</b><small>léger</small></button></div>`:""}`;
   }
   app.innerHTML=`<div class="ex" id="ex">
-    <div class="extop"><button class="xlink" id="quit" aria-label="${R.kind==="level"?"Quitter le niveau":"Quitter"}">${I.x()}</button>
+    <div class="extop"><button class="xlink" id="quit" aria-label="${R.kind==="ser"?"Quitter la série":"Quitter"}">${I.x()}</button>
       <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${pos}" aria-label="Progression"><i style="width:${total?pos/total*100:0}%"></i></div>
       <span class="cnt">${pos+1} / ${total}</span></div>
     <div class="exmeta"><span>${esc(thName)}</span><div class="pills">${pillsH}</div></div>
@@ -2649,7 +2763,8 @@ function renderQ(){
   </div><div id="fbox"></div>`;
   const val=document.getElementById("val");
   document.getElementById("quit").onclick=quitRun;
-  if(q.ex==="qcm"){
+  app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  if(isOptQ(q)){
     app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(cur.done)return;app.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed",o===b?"true":"false"));cur.choice=q.opts[+b.dataset.o];val.disabled=false});
   }else{
     const inp=document.getElementById("inp"),ra=document.getElementById("readas");
@@ -2666,20 +2781,20 @@ function renderQ(){
 }
 function quitRun(){
   // Une série quittée est annulée : elle ne peut pas être reprise, il faut la recommencer.
-  const kind=R.kind,ctl=kind==="ctl",lvl=kind==="level";
-  confirmSheet(ctl?"Quitter le contrôle ?":lvl?"Quitter le niveau ?":"Quitter la série ?",`${ctl?"Ce contrôle":lvl?"Ce niveau":"Cette série"} sera annulé${ctl||lvl?"":"e"} et il faudra ${ctl||lvl?"le":"la"} recommencer. Tes erreurs déjà enregistrées restent dans ta révision.`,ctl?"Quitter le contrôle":lvl?"Quitter le niveau":"Quitter la série",false,()=>{const back=ctl||lvl?"lessons":"revision";R=null;go(back)});
+  const ctl=R.kind==="ctl",ser=R.kind==="ser";
+  confirmSheet(ctl?"Quitter le contrôle ?":"Quitter la série ?",`${ctl?"Ce contrôle sera annulé et il faudra le recommencer.":"Cette série sera annulée et il faudra la recommencer."} Tes erreurs déjà enregistrées restent dans ta révision.`,ctl?"Quitter le contrôle":"Quitter la série",false,()=>{const back=ctl||ser?"lessons":"revision";R=null;go(back)});
 }
 function validate(){
   if(cur.done)return;
   const {q,item}=cur;let s=0,why="",ans="",items;
-  if(q.ex==="qcm"){if(cur.choice==null)return;ans=cur.choice;items=acceptedItems(item,3);s=ans===item.fr[0]?1:0}
+  if(isOptQ(q)){if(cur.choice==null)return;ans=cur.choice;const toFr=q.ex==="qcm";items=acceptedItems(item,toFr?3:1);s=ans===(toFr?item.fr[0]:item.py[0])?1:0}
   else{
     const k=FIELDS2[q.ex],inp=document.getElementById("inp");ans=inp.value;items=acceptedItems(item,q.ex);
     const g=k==="py"?gradePy(toMarks(ans),items):k==="zh"?gradeZh(ans,items):gradeFr(ans,items);s=g.s;why=g.why||"";
     if(k==="py"&&/\d/.test(ans))ans=toMarks(ans);
   }
   Object.assign(cur,{done:true,s,why,ans,items});
-  if(q.ex==="qcm"){app.querySelectorAll(".opt").forEach(o=>{o.disabled=true;const t=q.opts[+o.dataset.o];o.removeAttribute("aria-pressed");if(t===item.fr[0])o.classList.add("ok");else if(t===ans)o.classList.add("bad")})}
+  if(isOptQ(q)){const good=q.ex==="qcm"?item.fr[0]:item.py[0];app.querySelectorAll(".opt").forEach(o=>{o.disabled=true;const t=q.opts[+o.dataset.o];o.removeAttribute("aria-pressed");if(t===good)o.classList.add("ok");else if(t===ans)o.classList.add("bad")})}
   else{const inp=document.getElementById("inp");inp.disabled=true;app.querySelectorAll(".tones button").forEach(b=>b.disabled=true)}
   document.getElementById("val").hidden=true;
   showFb();
@@ -2691,7 +2806,7 @@ function answerParts(item,items,k){
   return uniq([item.fr[0],...items.filter(v=>!item.gen||v!==item).map(v=>v.fr[0])]).slice(0,2).map(esc).join(" ou ");
 }
 function showFb(){
-  const {q,item,s,why,ans,items}=cur,k=q.ex==="qcm"?"fr":FIELDS2[q.ex];
+  const {q,item,s,why,ans,items}=cur,k=q.ex==="qcm"?"fr":isOptQ(q)?"py":FIELDS2[q.ex];
   fxFeedback(s===1);const combo=(R.combo||0)+(s===1?1:0);
   const inp=document.getElementById("inp");
   if(inp){inp.classList.remove("ok","bad");inp.classList.add(s===1?"ok":"bad")}
@@ -2710,24 +2825,31 @@ function showFb(){
       ${s===.5?`<p class="cnote">Les syllabes sont justes, vérifie les tons.</p>`:""}
       ${notes.length?`<p class="cnote"><b>Note du cours :</b> ${notes.map(esc).join(" ")}</p>`:""}
       <p class="fb-small">Ajoutée à ta liste d'erreurs.</p>
-      <div class="row-btns">${q.ex!=="qcm"&&ans.trim()?`<button class="btn bad-sec" id="ovr">J'avais juste</button>`:""}<button class="btn bad grow" id="cont">Continuer</button></div></div></section>`;
+      <div class="row-btns">${!isOptQ(q)&&ans.trim()?`<button class="btn bad-sec" id="ovr">J'avais juste</button>`:""}<button class="btn bad grow" id="cont">Continuer</button></div></div></section>`;
     const o=document.getElementById("ovr");if(o)o.onclick=()=>{cur.s=1;cur.why="manual";showFb()};
   }
   const ex=document.getElementById("ex"),fb=box.firstElementChild;
   ex.classList.add("fbon");ex.style.setProperty("--fbh",(fb.offsetHeight+16)+"px");
   const c=document.getElementById("cont");c.onclick=nextQ;try{c.focus({preventScroll:true})}catch(e){}
-  if(inp||q.ex==="qcm") setTimeout(()=>{const el=document.getElementById("inp")||app.querySelector(".opts");if(!fb.isConnected||!el)return;const r=fb.getBoundingClientRect(),a=el.getBoundingClientRect();if(a.bottom>r.top-8)window.scrollBy({top:a.bottom-r.top+16,behavior:"smooth"})},30);
+  if(inp||isOptQ(q)) setTimeout(()=>{const el=document.getElementById("inp")||app.querySelector(".opts");if(!fb.isConnected||!el)return;const r=fb.getBoundingClientRect(),a=el.getBoundingClientRect();if(a.bottom>r.top-8)window.scrollBy({top:a.bottom-r.top+16,behavior:"smooth"})},30);
 }
 document.addEventListener("keydown",e=>{if(screen==="q"&&cur&&cur.done&&e.key==="Enter"&&!e.isComposing){const c=document.getElementById("cont");if(c&&document.activeElement!==c){e.preventDefault();c.click()}}});
 function nextQ(){
   const {q,item,s}=cur;
   if(q.last){R.res[q.ri].last={s,ans:cur.ans}}
   else{
-    srsUpdate(item.id,s);R.combo=s===1?(R.combo||0)+1:0;
-    R.res.push({id:q.id,ex:q.ex,s,ans:cur.ans,why:cur.why,th:q.th||(R.kind==="level"?R.th:item.th),review:!!q.review});
+    if(!q.retry)srsUpdate(item.id,s);R.combo=s===1?(R.combo||0)+1:0;
+    R.res.push({id:q.id,ex:q.ex,s,ans:cur.ans,why:cur.why,th:q.th||item.th,review:!!q.review,retry:!!q.retry});
     const e=state.errors[item.id];
-    if(s<1){const ne=e||{n:0,ok:0,ex:[]};if(item.gen)ne.item=genCopy(item);ne.n++;ne.ok=0;const x=q.ex==="qcm"?3:q.ex;if(!ne.ex.includes(x))ne.ex.push(x);state.errors[item.id]=ne}
-    else if(e){e.ok++;if(e.ok>=MASTER)delete state.errors[item.id]}
+    if(s<1&&!q.retry){const ne=e||{n:0,ok:0,ex:[]};if(item.gen)ne.item=genCopy(item);ne.n++;ne.ok=0;const x=q.ex==="qcm"?3:(q.ex==="qcmr"||q.ex==="qton")?1:q.ex;if(!ne.ex.includes(x))ne.ex.push(x);state.errors[item.id]=ne}
+    else if(s===1&&e){e.ok++;if(e.ok>=MASTER)delete state.errors[item.id]}
+    // Rappel rapproché : une question ratée revient 3 ou 4 questions plus loin, à la place d'une question prévue (la série reste à 20).
+    if(R.kind==="ser"&&!q.retry&&s<1&&(R.retries||0)<4&&R.qi<R.qs.length-1){
+      const at=Math.min(R.qi+4,R.qs.length-1),rq={...q,retry:true};if(q.opts)rq.opts=shuffle(q.opts.slice());
+      R.qs.splice(at,0,rq);
+      for(let j=R.qs.length-1;j>at;j--){if(!R.qs[j].retry){R.qs.splice(j,1);break}}
+      R.retries=(R.retries||0)+1;
+    }
   }
   R.qi++;
   save();
@@ -2745,7 +2867,7 @@ function addLC(){
 }
 function finishRun(){
   screen="end";closeSheet();window.scrollTo(0,0);
-  if(R.kind==="level")finishLevel();else if(R.kind==="ctl")finishCtl();else finishSeries();
+  if(R.kind==="ser")finishSer();else if(R.kind==="ctl")finishCtl();else finishSeries();
 }
 
 /* ---------- Liste d'erreurs d'un écran de fin ---------- */
@@ -2763,50 +2885,51 @@ function errsCard(errs,withLC,title){
 }
 
 /* ---------- Fin de niveau ---------- */
-function finishLevel(){
-  const r=R,n=r.res.length,good=r.res.filter(x=>x.s===1).length,pct=n?Math.round(good/n*100):0;
-  const l=LESSON_OF[r.th],ti=l.themes.indexOf(r.th),i=r.lv,L={name:levelName(r.th,i)};
-  const wasOk=lvOk(r.th,i),wasCtl=ctlOpen(l),wasThemeDone=themeDone(r.th),wasGold=lvGold(r.th,i);
-  const lo=Object.assign({},Array.isArray(state.lv[r.th])?{}:state.lv[r.th]),lk=levelId(r.th,i);lo[lk]=Math.max(lo[lk]??0,pct);state.lv[r.th]=lo;
+function finishSer(){
+  const r=R,gr=r.res.filter(x=>!x.retry),n=gr.length,good=gr.filter(x=>x.s===1).length,pct=n?Math.round(good/n*100):0;
+  const l=LESSONS.find(x=>x.id===r.lid),cs=chaptersOf(l),ci=cs.findIndex(c=>c.id===r.chId),ch=cs[ci],i=r.si,S=ch.series[i],N=ch.series.length;
+  const wasOk=serOk(ch,i),wasCtl=ctlOpen(l),wasDone=chapDone(ch),wasGold=serGold(ch,i);
+  state.ser=state.ser||{};const so=Object.assign({},state.ser[ch.id]);so[S.id]=Math.max(so[S.id]??0,pct);state.ser[ch.id]=so;
   const sday=pct>=PASS?markDay():null;
   state.run=null;state.view=l.id;save();R=null;
-  const passed=pct>=PASS,need=Math.ceil(n*PASS/100),errs=r.res.filter(x=>x.s<1);
-  const cl=curLevel(l);
+  const passed=pct>=PASS,need=Math.ceil(n*PASS/100),errs=gr.filter(x=>x.s<1);
+  const cl=curSeries(l);
   let nextBtn=null;
-  if(cl) nextBtn={label:cl.th===r.th?`Passer au niveau ${cl.i+1}`:"Passer au thème suivant",go:()=>startLevel(l,cl.ti,cl.i)};
+  if(cl) nextBtn={label:cl.ch===ch?`Série suivante : ${cl.ch.series[cl.i].name}`:"Passer au chapitre suivant",go:()=>startSer(l,cl.ci,cl.i)};
   else if(ctlOpen(l)&&!ctlPassed(l)) nextBtn={label:"Passer au contrôle",go:()=>renderCtlIntro(l)};
+  const rapp=r.retries?`<p class="note-p">${r.retries} ${plural(r.retries,"rappel","rappels")} : ces questions reviennent pour t'entraîner, elles ne comptent pas dans la note.</p>`:"";
   if(passed){
-    const gold=pct>=100,kk=nOk(r.th),nl=[];
-    if(pct<100)nl.push(`Un sans-faute (100 %) passe ce niveau en or. Il t'a manqué ${n-good} ${plural(n-good,"réponse","réponses")}.`);
-    if(kk<levelsOf(r.th))nl.push(`Plus que ${levelsOf(r.th)-kk} ${plural(levelsOf(r.th)-kk,"niveau","niveaux")} pour finir ce thème.`);
-    const nudge=nl.length?`<p class="nudge">${esc(nl.join(" "))}</p>`:(gold&&!wasGold?`<p class="nudge gold">Niveau en or.</p>`:"");
-    const cando=!wasThemeDone&&themeDone(r.th)?candoCard(CANDO[r.th]):"";
+    const gold=pct>=100,kk=nOk(ch),nl=[];
+    if(pct<100)nl.push(`Un sans-faute (100 %) passe cette série en or. Il t'a manqué ${n-good} ${plural(n-good,"réponse","réponses")}.`);
+    if(kk<N)nl.push(`Plus que ${N-kk} ${plural(N-kk,"série","séries")} pour finir ce chapitre.`);
+    const nudge=nl.length?`<p class="nudge">${esc(nl.join(" "))}</p>`:(gold&&!wasGold?`<p class="nudge gold">Série en or.</p>`:"");
+    const cando=!wasDone&&chapDone(ch)?candoCard(ch.themes.map(t=>CANDO[t]).filter(Boolean).join(", ")):"";
     let unlock="";
     if(!wasOk){
-      if(i<levelsOf(r.th)-1) unlock=`<section class="unlock" aria-label="Niveau débloqué"><span class="c40">${i+2}</span><span class="tx"><b>Niveau ${i+2} débloqué</b><span>${levelName(r.th,i+1)} : ${lower(levelDesc(r.th,i+1))}</span></span></section>`;
-      else if(ti<l.themes.length-1) unlock=`<section class="unlock" aria-label="Thème débloqué"><span class="c40">${I.unlock()}</span><span class="tx"><b>Thème suivant débloqué</b><span>${esc(l.themes[ti+1])}</span></span></section>`;
-      else if(!wasCtl&&ctlOpen(l)) unlock=`<section class="unlock" aria-label="Contrôle débloqué"><span class="c40">${I.flag(20)}</span><span class="tx"><b>Contrôle débloqué</b><span>20 questions sur la leçon, 16 pour valider</span></span></section>`;
+      if(i<N-1) unlock=`<section class="unlock" aria-label="Série débloquée"><span class="c40">${i+2}</span><span class="tx"><b>Série ${i+2} débloquée</b><span>${esc(ch.series[i+1].name)}</span></span></section>`;
+      else if(ci<cs.length-1) unlock=`<section class="unlock" aria-label="Chapitre débloqué"><span class="c40">${I.unlock()}</span><span class="tx"><b>Chapitre suivant débloqué</b><span>${esc(cs[ci+1].name)}</span></span></section>`;
+      else if(!wasCtl&&ctlOpen(l)) unlock=`<section class="unlock" aria-label="Contrôle débloqué"><span class="c40">${I.flag(20)}</span><span class="tx"><b>Contrôle débloqué</b><span>${ctlLen(l)} questions sur la leçon, 80 % pour valider</span></span></section>`;
     }
     app.innerHTML=`<div class="end">
-      <div class="end-top"><span class="c72${gold?" gold":""}">${gold?I.star(36):I.check(36,2.6)}</span><h1>Niveau ${i+1} ${gold?"parfait":"validé"}</h1><p>${esc(r.th)}, ${L.name}</p></div>
+      <div class="end-top"><span class="c72${gold?" gold":""}">${gold?I.star(36):I.check(36,2.6)}</span><h1>Série ${i+1} ${gold?"parfaite":"validée"}</h1><p>${esc(ch.name)}, ${esc(S.name)}</p></div>
       <section class="card scorebox" aria-label="Score"><div class="top"><span class="pct">${pct} %</span><span>${good} ${plural(good,"bonne réponse","bonnes réponses")} sur ${n}</span></div>
         <div class="meter"><div class="tr"><i style="width:${pct}%"></i></div><div class="mk" aria-hidden="true"></div><span class="ml">80 % requis</span></div></section>
-      ${unlock}${cando}${nudge}${streakCard(sday)}${errsCard(errs)}
+      ${rapp}${unlock}${cando}${nudge}${streakCard(sday)}${errsCard(errs)}
       <div class="spacer"></div>
       ${nextBtn?`<button class="btn" id="nx">${esc(nextBtn.label)}</button><button class="btn link" id="bk">Retour aux leçons</button>`:`<button class="btn" id="bk">Retour aux leçons</button>`}
     </div>`;
   }else{
     app.innerHTML=`<div class="end">
-      <div class="end-top"><span class="c72 half">${I.redo(34,2.2)}</span><h1>Niveau ${i+1} à refaire</h1><p>${esc(r.th)}, ${L.name}</p></div>
+      <div class="end-top"><span class="c72 half">${I.redo(34,2.2)}</span><h1>Série ${i+1} à refaire</h1><p>${esc(ch.name)}, ${esc(S.name)}</p></div>
       <section class="card scorebox half" aria-label="Score"><div class="top"><span class="pct">${pct} %</span><span>${good} sur ${n}, il en faut ${need}</span></div>
         <div class="meter"><div class="tr"><i style="width:${pct}%"></i></div><div class="mk" aria-hidden="true"></div><span class="ml">80 % requis</span></div></section>
       ${need-good<=2?`<p class="nudge">Plus que ${need-good} ${plural(need-good,"bonne réponse","bonnes réponses")} pour valider, tu y es presque.</p>`:""}
-      ${wasOk?`<p class="note-p">Ce niveau reste validé avec ton meilleur score.</p>`:""}
+      ${rapp}${wasOk?`<p class="note-p">Cette série reste validée avec ton meilleur score.</p>`:""}
       ${errsCard(errs)}
       <div class="spacer"></div>
-      <button class="btn" id="again">Recommencer le niveau ${i+1}</button><button class="btn link" id="bk">Retour aux leçons</button>
+      <button class="btn" id="again">Recommencer la série ${i+1}</button><button class="btn link" id="bk">Retour aux leçons</button>
     </div>`;
-    document.getElementById("again").onclick=()=>startLevel(l,ti,i);
+    document.getElementById("again").onclick=()=>startSer(l,ci,i);
   }
   const nx=document.getElementById("nx");if(nx)nx.onclick=nextBtn.go;
   document.getElementById("bk").onclick=()=>go("lessons");
@@ -2823,8 +2946,8 @@ function finishCtl(){
   const sday=passed?markDay():null,perfect=total>0&&good===total;
   if(passed&&nx)state.view=nx.id;
   save();R=null;
-  const rows=l.themes.map(th=>{const rr=r.res.filter(x=>x.th===th),ok=rr.filter(x=>x.s===1).length,weak=rr.length>0&&ok/rr.length<.8;return {th,ok,n:rr.length,weak}}).filter(x=>x.n);
-  const resH=`<section class="card res" aria-label="Résultat par thème"><div>${rows.map(x=>`<div class="resrow"><span class="nm">${esc(x.th)}${!passed&&x.weak?`<small>À revoir</small>`:""}</span>
+  const rows=chaptersOf(l).map((c,cx)=>{const rr=r.res.filter(x=>c.themes.includes(x.th)),ok=rr.filter(x=>x.s===1).length,weak=rr.length>0&&ok/rr.length<.8;return {th:c.name,cx,ok,n:rr.length,weak}}).filter(x=>x.n);
+  const resH=`<section class="card res" aria-label="Résultat par chapitre"><div>${rows.map(x=>`<div class="resrow"><span class="nm">${esc(x.th)}${!passed&&x.weak?`<small>À revoir</small>`:""}</span>
     <span class="segs" aria-hidden="true">${Array.from({length:x.n},(_,k)=>`<i class="${k<x.ok?(!passed&&x.weak?"weak":"on"):""}"></i>`).join("")}</span><span class="sc">${x.ok}/${x.n}</span></div>`).join("")}</div></section>`;
   const errs=r.res.filter(x=>x.s<1),pile=pileIdsAll().length;
   if(passed){
@@ -2840,15 +2963,15 @@ function finishCtl(){
   }else{
     const weak=rows.filter(x=>x.weak);
     app.innerHTML=`<div class="end">
-      <div class="end-top tight"><span class="eyebrow half">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore half">${good}<small> / ${total}</small></p><h1>Pas encore validée</h1><p>Il faut ${need} / ${total}. ${need-good<=2?`Plus que ${need-good} ${plural(need-good,"point","points")}, tu y es presque. `:""}Tes niveaux restent validés.</p></div>
+      <div class="end-top tight"><span class="eyebrow half">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore half">${good}<small> / ${total}</small></p><h1>Pas encore validée</h1><p>Il faut ${need} / ${total}. ${need-good<=2?`Plus que ${need-good} ${plural(need-good,"point","points")}, tu y es presque. `:""}Tes séries restent validées.</p></div>
       ${resH}
-      ${weak.length?`<section class="stack8" aria-label="Thèmes à revoir"><h2 class="sub-h">Revoir un thème avant de repasser</h2>${weak.map(x=>`<button class="linkcard sm" data-th="${esc(x.th)}"><span class="tx">${esc(x.th)}</span>${I.chev()}</button>`).join("")}</section>`:""}
+      ${weak.length?`<section class="stack8" aria-label="Chapitres à revoir"><h2 class="sub-h">Revoir un chapitre avant de repasser</h2>${weak.map(x=>`<button class="linkcard sm" data-cx="${x.cx}"><span class="tx">${esc(x.th)}</span>${I.chev()}</button>`).join("")}</section>`:""}
       <div class="spacer"></div>
       ${pile?`<button class="btn" id="toRev">Réviser mes ${pile} ${plural(pile,"erreur","erreurs")}</button><button class="btn link" id="again">Repasser le contrôle</button>`:`<button class="btn" id="again">Repasser le contrôle</button>`}
       <button class="btn link" id="bk">Retour aux leçons</button></div>`;
     const t=document.getElementById("toRev");if(t)t.onclick=()=>go("revision");
     document.getElementById("again").onclick=()=>renderCtlIntro(l);
-    app.querySelectorAll(".linkcard[data-th]").forEach(b=>b.onclick=()=>{state.view=l.id;go("lessons");themeSheet(l,l.themes.indexOf(b.dataset.th))});
+    app.querySelectorAll(".linkcard[data-cx]").forEach(b=>b.onclick=()=>{state.view=l.id;go("lessons");chapterSheet(l,+b.dataset.cx)});
   }
   document.getElementById("bk").onclick=()=>go("lessons");
 }
@@ -3160,9 +3283,8 @@ function streakSheet(){
 /* ===== Onglet Collection : un tableau de tous les caractères =====
    Sombre : pas encore appris. Jade : niveau du thème qui introduit un mot du caractère validé, et aucune erreur en cours sur un mot qui le contient.
    À corriger : appris, mais une erreur reste dans la liste de révision. Or : jade + tracé de mémoire maîtrisé. */
-// Un mot est « appris » quand le niveau de mots qui l'introduit est validé.
-function wordLevelIdx(v){const W=wordLevels(v.th),k=ownWords(v.th).indexOf(v);return Math.min(Math.floor(k/LV_NEW),W-1)}
-const wordLearned=v=>lvOk(v.th,wordLevelIdx(v));
+// Un mot est « appris » quand la série Renforcement de son groupe est validée.
+function wordLearned(v){const ch=chapterOfTheme(v.th),gi=ch&&ch.groupOf.get(v.id);if(gi==null)return false;const i=ch.series.findIndex(x=>x.id===`g${gi+1}b`);return i>=0&&serOk(ch,i)}
 let _ct=null,_cc=null;
 function charWords(){
   if(_ct)return _ct;_ct=new Map();
@@ -3466,7 +3588,7 @@ const INTRO=[
 ];
 let introFrom="start";
 // L'introduction s'affiche une seule fois, pour un tout nouvel utilisateur (aucune progression enregistrée).
-const introNeeded=()=>!state.introSeen&&!Object.keys(state.lv||{}).length&&!Object.keys(state.ctl||{}).length&&!(state.series||[]).length&&!Object.keys(state.days||{}).length&&!Object.keys(state.errors||{}).length;
+const introNeeded=()=>!state.introSeen&&!Object.keys(state.ser||{}).length&&!Object.keys(state.ctl||{}).length&&!(state.series||[]).length&&!Object.keys(state.days||{}).length&&!Object.keys(state.errors||{}).length;
 function introDone(){state.introSeen=true;save();const f=introFrom;introFrom="start";go(f==="settings"?"settings":"lessons")}
 function renderIntro(i,from){
   if(from)introFrom=from;

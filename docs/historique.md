@@ -69,6 +69,9 @@ Niveaux adaptés au besoin de chaque thème (5 nouveaux mots par niveau, cumul d
 ## 6. Introduction au chinois (09/11/2026)
 Script, maquettes (texte avant schéma) puis intégration : intro de 5 écrans au premier lancement, relançable depuis Paramètres.
 
+## 7. Refonte des exercices en séries (09/11/2026)
+Chapitres, groupes de 8 mots, séries de 20 questions (Découverte, Renforcement, Révision, Phrases, Défi), cartes de présentation, QCM de ton et rappel rapproché, contrôle de leçon de 30 ou 40 questions. Progression des niveaux remise à zéro (contrôles, flamme, erreurs, révision espacée conservés).
+
 ## Organisation de travail
 - Réfléchir et décider: chat Claude. Coder: Claude Code, sur une branche.
 - `main` = prod (GitHub Pages), `dev` = intégration, `feature/*` = une feature.
