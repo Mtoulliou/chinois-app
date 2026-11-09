@@ -1918,7 +1918,7 @@ function setVal(input,before,after){input.value=before+after;const p=before.leng
 const LS_KEY="revisions-chinois-v1";
 const ON_CLAUDE=!!(window.claude&&window.claude.use);
 /* Champs ajoutés par la refonte : lv (scores des niveaux par thème), ctl (contrôles par leçon),
-   run (niveau en cours, pour « Reprendre »), showZh, zhEx, theme, view (leçon affichée). */
+   run (toujours null : une série interrompue est annulée, jamais reprise), showZh, zhEx, theme, view (leçon affichée). */
 const freshState=()=>({days:{},srs:{},fx:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
 let state=freshState();
 try{const raw=localStorage.getItem(LS_KEY);if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}
@@ -2095,8 +2095,8 @@ function curLevel(l){
 }
 const curLesson=()=>LESSONS.find(l=>lessonOpen(l)&&!ctlPassed(l))||[...LESSONS].reverse().find(lessonOpen);
 function viewLesson(){const l=LESSONS.find(x=>x.id===state.view);return l&&lessonOpen(l)?l:curLesson()}
-const runFor=(th,i)=>state.run&&state.run.kind==="level"&&state.run.th===th&&state.run.lv===i?state.run:null;
-const started=(th,i)=>!!runFor(th,i)||lvArr(th)[i]!=null;
+// « started » : le niveau a déjà été tenté (un score existe) ; une série interrompue n'est jamais reprise.
+const started=(th,i)=>lvArr(th)[i]!=null;
 const pileIdsAll=()=>Object.keys(state.errors).filter(id=>IT(id));
 
 /* ---------- Or : niveau à 100 %, contrôle à 20/20 ---------- */
@@ -2360,7 +2360,7 @@ function renderLessons(){
       const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i,sc=lvArr(th)[i];
       const cls2=`isl${isCur?" cur":""}${i===3?" last":""}`,sty=`style="transform:translateX(${off[i]}px)"`;
       if(isCur){const re=started(th,i);
-        h+=`<div class="${cls2}" ${sty}><span class="bubble">${re?"Reprendre":"Commencer"}</span><button class="isl-b" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${re?"en cours":"commencer"}">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
+        h+=`<div class="${cls2}" ${sty}><span class="bubble">${re?"Réessayer":"Commencer"}</span><button class="isl-b" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${re?"à refaire":"commencer"}">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
       }else if(ok){
         const gd=lvGold(th,i);
         h+=`<div class="${cls2}" ${sty}><button class="isl-b${gd?" gold":""}" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait, 100 %":"validé, "+sc+" %"}, refaire">${gd?I.star(30):I.check()}</button><span class="isl-l${gd?" gold":""}">${L.name}, ${sc} %</span></div>`;
@@ -2411,14 +2411,14 @@ function themeActions(l,ti){
   if(!themeOpen(l,ti)) return {label:"Termine d'abord le thème précédent",disabled:true};
   const i=[0,1,2,3].find(x=>!lvOk(th,x));
   if(i===undefined) return {label:"Refaire le niveau 1",go:()=>startLevel(l,ti,0)};
-  return {label:`${started(th,i)?"Continuer":"Commencer"} le niveau ${i+1}`,go:()=>startLevel(l,ti,i)};
+  return {label:`${started(th,i)?"Recommencer":"Commencer"} le niveau ${i+1}`,go:()=>startLevel(l,ti,i)};
 }
 function themeSheet(l,ti){
   const th=l.themes[ti],k=nOk(th),open=themeOpen(l,ti),cl=curLevel(l);
   const rows=LEVELS.map((L,i)=>{
     const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i,sc=lvArr(th)[i];
     if(ok){const gd=lvGold(th,i);return `<li><button class="lvrow" data-i="${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait, 100 %":"validé, "+sc+" %"}, refaire"><span class="c40${gd?" gold":""}">${gd?I.star(18):I.check(18,2.6)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt${gd?" gold":""}">${sc} %</span></button></li>`}
-    if(lo) return `<li><button class="lvrow${isCur?" cur":""}" data-i="${i}"><span class="c40 ring">${i+1}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt cur">${started(th,i)?"En cours":"À faire"}</span></button></li>`;
+    if(lo) return `<li><button class="lvrow${isCur?" cur":""}" data-i="${i}"><span class="c40 ring">${i+1}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt cur">${started(th,i)?"À refaire":"À faire"}</span></button></li>`;
     return `<li><button class="lvrow" disabled><span class="c40 lk">${I.lock(16)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt lk">Verrouillé</span></button></li>`;
   }).join("");
   const words=themeWords([th]).length?themeWords([th]):levelWords(th);
@@ -2458,10 +2458,9 @@ function renderCours(l,ti,fromBook){
 /* ===== Lancement des exercices ===== */
 function startLevel(l,ti,i){
   closeSheet();
-  const th=l.themes[ti];let r=runFor(th,i);
-  if(r){restoreGen(r);if(r.qs.some(q=>!IT(q.id))||r.qi>=r.qs.length)r=null}
-  if(!r){r={kind:"level",th,lv:i,lid:l.id,qs:buildLevel(th,i),res:[],qi:0};state.run=r;save()}
-  R=r;window.scrollTo(0,0);renderQ();
+  const th=l.themes[ti];
+  R={kind:"level",th,lv:i,lid:l.id,qs:buildLevel(th,i),res:[],qi:0};
+  window.scrollTo(0,0);renderQ();
 }
 function renderCtlIntro(l){
   screen="ctlintro";closeSheet();
@@ -2562,9 +2561,9 @@ function renderQ(){
   val.onclick=validate;
 }
 function quitRun(){
-  if(R.kind==="level"){state.run=R;save();R=null;go("lessons");return}
-  const ctl=R.kind==="ctl";
-  confirmSheet(ctl?"Quitter le contrôle ?":"Quitter la série ?",ctl?"Les réponses de ce contrôle seront perdues. Tes erreurs déjà enregistrées restent dans ta révision.":"La série en cours sera perdue. Tes erreurs déjà enregistrées restent dans ta révision.",ctl?"Quitter le contrôle":"Quitter la série",false,()=>{const back=ctl?"lessons":"revision";R=null;go(back)});
+  // Une série quittée est annulée : elle ne peut pas être reprise, il faut la recommencer.
+  const kind=R.kind,ctl=kind==="ctl",lvl=kind==="level";
+  confirmSheet(ctl?"Quitter le contrôle ?":lvl?"Quitter le niveau ?":"Quitter la série ?",`${ctl?"Ce contrôle":lvl?"Ce niveau":"Cette série"} sera annulé${ctl||lvl?"":"e"} et il faudra ${ctl||lvl?"le":"la"} recommencer. Tes erreurs déjà enregistrées restent dans ta révision.`,ctl?"Quitter le contrôle":lvl?"Quitter le niveau":"Quitter la série",false,()=>{const back=ctl||lvl?"lessons":"revision";R=null;go(back)});
 }
 function validate(){
   if(cur.done)return;
@@ -2627,7 +2626,6 @@ function nextQ(){
     else if(e){e.ok++;if(e.ok>=MASTER)delete state.errors[item.id]}
   }
   R.qi++;
-  if(R.kind==="level")state.run=R;
   save();
   if(R.kind==="series"&&R.qi===R.main&&!R.lcBuilt)addLC();
   window.scrollTo(0,0);
@@ -3330,8 +3328,8 @@ try{
 }catch(e){}
 
 state.exOff=[]; // le choix des sens a disparu de l'interface : les séries mélangent les deux
+state.run=null;state.wrun=null; // aucune série en cours n'est conservée : fermer l'app ou quitter annule la série
 restoreGen(state.run);
-if(state.run&&(!state.run.qs||state.run.qs.some(q=>!IT(q.id))))state.run=null;
 applyTheme();
 render();
 </script>
