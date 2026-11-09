@@ -63,6 +63,9 @@ La conversation s'est arrêtée à « Pousse en prod »: Claude ne pouvait pas c
 Ajouts après la mise en prod : collection de caractères (sombre, jade, or) à la place de l'onglet Écriture, médailles or pour les niveaux à 100 %, flamme de série quotidienne avec calendrier, révision espacée avec compteur « à réviser », retour immédiat (animation, vibration, son), compétences « Tu sais maintenant… ».
 Choix : jade = niveau 2 validé et aucune erreur en cours ; flamme = séries réussies seulement ; vibration oui, son non par défaut ; écriture possible sur les caractères sombres mais l'or exige le jade.
 
+## 5. Niveaux variables et outillage (09/11/2026)
+Niveaux adaptés au besoin de chaque thème (5 nouveaux mots par niveau, cumul des mots précédents, niveau final de phrases) ; progression des niveaux remise à zéro à cette occasion. Pourcentages retirés du parcours. Règle « tout mot d'une phrase est enseigné avant » appliquée et auditée ; mots manquants ajoutés ; leçon 3 réordonnée. Ajout de `tools/run-audit.sh` et du prompt `docs/PROMPT-ajout-contenu.md`.
+
 ## Organisation de travail
 - Réfléchir et décider: chat Claude. Coder: Claude Code, sur une branche.
 - `main` = prod (GitHub Pages), `dev` = intégration, `feature/*` = une feature.
