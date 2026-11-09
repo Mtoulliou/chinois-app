@@ -2979,24 +2979,16 @@ function collStats(){
   collChars().forEach(g=>g.items.forEach(it=>{o.t++;o[charState(it.c)]++}));
   return o;
 }
-function collBestLesson(){
-  let best=null,bn=0;
-  collChars().forEach(g=>{const n=g.items.filter(it=>charState(it.c)==="j").length;if(n>bn){bn=n;best=g.l}});
-  return best||(collChars()[0]&&collChars()[0].l)||LESSONS[0];
-}
 function renderCollection(){
   screen="collection";closeSheet();
   const st=collStats(),groups=collChars(),pc=k=>st.t?st[k]/st.t*100:0;
-  const run=state.wrun&&state.wrun.chars&&state.wrun.idx<state.wrun.chars.length?state.wrun:null;
-  const runL=run&&LESSONS.find(l=>l.id===run.lid);
   const words=V.filter(v=>v.t==="w"&&lvOk(v.th,LEARN_LV)).length;
   let h=`<div class="tabscr"><main class="page">
-    <header class="phead"><div class="seal" aria-hidden="true">字</div><div><h1>Collection</h1><p>${st.g+st.j} / ${st.t} ${plural(st.t,"caractère appris","caractères appris")}</p></div>${flameBtn()}</header>
+    <header class="phead"><div class="seal" aria-hidden="true">字</div><div><h1>Collection</h1><p>Attrapez les tous</p></div>${flameBtn()}</header>
     <section class="card cstats" aria-label="Progression de la collection">
       <div class="cbar" role="img" aria-label="${st.g} en or, ${st.j} en jade, ${st.f} à corriger, ${st.n} pas encore appris"><i class="g" style="width:${pc("g")}%"></i><i class="j" style="width:${pc("j")}%"></i><i class="f" style="width:${pc("f")}%"></i></div>
       <div class="ccount"><div><b class="g">${st.g}</b><span>or</span></div><div><b class="j">${st.j}</b><span>jade</span></div><div><b>${st.f}</b><span>à corriger</span></div><div><b>${st.n}</b><span>sombres</span></div></div></section>`;
   if(!wrOk()) h+=`<p class="dashed">Le module de tracé n'a pas pu se charger. Recharge la page.</p>`;
-  if(runL) h+=`<button class="resume" id="wres"><span class="tx"><span class="eyebrow">Reprendre</span><b>${esc(runL.n)}, ${esc(runL.t)}</b><span>Série de ${run.chars.length} ${plural(run.chars.length,"caractère","caractères")}, ${run.idx} ${plural(run.idx,"fait","faits")}</span></span>${svg(24,'<path d="M9 6l6 6-6 6"/>')}</button>`;
   h+=`<button class="btn" id="cseries" ${wrOk()?"":"disabled"}>Lancer une série d'écriture</button>`;
   groups.forEach(g=>{
     const tot=g.items.length,gg=g.items.filter(it=>charState(it.c)==="g").length,jj=g.items.filter(it=>charState(it.c)==="j").length;
@@ -3006,8 +2998,7 @@ function renderCollection(){
   });
   h+=`<p class="note-p">Tracé et ordre des traits : Hanzi Writer et les données Make Me a Hanzi.</p></main></div>${navHTML("collection")}`;
   app.innerHTML=h;bindNav();bindFlame();
-  const r=document.getElementById("wres");if(r)r.onclick=()=>startWRun(state.wrun);
-  document.getElementById("cseries").onclick=()=>startWRun(newWRun(collBestLesson()));
+  document.getElementById("cseries").onclick=()=>startWRun(newWRun(null));
   app.querySelectorAll(".ctile").forEach(b=>b.onclick=()=>charSheet(b.dataset.c));
   app.querySelectorAll("[data-wl]").forEach(b=>b.onclick=()=>renderWLesson(LESSONS.find(l=>l.id===b.dataset.wl)));
 }
@@ -3064,10 +3055,10 @@ function renderWLesson(l,keepScroll){
 function newWRun(l,only){
   let chars;
   if(only)chars=only.slice();
-  else{const cs=wrChars(l);
+  else{const cs=l?wrChars(l):collChars().flatMap(g=>g.items.map(it=>it.c));
     const pr=c=>{const k=charState(c);return k==="j"?(wrSt(c)==="c"?0:1):k==="f"?2:k==="n"?3:4};
     chars=shuffle(cs.slice()).sort((x,y)=>pr(x)-pr(y)).slice(0,WR_SERIES)}
-  return {lid:l.id,chars,idx:0,step:null,res:[]};
+  return {lid:l?l.id:null,chars,idx:0,step:null,res:[]};
 }
 let WRN=null,WS=null; // WRN : série en cours ; WS : état de l'écran (writer, compteurs)
 function startWRun(r){
@@ -3078,7 +3069,9 @@ function startWRun(r){
   renderWQ();
 }
 const firstStep=c=>{const s=wrSt(c);return s==="m"?2:s==="c"?1:0};
-function quitWRun(){state.wrun=WRN;save();const l=LESSONS.find(x=>x.id===WRN.lid);WRN=null;stopWriter();renderWLesson(l)}
+function quitWRun(){state.wrun=WRN;save();const l=LESSONS.find(x=>x.id===WRN.lid);WRN=null;stopWriter();if(l)renderWLesson(l);else go("collection")}
+/* Mot d'un caractère : dans la leçon de la série, ou dans la collection pour une série globale */
+function wrWordForRun(r,c){const l=r.lid&&LESSONS.find(x=>x.id===r.lid);if(l)return wrWordOf(l,c);const it=collChars().flatMap(g=>g.items).find(x=>x.c===c);return it?it.w:null}
 function stopWriter(){if(WS&&WS.writer){try{WS.writer.cancelQuiz()}catch(e){}try{WS.writer.pauseAnimation()}catch(e){}}WS=null}
 
 function tokens(){const cs=getComputedStyle(document.documentElement),g=k=>cs.getPropertyValue(k).trim();
@@ -3096,7 +3089,7 @@ function dirText(med){
 
 function renderWQ(){
   stopWriter();screen="wq";closeSheet();
-  const l=LESSONS.find(x=>x.id===WRN.lid),c=WRN.chars[WRN.idx],w=wrWordOf(l,c)||{chars:[c],py:"",fr:"",word:c,zh:c};
+  const c=WRN.chars[WRN.idx],w=wrWordForRun(WRN,c)||{chars:[c],py:"",fr:"",word:c,zh:c};
   const data=window.HANZI_DATA&&window.HANZI_DATA[c];
   if(!wrOk()||!data){app.innerHTML=`<div class="ex"><div class="extop"><button class="xlink" id="wq-x" aria-label="Quitter la série">${I.x()}</button></div><p class="dashed">Le tracé de ${esc(c)} n'a pas pu se charger.</p><div class="spacer"></div><button class="btn" id="wq-skip">Passer</button></div>`;
     document.getElementById("wq-x").onclick=quitWRun;document.getElementById("wq-skip").onclick=()=>{WRN.res.push({c,skip:true});WRN.idx++;WRN.step=null;startWRun(WRN)};return}
@@ -3215,19 +3208,19 @@ function finishWRun(){
   const clean=res.filter(x=>x.clean).length,newM=res.filter(x=>x.nowM).length,newG=res.filter(x=>x.nowM&&charLearned(x.c)&&!charFix(x.c)).length;
   const sday=res.length&&clean*2>=res.length?markDay():null;
   state.wrun=null;save();WRN=null;
-  const rows=res.map(x=>{const w=wrWordOf(l,x.c)||{py:""};
+  const rows=res.map(x=>{const w=wrWordForRun(r,x.c)||{py:""};
     const det=x.nowM?`${x.ok}e essai sans faute`:x.clean&&x.wasM?"Déjà maîtrisé":x.clean?`Sans faute ${Math.min(x.ok,WR_MASTER)} / ${WR_MASTER}`:x.hint?"Indice utilisé":"À retracer";
     const pill=x.nowM?`<span class="wpl m">${charLearned(x.c)&&!charFix(x.c)?"Or":"Maîtrisé"}</span>`:x.clean?`<span class="wpl ok">Sans faute</span>`:`<span class="wpl err">${x.mistakes} ${plural(x.mistakes,"erreur","erreurs")}</span>`;
     return `<li>${chip(x.c,"plain","lg")}<span class="tx"><b lang="zh-Latn-pinyin">${esc(w.py)}</b><small>${esc(det)}</small></span>${pill}</li>`}).join("");
   app.innerHTML=`<div class="end">
-    <div class="end-top tight"><span class="eyebrow">Écriture, ${esc(lower(l.n))}</span><h1>Série terminée</h1></div>
+    <div class="end-top tight"><span class="eyebrow">Écriture, ${l?esc(lower(l.n)):"collection"}</span><h1>Série terminée</h1></div>
     <div class="wstats"><div><b>${res.length}</b><span>${plural(res.length,"caractère","caractères")}</span></div><div><b class="ok">${clean}</b><span>sans faute</span></div><div class="hl"><b>+${newM}</b><span>${plural(newM,"maîtrisé","maîtrisés")}</span></div></div>
     ${newG?`<p class="nudge gold">${newG} ${plural(newG,"caractère passé","caractères passés")} en or dans ta collection.</p>`:""}${streakCard(sday)}
     ${rows?`<ul class="card wlist wres">${rows}</ul>`:""}
     <div class="spacer"></div>
-    <button class="btn" id="w-again">Nouvelle série</button><button class="btn link" id="w-back">Retour à la leçon</button><button class="btn link" id="w-coll">Voir ma collection</button></div>`;
+    <button class="btn" id="w-again">Nouvelle série</button>${l?`<button class="btn link" id="w-back">Retour à la leçon</button>`:""}<button class="btn link" id="w-coll">${l?"Voir ma collection":"Retour à la collection"}</button></div>`;
   document.getElementById("w-again").onclick=()=>startWRun(newWRun(l));
-  document.getElementById("w-back").onclick=()=>renderWLesson(l);
+  const wb=document.getElementById("w-back");if(wb)wb.onclick=()=>renderWLesson(l);
   document.getElementById("w-coll").onclick=()=>go("collection");
   window.scrollTo(0,0);
 }
