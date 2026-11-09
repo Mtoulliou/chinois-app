@@ -8,11 +8,9 @@
 - **Écriture** : tracé avec Hanzi Writer, 3 étapes (observer, guidé, mémoire), 242 caractères dont les données de traits sont intégrées au fichier (hors ligne). Bandeau « En travaux » affiché : pas encore testé au doigt sur téléphone.
 - **Paramètres** : afficher les caractères, thème clair/sombre/système, code de transfert de progression, remise à zéro.
 - **Sauvegarde** : `localStorage` ; synchro Claude seulement dans l'artefact.
-- **Hors-ligne** : enregistrement d'un service worker `sw.js` s'il existe avec un `manifest` (aucun des deux n'est dans le dépôt pour l'instant).
+- **Installable et hors ligne** : `manifest.webmanifest`, `sw.js` (réseau d'abord, cache en secours, polices mises en cache) et `icons/` (习 blanc sur jade). Ajoutable à l'écran d'accueil sur Android et iOS.
 
 ## Idées / à faire
-- [ ] Ajouter `manifest.webmanifest`, icônes et `sw.js` (installable + hors-ligne).
 - [ ] Séparer les données (vocabulaire) du code dans `data/` quand le fichier deviendra trop gros (≈ 785 Ko aujourd'hui, dont Hanzi Writer).
 - [ ] Tester l'onglet Écriture au doigt sur un vrai téléphone, puis retirer le bandeau « En travaux ».
 - [ ] Compléter le cours (leçon 7 manquante) puis ajouter la leçon dans `LESSONS`.
-- [ ] Retrouver `build.py` / `site/` des anciennes versions si on veut les réutiliser (non repris ici).
