@@ -16,6 +16,10 @@
 - **Sauvegarde** : `localStorage` ; synchro Claude seulement dans l'artefact.
 - **Installable et hors ligne** : `manifest.webmanifest`, `sw.js` (réseau d'abord, cache en secours, polices mises en cache) et `icons/` (习 blanc sur jade). Ajoutable à l'écran d'accueil sur Android et iOS.
 
+## Phrases générées
+Chaque thème avec générateur (`TEMPLATES` dans `index.html`) crée des phrases qui réutilisent le vocabulaire des leçons précédentes : nationalités, langues, famille, activités, heures. Générateurs ajoutés le 09/11/2026 : Pronoms (avec 你们), Nombres (personnes, mois, numéros de téléphone), Qui est-ce ?, Membres de la famille, La journée de Xiaoming, Dire l'heure. Seul « Caractères et vocabulaire » n'en a pas (3 mots seulement).
+Pour ajouter un générateur : une entrée `{th, subj, make(s,p)}` dans `TEMPLATES` ; tester qu'une réponse canonique est jugée juste (`gradePy`, `gradeFr`).
+
 ## Idées / à faire
 - [ ] Retours sans compte GitHub : nécessiterait un petit service intermédiaire (ex. Cloudflare Worker) qui garde un jeton ; à éviter tant que l'app reste perso (spam, maintenance).
 - [ ] Séparer les données (vocabulaire) du code dans `data/` quand le fichier deviendra trop gros (≈ 785 Ko aujourd'hui, dont Hanzi Writer).
