@@ -863,6 +863,11 @@ W("红色","hóngsè","rouge|couleur rouge");
 W("工作","gōngzuò","travail|travailler");
 
 T("Salutations et présentation");
+W("呢","ne","et toi ? (particule)|et toi|et vous|et ... ?","呢 en fin de phrase reprend la question : 你呢？ = et toi ? Ton léger : pas d'accent.");
+W("多大","duō dà","quel âge (question générale)|quel âge|âge","多大 : question d'âge générale, 你多大？");
+W("几岁","jǐ suì","quel âge (à un enfant)|quel âge","几岁 : surtout pour un enfant.");
+W("记得","jìde","se souvenir|se rappeler|se souvenir de","Ton léger sur de.");
+W("还","hái","encore|toujours","还 : encore, toujours.");
 P("你叫什么？","nǐ jiào shénme","comment t'appelles-tu ?|comment tu t'appelles|tu t'appelles comment|comment vous appelez-vous");
 P("你姓什么？","nǐ xìng shénme","quel est ton nom de famille ?|c'est quoi ton nom de famille|quel est ton nom|quel est votre nom de famille");
 P("你呢？","nǐ ne","et toi ?|et vous");
@@ -887,6 +892,7 @@ T("Qui est-ce ?");
 P("他是谁？","tā shì shéi","qui est-il ?|c'est qui|qui est-ce","他是谁 et 她是谁 se prononcent pareil.");
 P("她是谁？","tā shì shéi","qui est-elle ?|c'est qui|qui est-ce","他是谁 et 她是谁 se prononcent pareil.");
 T("Caractères et vocabulaire");
+W("怎么写","zěnme xiě","comment écrire|comment écrit-on|comment s'écrit|comment ecrire","怎么 : comment ; 写 : écrire.");
 P("汉字怎么写？","Hànzì zěnme xiě","comment écrit-on ce caractère ?|comment ecrire un caractere|comment s'ecrit ce caractere|comment ecrire les caracteres chinois|comment on ecrit un caractere");
 T("Nombres");
 P("四是四，十是十。","sì shì sì, shí shì shí","quatre est quatre, dix est dix|4 est 4, 10 est 10","Virelangue : sì (4e ton) contre shí (2e ton).");
@@ -1013,6 +1019,7 @@ P("你有几个哥哥？","nǐ yǒu jǐ ge gēge|nǐ yǒu jǐ gè gēge","combie
 P("我有两个哥哥。","wǒ yǒu liǎng ge gēge|wǒ yǒu liǎng gè gēge","j'ai deux grands frères|j'ai deux frères aînés");
 
 T("Présenter sa famille");
+W("王","Wáng","Wang (nom de famille)|Wang|nom de famille Wang","王 : un nom de famille courant.");
 W("这是","zhè shì","voici|c'est|ceci est");
 W("大家","dàjiā","tout le monde");
 P("大家好！","dàjiā hǎo","bonjour à tous|bonjour tout le monde");
@@ -1100,6 +1107,7 @@ P("你的妈妈喜欢做什么？","nǐ de māma xǐhuan zuò shénme","qu'aime 
 P("你和你的家人都喜欢什么？","nǐ hé nǐ de jiārén dōu xǐhuan shénme","qu'est-ce que toi et ta famille aimez tous ?|toi et ta famille, qu'est-ce que vous aimez|qu'aimez-vous tous, toi et ta famille|qu'est-ce que toi et ta famille vous aimez");
 
 T("La journée de Xiaoming");
+W("小明","Xiǎo Míng","Xiaoming (prénom)|Xiaoming|Xiao Ming","Le personnage du cours.");
 W("大学生","dàxuéshēng","étudiant|étudiante|étudiant à l'université");
 W("学生","xuésheng","étudiant, élève|étudiant|élève|étudiante");
 W("以后","yǐhòu","après|après que");
@@ -1800,11 +1808,24 @@ TEMPLATES.push(
       fr:combos(["quelle heure est-il ? ","il est quelle heure ? "],"il est ",frTimes(h,m,"")),note:(h===2?"2 h : 两点, pas 二点. ":"")+NOTE_TIME(m)}}}
 );
 
+/* Caractères vus dans le cours jusqu'à une leçon : une phrase générée ne doit pas en contenir d'autres. */
+const _knownCh=[];
+function knownChars(li){
+  if(_knownCh[li])return _knownCh[li];
+  const set=new Set();V.forEach(v=>{if(LESSONS.indexOf(LESSON_OF[v.th])<=li)[...v.zh[0]].forEach(c=>set.add(c))});
+  return _knownCh[li]=set;
+}
+const allKnown=(th,zh)=>{const k=knownChars(LESSONS.indexOf(LESSON_OF[th]));return [...zh].every(c=>!/[㐀-鿿]/.test(c)||k.has(c))};
 function genOne(themesOn,kind){
   const tpl=TEMPLATES.filter(t=>themesOn.includes(t.th)&&(t.kind||"p")===(kind||"p"));
   if(!tpl.length) return null;
-  const t=rnd(tpl), si=rnd(t.subj), s=SUBJ[si], picks={};
-  const item=finishGen(t.make(s,picks),t.th);
+  let t,si,s,picks,item,ok=false;
+  for(let a=0;a<14&&!ok;a++){
+    t=rnd(tpl);si=rnd(t.subj);s=SUBJ[si];picks={};
+    item=finishGen(t.make(s,picks),t.th);
+    ok=BYID[item.zh[0]]||allKnown(t.th,item.zh[0]);
+  }
+  if(!ok) return null;
   if(BYID[item.zh[0]]) return BYID[item.zh[0]]; // déjà une phrase du cours
   item.id="g:"+item.zh[0];
   if(s.twin!==undefined){const tw=finishGen(t.make(SUBJ[s.twin],picks),t.th);item.twin={zh:tw.zh,py:tw.py,fr:tw.fr}}
@@ -2159,22 +2180,31 @@ const maxLessonOf=ths=>Math.max(...ths.map(t=>lessonIdx(LESSON_OF[t])));
 function themeWords(ths){
   const own=V.filter(v=>ths.includes(v.th)&&v.t==="w");
   if(own.length) return own;
-  const txt=V.filter(v=>ths.includes(v.th)&&v.t==="p").map(v=>v.zh[0]).join(""),maxL=maxLessonOf(ths);
-  return V.filter(v=>v.t==="w"&&lessonIdx(LESSON_OF[v.th])<=maxL&&txt.includes(v.zh[0])).sort((a,b)=>b.zh[0].length-a.zh[0].length).slice(0,12);
+  const txt=V.filter(v=>ths.includes(v.th)&&v.t==="p").map(v=>v.zh[0]).join(""),maxT=Math.max(...ths.map(t=>THEMES.indexOf(t)));
+  return V.filter(v=>v.t==="w"&&THEMES.indexOf(v.th)<=maxT&&txt.includes(v.zh[0])).sort((a,b)=>b.zh[0].length-a.zh[0].length).slice(0,12);
 }
 const themeCanGenW=ths=>TEMPLATES.some(x=>ths.includes(x.th)&&x.kind==="w");
 // Phrases : celles du thème (moitié cours, moitié variantes) ; s'il en manque,
 // des phrases d'autres thèmes qui utilisent son vocabulaire, en priorité des leçons déjà vues.
+/* Une phrase n'est proposée que si ses caractères ont été enseignés comme mots, dans la leçon ou avant
+   (plus les pronoms et 吗, connus dès la leçon 1). */
+const BASIC_CH=new Set([..."我你他她们吗"]),_taught=[];
+function taughtChars(li){
+  if(_taught[li])return _taught[li];
+  const set=new Set();V.forEach(v=>{if(v.t==="w"&&LESSONS.indexOf(LESSON_OF[v.th])<=li)[...v.zh[0]].forEach(c=>set.add(c))});
+  return _taught[li]=set;
+}
+const phraseOk=v=>{const k=taughtChars(LESSONS.indexOf(LESSON_OF[v.th]));return [...v.zh[0]].every(c=>!/[㐀-鿿]/.test(c)||k.has(c)||BASIC_CH.has(c))};
 function themePhrases(ths,words,n){
-  const course=shuffle(V.filter(v=>ths.includes(v.th)&&v.t==="p")),canGen=TEMPLATES.some(t=>ths.includes(t.th)&&!t.kind);
+  const course=shuffle(V.filter(v=>ths.includes(v.th)&&v.t==="p"&&phraseOk(v))),canGen=TEMPLATES.some(t=>ths.includes(t.th)&&!t.kind);
   const out=[],used=new Set(),add=it=>{if(it&&it.t==="p"&&!used.has(it.id)&&out.length<n){used.add(it.id);out.push(it)}};
   course.slice(0,canGen?Math.ceil(n/2):n).forEach(add);
   let tries=0;while(canGen&&out.length<n&&tries++<100) add(genOne(ths));
   course.forEach(add);
   if(out.length<n){
-    const maxL=maxLessonOf(ths),keys=words.map(w=>w.zh[0]);
-    shuffle(V.filter(v=>v.t==="p"&&keys.some(k=>v.zh[0].includes(k))))
-      .sort((a,b)=>(lessonIdx(LESSON_OF[a.th])>maxL)-(lessonIdx(LESSON_OF[b.th])>maxL)).forEach(add);
+    const maxT=Math.max(...ths.map(t=>THEMES.indexOf(t))),keys=words.map(w=>w.zh[0]);
+    // seulement des thèmes déjà vus (jamais un thème plus avancé du parcours)
+    shuffle(V.filter(v=>v.t==="p"&&THEMES.indexOf(v.th)<=maxT&&phraseOk(v)&&keys.some(k=>v.zh[0].includes(k)))).forEach(add);
   }
   return out;
 }
@@ -2184,7 +2214,7 @@ function levelWords(th){
   const add=v=>{if(w.length<LEVEL_LEN&&!w.includes(v))w.push(v)};
   if(w.length<LEVEL_LEN){
     const txt=V.filter(v=>v.th===th&&v.t==="p").map(v=>v.zh[0]).join("");
-    V.filter(v=>v.t==="w"&&LI(LESSON_OF[v.th])<=li&&txt.includes(v.zh[0])).sort((a,b)=>b.zh[0].length-a.zh[0].length).forEach(add);
+    V.filter(v=>v.t==="w"&&THEMES.indexOf(v.th)<=THEMES.indexOf(th)&&txt.includes(v.zh[0])).sort((a,b)=>b.zh[0].length-a.zh[0].length).forEach(add);
   }
   if(w.length<5) l.themes.slice(0,l.themes.indexOf(th)).reverse().forEach(t=>shuffle(V.filter(v=>v.th===t&&v.t==="w")).forEach(v=>{if(w.length<5)add(v)}));
   return w;
