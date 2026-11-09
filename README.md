@@ -1,6 +1,6 @@
 # Révisions chinois
 
-Application de révision de mandarin (LV2) : parcours de leçons en îlots, exercices à 3 niveaux, contrôle de leçon, révision des erreurs, apprentissage de l'écriture des caractères (ordre des traits), thème clair et sombre. Interface en français, pensée pour le mobile.
+Application de révision de mandarin (LV2) : parcours de leçons en îlots (médailles or à 100 %), exercices à 3 niveaux, contrôle de leçon, révision espacée et des erreurs, collection de caractères (sombre, jade, or) avec apprentissage de l'écriture, flamme de série quotidienne (ordre des traits), thème clair et sombre. Interface en français, pensée pour le mobile.
 
 **App en ligne : https://mtoulliou.github.io/chinois-app/**
 

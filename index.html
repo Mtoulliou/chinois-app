@@ -12,6 +12,7 @@
   --grid:#C7D3CE; --lock:#E7ECEA; --lock-sh:#C4CEC9; --lock-ic:#6B7974; --dash:#B9C6C1; --tint:#F4FAF8;
   --ok:#22744A; --ok-soft:#E0F1E7; --bad:#A93434; --bad-soft:#F6E1E1; --on-bad:#FFFFFF;
   --half:#9A6A12; --half-soft:#F6EBD3; --soft-ink:#3E4C47;
+  --gold:#C99A1D; --gold-sh:#8A6410; --gold-soft:#F8EBC4; --on-gold:#2A1D00; --gold-ink:#7A5806; --tile:#3A4642; --tile-ink:#B3BFBA;
   --hd-eyebrow:#DCEDE7; --hd-track:rgba(255,255,255,.25); --hd-fill:#FFFFFF; --hd-sep:rgba(255,255,255,.3);
   --sw-off:#C7D3CE; --sw-knob-off:#FFFFFF; --sw-knob-on:#FFFFFF; --sw-dis:#E7ECEA;
   --overlay:rgba(17,24,22,.5); --seal-ink:#F2F5F3;
@@ -26,6 +27,7 @@
   --grid:#33423D; --lock:#222C29; --lock-sh:#0B100E; --lock-ic:#8A9893; --dash:#4A5A55; --tint:#16201D;
   --ok:#6BCB91; --ok-soft:#1C3326; --bad:#EE8080; --bad-soft:#3A1F1F; --on-bad:#1A0E0E;
   --half:#E0B35A; --half-soft:#352C17; --soft-ink:#B5C3BD;
+  --gold:#E3B341; --gold-sh:#8C6B16; --gold-soft:#3A3114; --on-gold:#1D1400; --gold-ink:#F0CB6A; --tile:#1B2421; --tile-ink:#7E8C86;
   --hd-eyebrow:#123A31; --hd-track:rgba(14,26,23,.2); --hd-fill:#0E1A17; --hd-sep:rgba(14,26,23,.25);
   --sw-off:#33423D; --sw-knob-off:#97A6A0; --sw-knob-on:#0E1A17; --sw-dis:#222C29;
   --overlay:rgba(0,0,0,.6); --seal-ink:#0E1A17; color-scheme:dark}}
@@ -35,6 +37,7 @@
   --grid:#33423D; --lock:#222C29; --lock-sh:#0B100E; --lock-ic:#8A9893; --dash:#4A5A55; --tint:#16201D;
   --ok:#6BCB91; --ok-soft:#1C3326; --bad:#EE8080; --bad-soft:#3A1F1F; --on-bad:#1A0E0E;
   --half:#E0B35A; --half-soft:#352C17; --soft-ink:#B5C3BD;
+  --gold:#E3B341; --gold-sh:#8C6B16; --gold-soft:#3A3114; --on-gold:#1D1400; --gold-ink:#F0CB6A; --tile:#1B2421; --tile-ink:#7E8C86;
   --hd-eyebrow:#123A31; --hd-track:rgba(14,26,23,.2); --hd-fill:#0E1A17; --hd-sep:rgba(14,26,23,.25);
   --sw-off:#33423D; --sw-knob-off:#97A6A0; --sw-knob-on:#0E1A17; --sw-dis:#222C29;
   --overlay:rgba(0,0,0,.6); --seal-ink:#0E1A17; color-scheme:dark}
@@ -584,6 +587,91 @@ a.actrow{text-decoration:none;box-sizing:border-box}
 .wlcard .wchip{width:36px;height:36px;font-size:21px}
 .wlcard .wmore{height:36px}
 .wpill{top:auto;bottom:8px}
+/* ---------- Or, flamme, collection ---------- */
+.isl-b.gold,.ctl-b.gold{background:var(--gold);box-shadow:0 6px 0 var(--gold-sh);color:var(--on-gold)}
+.isl-b.gold:active{transform:translateY(3px);box-shadow:0 3px 0 var(--gold-sh)}
+.c40.gold,.c72.gold{background:var(--gold);color:var(--on-gold);border:0}
+.isl-l.gold,.tsep small.gold,.ctl-t span.gold,.lvrow .rt.gold{color:var(--gold-ink);font-weight:700}
+.unlock.gold{background:var(--gold-soft)}
+.unlock.gold .c40{background:var(--surface);border:2px solid var(--gold);color:var(--gold-ink)}
+.unlock.streak .c40{color:var(--jade)}
+.unlock.streak .c40 svg{fill:var(--jade)}
+.end-top .eyebrow.gold,.bigscore.gold,.end-top .bigscore.gold{color:var(--gold-ink)}
+.nudge{margin:0;padding:12px 14px;border-radius:14px;background:var(--jade-soft);color:var(--soft-ink);font-size:15px;line-height:1.4}
+.nudge.ok{background:var(--ok-soft);color:var(--ok)}
+.nudge.gold{background:var(--gold-soft);color:var(--gold-ink)}
+.wchip.m{background:var(--gold-soft);border:1.5px solid var(--gold);color:var(--gold-ink)}
+.wpl.m{background:var(--gold);color:var(--on-gold)}
+.fb-small.combo{font-weight:700;color:var(--ok)}
+.errcard.due .n{color:var(--jade)}
+@keyframes pop{0%{transform:scale(.5)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 var(--ok)}100%{box-shadow:0 0 0 12px transparent}}
+.fb.ok .c32{animation:pop .35s ease-out}
+.opt.ok,.inp.ok{animation:glow .6s ease-out}
+/* Flamme */
+.flame{flex-shrink:0;min-width:52px;min-height:52px;padding:4px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.flame b{font-size:15px;line-height:1;font-variant-numeric:tabular-nums}
+.flame.on{border-color:var(--jade);color:var(--jade)}
+.flame.on svg{fill:var(--jade)}
+.flame.pend{border:1.5px dashed var(--jade);color:var(--jade)}
+.phead .flame{margin-left:auto}
+.lhead{display:flex;gap:10px;align-items:stretch}
+.lhead .lband{flex:1;min-width:0}
+.lhead .flame{min-height:0;align-self:stretch;min-width:54px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
+.week div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}
+.week i{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);box-sizing:border-box}
+.week i.a{background:var(--jade);border-color:var(--jade)}
+.week i.t{border-color:var(--jade)}
+.calh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.calh b{font-size:17px}
+.calh button{width:44px;height:44px;border:0;border-radius:50%;background:var(--bg);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.calh button:disabled{opacity:.35;cursor:default}
+.calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:6px}
+.calg .dn{text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.cday{height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink);border-radius:20px;box-sizing:border-box}
+.cday.f{color:var(--muted);opacity:.55}
+.cday.a{background:var(--jade);color:var(--on-jade);font-weight:700}
+.cday.jl{border-top-left-radius:0;border-bottom-left-radius:0}
+.cday.jr{border-top-right-radius:0;border-bottom-right-radius:0}
+.cday.t{box-shadow:inset 0 0 0 2px var(--jade)}
+.cday.a.t{box-shadow:inset 0 0 0 2px var(--on-jade)}
+/* Collection */
+.cstats{padding:16px;display:flex;flex-direction:column;gap:12px}
+.cbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--lock)}
+.cbar i{display:block;height:100%}
+.cbar i.g{background:var(--gold)}.cbar i.j{background:var(--jade)}.cbar i.f{background:var(--jade-soft)}
+.ccount{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center}
+.ccount div{display:flex;flex-direction:column;gap:2px}
+.ccount b{font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.ccount b.g{color:var(--gold-ink)}.ccount b.j{color:var(--jade)}
+.ccount span{font-size:13px;color:var(--muted)}
+.clegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.clegend span{display:flex;align-items:center;gap:6px}
+.clegend i{width:16px;height:16px;border-radius:5px;box-sizing:border-box}
+.cgroup{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.chead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.chead .tx{display:flex;flex-direction:column}
+.chead .eyebrow{color:var(--jade)}
+.chead b{font-size:17px}
+.chead .sc{font-size:14px;color:var(--muted);white-space:nowrap}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px}
+.ctile,.clegend i{background:var(--tile);color:var(--tile-ink)}
+.ctile{height:52px;border:1.5px solid var(--tile);border-radius:12px;font-family:var(--f-han);font-size:26px;display:flex;align-items:center;justify-content:center;padding:0}
+.ctile.n,.clegend i.n{border-color:var(--line)}
+.ctile.j,.clegend i.j{background:var(--jade);border-color:var(--jade-sh);color:var(--on-jade)}
+.ctile.g,.clegend i.g{background:var(--gold);border-color:var(--gold-sh);color:var(--on-gold)}
+.ctile.g{box-shadow:0 2px 0 var(--gold-sh)}
+.ctile.f,.clegend i.f{background:var(--surface);border:2px dashed var(--jade);color:var(--jade)}
+.csheet-ch{font-family:var(--f-han);font-size:72px;line-height:1;width:112px;height:112px;border-radius:22px;display:flex;align-items:center;justify-content:center;align-self:center}
+.csheet-ch.n{background:var(--tile);color:var(--tile-ink)}
+.csheet-ch.j{background:var(--jade);color:var(--on-jade)}
+.csheet-ch.g{background:var(--gold);color:var(--on-gold)}
+.csheet-ch.f{background:var(--surface);border:3px dashed var(--jade);color:var(--jade)}
+.cinfo{text-align:center;display:flex;flex-direction:column;gap:4px}
+.cinfo b{font-size:20px}
+.cinfo span{font-size:15px;color:var(--muted);line-height:1.4}
+
 </style>
 
 <div class="wrap" id="app"></div>
@@ -1745,7 +1833,7 @@ const LS_KEY="revisions-chinois-v1";
 const ON_CLAUDE=!!(window.claude&&window.claude.use);
 /* Champs ajoutés par la refonte : lv (scores des niveaux par thème), ctl (contrôles par leçon),
    run (niveau en cours, pour « Reprendre »), showZh, zhEx, theme, view (leçon affichée). */
-const freshState=()=>({errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
+const freshState=()=>({days:{},srs:{},fx:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
 let state=freshState();
 try{const raw=localStorage.getItem(LS_KEY);if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}
 // Ancienne version : pas encore de champs du parcours
@@ -1778,7 +1866,7 @@ function save(){state.updated=Date.now();saveLocal();saveRemote()}
 /* ===== Code de transfert de progression ===== */
 const CODE_PREFIX="RC1-";
 function exportCode(){
-  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,lv:state.lv,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{}};
+  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,lv:state.lv,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
   const bytes=new TextEncoder().encode(JSON.stringify(data));
   let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
   return CODE_PREFIX+btoa(bin);
@@ -1790,7 +1878,7 @@ function importCode(code){
   try{const bin=atob(c.slice(CODE_PREFIX.length));data=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))))}
   catch(e){throw new Error("Code incomplet ou abîmé. Recopie-le en entier.")}
   if(!data||typeof data.errors!=="object"||!Array.isArray(data.series)) throw new Error("Code illisible.");
-  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},lv:data.lv||{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},updated:0};
+  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},lv:data.lv||{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
   registerGen(); save();
 }
 
@@ -1925,6 +2013,79 @@ const runFor=(th,i)=>state.run&&state.run.kind==="level"&&state.run.th===th&&sta
 const started=(th,i)=>!!runFor(th,i)||lvArr(th)[i]!=null;
 const pileIdsAll=()=>Object.keys(state.errors).filter(id=>IT(id));
 
+/* ---------- Or : niveau à 100 %, contrôle à 20/20 ---------- */
+const lvGold=(th,i)=>(lvArr(th)[i]??-1)>=100;
+const themeGold=th=>[0,1,2,3].every(i=>lvGold(th,i));
+const ctlGold=l=>!!(state.ctl[l.id]&&state.ctl[l.id].best>=20);
+
+/* ---------- Flamme : au moins une série réussie par jour (date locale) ---------- */
+const keyOf=n=>{const d=new Date(n*864e5);return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`};
+const dayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+const dayNum=k=>{const [y,m,d]=k.split("-").map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
+const todayN=()=>dayNum(dayKey());
+function streakInfo(){
+  const days=state.days||{},has=n=>!!days[keyOf(n)],t=todayN(),done=has(t);
+  const end=done?t:has(t-1)?t-1:null;let len=0;if(end!==null)for(let n=end;has(n);n--)len++;
+  const ns=Object.keys(days).map(dayNum).sort((a,b)=>a-b);let best=0,run=0,prev=null;
+  ns.forEach(n=>{run=prev!==null&&n===prev+1?run+1:1;if(run>best)best=run;prev=n});
+  return {len,doneToday:done,alive:end!==null,best,total:ns.length};
+}
+function markDay(){const k=dayKey();state.days=state.days||{};const first=!state.days[k];state.days[k]=(state.days[k]||0)+1;return {first,len:streakInfo().len}}
+const streakCard=sd=>!sd||!sd.first?"":`<section class="unlock streak" aria-label="Flamme"><span class="c40">${I.flame(20)}</span><span class="tx"><b>Flamme : ${sd.len} ${plural(sd.len,"jour","jours")}</b><span>Série du jour réussie. Reviens demain pour la garder.</span></span></section>`;
+
+/* ---------- Révision espacée : 1, 2, 4, 8, 16 puis 32 jours ---------- */
+const SRS_INT=[1,2,4,8,16,32];
+function srsUpdate(id,s){
+  if(!BYID[id])return;
+  const p=state.srs[id];let b;
+  if(s===1)b=Math.min((p?p.b:-1)+1,5);else if(s>0)b=p?p.b:0;else b=0;
+  state.srs[id]={b,d:todayN()+SRS_INT[b]};
+}
+function dueIds(onlyOn){const t=todayN(),on=themesOn();return Object.keys(state.srs||{}).filter(id=>BYID[id]&&state.srs[id].d<=t&&(!onlyOn||on.includes(BYID[id].th)))}
+const todoCount=()=>new Set([...pileIdsAll(),...dueIds(false)].filter(id=>IT(id))).size;
+function nextDue(){const t=todayN();const ds=Object.keys(state.srs||{}).filter(id=>BYID[id]&&state.srs[id].d>t).map(id=>state.srs[id].d);if(!ds.length)return"";const d=Math.min(...ds)-t;return d===1?"demain":`dans ${d} jours`}
+function syncBadge(){try{const n=todoCount();if(n>0&&navigator.setAppBadge)navigator.setAppBadge(n).catch(()=>{});else if(navigator.clearAppBadge)navigator.clearAppBadge().catch(()=>{})}catch(e){}}
+function buildDueSeries(){
+  const ids=dueIds(true).filter(id=>pickEx(IT(id))).sort((a,b)=>state.srs[a].d-state.srs[b].d).slice(0,SERIES_LEN);
+  return shuffle(assignEx(ids.map(id=>({id,review:false,due:true}))));
+}
+function dueStrip(){const n=dueIds(true).length;return n?`<button class="nextl open" id="duego"><span class="ic44">${I.redo(22)}</span><span class="tx"><span class="eyebrow">Révision espacée</span><b>${n} ${plural(n,"élément à réviser","éléments à réviser")} aujourd'hui</b><small>Touche pour commencer</small></span>${I.chev()}</button>`:""}
+function dueBlock(){
+  const n=dueIds(true).length;
+  if(n)return `<section class="errcard due" aria-label="À réviser aujourd'hui"><div class="top"><span class="n">${n}</span><span><h2>À réviser aujourd'hui</h2><small>${plural(n,"élément prévu","éléments prévus")} par la révision espacée</small></span></div>
+    <p>Plus tu réponds juste, plus un élément revient tard : 1, 2, 4, 8, 16 puis 32 jours.</p><button class="btn md" id="godue">Réviser maintenant</button></section>`;
+  const nx=nextDue();
+  return `<section class="card empty" aria-label="À réviser aujourd'hui"><span class="c56">${I.check(28,2.4)}</span><h2 class="h19">Rien à réviser aujourd'hui</h2><p>${nx?`Prochain rappel ${nx}.`:"Les éléments que tu travailles reviendront ici au bon moment."}</p></section>`;
+}
+
+/* ---------- Retour immédiat : vibration et son (réglables) ---------- */
+const fxOn=k=>{const f=state.fx||{};return k==="vib"?f.vib!==false:!!f.snd};
+function setFx(k,v){state.fx={...(state.fx||{}),[k]:v};save()}
+let _ac=null;
+function beep(ok){
+  try{_ac=_ac||new (window.AudioContext||window.webkitAudioContext)();const t=_ac.currentTime;
+    const tone=(f,st,d)=>{const o=_ac.createOscillator(),g=_ac.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t+st);g.gain.exponentialRampToValueAtTime(.12,t+st+.02);g.gain.exponentialRampToValueAtTime(.0001,t+st+d);o.connect(g);g.connect(_ac.destination);o.start(t+st);o.stop(t+st+d+.02)};
+    if(ok){tone(660,0,.12);tone(880,.1,.18)}else tone(220,0,.22);
+  }catch(e){}
+}
+function fxFeedback(ok){
+  if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(ok?12:[25,50,25])}catch(e){}}
+  if(fxOn("snd"))beep(ok);
+}
+
+/* ---------- Compétences : « Tu sais maintenant… » ---------- */
+const CANDO={
+"Salutations et présentation":"saluer quelqu'un et te présenter","Pays et nationalités":"dire d'où tu viens et demander la nationalité","Langues":"nommer les langues et dire celles que tu parles","Mois et jours":"dire les mois et les jours de la semaine","Classificateurs":"compter des objets avec le bon classificateur","Tons et pinyin":"lire le pinyin et reconnaître les quatre tons",
+"Pronoms":"désigner les personnes avec les pronoms","Nombres":"compter jusqu'à 99 et dire un numéro de téléphone","Âge":"dire et demander l'âge","Qui est-ce ?":"demander et dire qui est quelqu'un","Caractères et vocabulaire":"reconnaître les caractères de base du cours",
+"Aimer et demander":"dire ce que tu aimes et poser la question","Loisirs":"parler de tes loisirs","Nourriture et boissons":"nommer ce que tu manges et ce que tu bois",
+"Membres de la famille":"nommer les membres de ta famille","Mon, ma, mes et avoir":"dire ce que tu as, avec « mon, ma, mes »","Compter les personnes":"dire combien de personnes il y a dans ta famille","Présenter sa famille":"présenter ta famille en quelques phrases",
+"Activités du quotidien":"dire ce que tu fais dans la journée","D'abord, ensuite, enfin":"enchaîner des actions dans l'ordre","Aussi, tous, mais":"relier des idées avec « aussi », « tous » et « mais »","La journée de Xiaoming":"comprendre et raconter une journée complète",
+"Dire l'heure":"dire et demander l'heure","Moments et questions":"situer un moment de la journée et poser des questions sur l'heure","Mon emploi du temps":"décrire ton emploi du temps",
+"Jours et date":"dire le jour et la date","La météo":"parler du temps qu'il fait","Vouloir manger et boire":"dire ce que tu veux manger et boire","Où je suis, où je vais":"dire où tu es et où tu vas","Donner rendez-vous":"proposer et fixer un rendez-vous","Faire des achats":"demander un prix et faire un achat","Lecture : mon samedi":"lire un petit texte sur un samedi"
+};
+const CANDO_L={l1:"te présenter, dire d'où tu viens, nommer les langues, les mois et les jours",l2:"utiliser les pronoms, compter, dire ton âge et demander qui est quelqu'un",l3b:"dire ce que tu aimes, parler de tes loisirs et de ce que tu manges et bois",l4:"présenter ta famille et dire combien vous êtes",l5:"raconter ta journée dans l'ordre",l6:"dire l'heure et décrire ton emploi du temps",l8:"parler de ton samedi : date, météo, repas, déplacements, rendez-vous et achats"};
+const candoCard=(t,lesson)=>t?`<section class="unlock gold" aria-label="Compétence acquise"><span class="c40">${I.star(20)}</span><span class="tx"><b>${lesson?"Leçon maîtrisée":"Compétence acquise"}</b><span>Tu sais maintenant ${esc(t)}.</span></span></section>`:"";
+
 /* ---------- Construction des niveaux et du contrôle ---------- */
 /* Repris de l'ancienne révision par thème : mots et phrases d'un thème */
 const lessonIdx=l=>LESSONS.indexOf(l);
@@ -2056,25 +2217,25 @@ function applyTheme(){
   if(t==="light"||t==="dark")r.dataset.theme=t;else delete r.dataset.theme;
 }
 function navHTML(active){
-  const n=pileIdsAll().length;
+  const n=todoCount();
   const a=(tab,ic,lab,extra="")=>`<a href="#" data-tab="${tab}"${active===tab?' aria-current="page"':""}>${ic}${lab}${extra}</a>`;
   return `<nav class="nav" aria-label="Navigation principale"><div class="nav-in">
     ${a("lessons",I.book(),"Leçons")}
-    ${a("revision",I.redo(),"Révision",n?`<span class="badge" aria-label="${n} ${plural(n,"erreur","erreurs")} à retravailler">${n}</span>`:"")}
-    ${a("writing",I.pen(),"Écriture")}
+    ${a("revision",I.redo(),"Révision",n?`<span class="badge" aria-label="${n} ${plural(n,"élément","éléments")} à réviser">${n}</span>`:"")}
+    ${a("collection",I.grid(),"Collection")}
     ${a("settings",I.sliders(),"Paramètres")}
   </div></nav>`;
 }
 function bindNav(){document.querySelectorAll(".nav a").forEach(a=>a.onclick=e=>{e.preventDefault();go(a.dataset.tab)})}
 function go(tab){closeSheet();screen=tab;R=null;window.scrollTo(0,0);render()}
 function render(){
-  applyTheme();
+  applyTheme();syncBadge();
   if(screen==="revision")renderRevision();
   else if(screen==="settings")renderSettings();
-  else if(screen==="writing")renderWriting();
+  else if(screen==="collection")renderCollection();
   else{screen="lessons";renderLessons()}
 }
-function onRemoteLoad(){applyTheme();restoreGen(state.run);if(["lessons","revision","settings","writing"].includes(screen))render()}
+function onRemoteLoad(){applyTheme();restoreGen(state.run);if(["lessons","revision","settings","collection"].includes(screen))render()}
 
 /* ===== Onglet Leçons ===== */
 function renderLessons(){
@@ -2086,8 +2247,9 @@ function renderLessons(){
   <header class="lhead" aria-label="Leçon en cours"><div class="lband">
     <div class="lband-main"><span class="eyebrow">${esc(l.n)}</span><h1>${esc(l.t)}</h1>
       <div class="lband-prog"><div class="lband-track"><i style="width:${tot?done/tot*100:0}%"></i></div><span>${done} / ${tot}</span></div></div>
-    <button class="lband-list" id="lessons" aria-label="Toutes les leçons">${I.list()}</button></div></header>
+    <button class="lband-list" id="lessons" aria-label="Toutes les leçons">${I.list()}</button></div>${flameBtn()}</header>
   <main class="path${first?" first":""}" aria-label="Parcours de la ${esc(lower(l.n))}">`;
+  h+=dueStrip();
   if(first) h+=`<section class="card how" aria-label="Comment ça marche"><h2>Comment ça marche</h2><ol>
     <li><span class="num24">1</span><span>Chaque thème a 4 niveaux, du QCM jusqu'aux phrases.</span></li>
     <li><span class="num24">2</span><span>80 % de bonnes réponses ouvrent l'îlot suivant. Les thèmes se débloquent dans l'ordre.</span></li>
@@ -2096,7 +2258,7 @@ function renderLessons(){
     const open=themeOpen(l,ti),k=nOk(th);
     let st,cls="";
     if(!open) st=ti>0&&themeOpen(l,ti-1)?"Termine d'abord le thème précédent":"Verrouillé";
-    else if(k===4){st="Validé";cls="ok"}
+    else if(k===4){if(themeGold(th)){st="Parfait, 4 niveaux en or";cls="gold"}else{st="Validé";cls="ok"}}
     else if(k===0&&!started(th,0)) st="À commencer";
     else if(k===0){st="En cours";cls="part"}
     else {st=`${k} / 4 ${plural(k,"validé","validés")}`;cls="part"}
@@ -2108,7 +2270,8 @@ function renderLessons(){
       if(isCur){const re=started(th,i);
         h+=`<div class="${cls2}" ${sty}><span class="bubble">${re?"Reprendre":"Commencer"}</span><button class="isl-b" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${re?"en cours":"commencer"}">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
       }else if(ok){
-        h+=`<div class="${cls2}" ${sty}><button class="isl-b" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, validé, ${sc} %, refaire">${I.check()}</button><span class="isl-l">${L.name}, ${sc} %</span></div>`;
+        const gd=lvGold(th,i);
+        h+=`<div class="${cls2}" ${sty}><button class="isl-b${gd?" gold":""}" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait, 100 %":"validé, "+sc+" %"}, refaire">${gd?I.star(30):I.check()}</button><span class="isl-l${gd?" gold":""}">${L.name}, ${sc} %</span></div>`;
       }else if(lo){
         h+=`<div class="${cls2}" ${sty}><button class="isl-b av" data-lv="${ti}:${i}" aria-label="Niveau ${i+1} ${L.name}, disponible">${i+1}</button><span class="isl-l">${L.name}</span></div>`;
       }else{
@@ -2121,8 +2284,8 @@ function renderLessons(){
     <span class="ctl-t"><b>Contrôle de la leçon</b><span>Valide les ${tot} niveaux pour le débloquer</span></span></div>`;
   else if(!cP) h+=`<div class="ctl cur"><span class="bubble">${best!=null?"Repasser":"Commencer"}</span><button class="ctl-b" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ouvert">${I.flag()}</button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:"20 questions, 16 / 20 pour valider"}</span></span></div>`;
-  else h+=`<div class="ctl"><button class="ctl-b" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, validé">${I.flag()}<span class="ctl-badge ok" aria-hidden="true">${I.check(15,3)}</span></button>
-    <span class="ctl-t"><b>Contrôle de la leçon</b><span class="ok">Validé, ${best} / 20</span></span></div>`;
+  else{const cg=ctlGold(l);h+=`<div class="ctl"><button class="ctl-b${cg?" gold":""}" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ${cg?"parfait":"validé"}">${I.flag()}<span class="ctl-badge ok" aria-hidden="true">${I.check(15,3)}</span></button>
+    <span class="ctl-t"><b>Contrôle de la leçon</b><span class="${cg?"gold":"ok"}">${cg?"Parfait, 20 / 20":"Validé, "+best+" / 20"}</span></span></div>`}
   const nx=LESSONS[LI(l)+1];
   if(nx&&lessonOpen(nx)) h+=`<button class="nextl open" data-view="${nx.id}"><span class="ic44">${I.unlock()}</span><span class="tx"><span class="eyebrow">${esc(nx.n)}</span><b>${esc(nx.t)}</b><small>Débloquée. Touche pour ouvrir son parcours.</small></span>${I.chev()}</button>`;
   else if(nx) h+=`<section class="nextl" aria-label="${esc(nx.n)}, verrouillée"><span class="ic44">${I.lock(20)}</span><span class="tx"><span class="eyebrow">${esc(nx.n)}</span><b>${esc(nx.t)}</b><small>Le contrôle de la ${esc(lower(l.n))} la débloque.</small></span></section>`;
@@ -2130,7 +2293,8 @@ function renderLessons(){
     h+=`<section class="nextl" aria-label="Leçon ${n}, verrouillée"><span class="ic44">${I.lock(20)}</span><span class="tx"><span class="eyebrow">Leçon ${n}</span><b>Prochaine leçon</b><small>${cP?"Ajoutée après ton prochain cours. Le contrôle est déjà validé.":`Ajoutée après ton prochain cours. Le contrôle de la ${esc(lower(l.n))} la débloque.`}</small></span></section>`}
   h+=`</main></div>${navHTML("lessons")}`;
   app.innerHTML=h;bindNav();
-  document.getElementById("lessons").onclick=lessonsSheet;
+  document.getElementById("lessons").onclick=lessonsSheet;bindFlame();
+  const dg=document.getElementById("duego");if(dg)dg.onclick=()=>startSeries("due");
   app.querySelectorAll(".tsep").forEach(b=>b.onclick=()=>themeSheet(l,+b.dataset.th));
   app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ti,i]=b.dataset.lv.split(":").map(Number);startLevel(l,ti,i)});
   const c=document.getElementById("ctl");if(c)c.onclick=()=>renderCtlIntro(l);
@@ -2160,13 +2324,13 @@ function themeSheet(l,ti){
   const th=l.themes[ti],k=nOk(th),open=themeOpen(l,ti),cl=curLevel(l);
   const rows=LEVELS.map((L,i)=>{
     const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i,sc=lvArr(th)[i];
-    if(ok) return `<li><button class="lvrow" data-i="${i}" aria-label="Niveau ${i+1} ${L.name}, validé, ${sc} %, refaire"><span class="c40">${I.check(18,2.6)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt">${sc} %</span></button></li>`;
+    if(ok){const gd=lvGold(th,i);return `<li><button class="lvrow" data-i="${i}" aria-label="Niveau ${i+1} ${L.name}, ${gd?"parfait, 100 %":"validé, "+sc+" %"}, refaire"><span class="c40${gd?" gold":""}">${gd?I.star(18):I.check(18,2.6)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt${gd?" gold":""}">${sc} %</span></button></li>`}
     if(lo) return `<li><button class="lvrow${isCur?" cur":""}" data-i="${i}"><span class="c40 ring">${i+1}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt cur">${started(th,i)?"En cours":"À faire"}</span></button></li>`;
     return `<li><button class="lvrow" disabled><span class="c40 lk">${I.lock(16)}</span><span class="tx"><b>${i+1}. ${L.name}</b><small>${L.desc}</small></span><span class="rt lk">Verrouillé</span></button></li>`;
   }).join("");
   const words=themeWords([th]).length?themeWords([th]):levelWords(th);
   const act=themeActions(l,ti);
-  const sub=k===4?"Thème validé, 4 niveaux sur 4":k===0?"Aucun niveau validé sur 4":`${k} ${plural(k,"niveau validé","niveaux validés")} sur 4`;
+  const sub=k===4?(themeGold(th)?"Thème parfait, 4 niveaux en or":"Thème validé, 4 niveaux sur 4"):k===0?"Aucun niveau validé sur 4":`${k} ${plural(k,"niveau validé","niveaux validés")} sur 4`;
   openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h2>${esc(th)}</h2><p>${open?sub:"Termine d'abord le thème précédent"}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
     <ol class="lvlist">${rows}</ol>
     ${words.length?`<div class="vocab"><h3>Vocabulaire du thème</h3><div class="chips">${words.map(w=>`<span class="vchip"><b>${PY(w.py[0])}${ZH(w.zh[0])}</b><small>${esc(w.fr[0])}</small></span>`).join("")}</div></div>`:""}
@@ -2229,7 +2393,7 @@ function renderCtlIntro(l){
   window.scrollTo(0,0);
 }
 function startSeries(mode){
-  const qs=(mode==="errors"?buildErrorSeries():buildSeries()).map(q=>({id:q.id,ex:q.ex,review:!!q.review}));
+  const qs=(mode==="errors"?buildErrorSeries():mode==="due"?buildDueSeries():buildSeries()).map(q=>({id:q.id,ex:q.ex,review:!!q.review,due:!!q.due}));
   if(!qs.length)return;
   if(zhExOn()) shuffle(qs.filter(q=>hasHan(IT(q.id)))).slice(0,Math.round(qs.length/4)).forEach(q=>q.ex=2);
   R={kind:"series",mode,qs:qs.map(withGen),res:[],qi:0,main:qs.length};
@@ -2248,10 +2412,11 @@ function renderQ(){
   const total=R.kind==="series"?(last?R.qs.length-R.main:R.main):R.qs.length,pos=last?R.qi-R.main:R.qi;
   const l=R.kind==="ctl"?LESSONS.find(x=>x.id===R.lid):null;
   const thName=R.kind==="level"?R.th:(q.th||item.th);
-  const pills=[R.kind==="level"?`Niveau ${R.lv+1}, ${LEVELS[R.lv].name}`:R.kind==="ctl"?`Contrôle, ${lower(l.n)}`:R.mode==="errors"?"Mes erreurs":"Série libre"];
+  const pills=[R.kind==="level"?`Niveau ${R.lv+1}, ${LEVELS[R.lv].name}`:R.kind==="ctl"?`Contrôle, ${lower(l.n)}`:R.mode==="errors"?"Mes erreurs":R.mode==="due"?"Révision du jour":"Série libre"];
   let pillsH=`<span class="pill">${esc(pills[0])}</span>`;
   if(last) pillsH+=`<span class="pill half">Dernière chance</span>`;
   else if(q.review) pillsH+=`<span class="pill half">À retravailler</span>`;
+  else if(q.due) pillsH+=`<span class="pill half">À réviser</span>`;
   const py=item.py[0],zh=item.zh[0],fr=item.fr[0],longPy=isP||py.length>16,longFr=isP||fr.length>22;
   const zhGrid=()=>{if(!zhOn())return"";const ch=[...zh].filter(c=>/[\u3400-\u9fff]/.test(c));
     if(!isP&&ch.length&&ch.length<=4&&ch.length===[...zh].length) return `<div class="tzg" aria-label="Caractères : ${esc(zh)}">${ch.map(c=>`<span><em lang="zh">${esc(c)}</em></span>`).join("")}</div>`;
@@ -2331,13 +2496,14 @@ function answerParts(item,items,k){
 }
 function showFb(){
   const {q,item,s,why,ans,items}=cur,k=q.ex==="qcm"?"fr":FIELDS2[q.ex];
+  fxFeedback(s===1);const combo=(R.combo||0)+(s===1?1:0);
   const inp=document.getElementById("inp");
   if(inp){inp.classList.remove("ok","bad");inp.classList.add(s===1?"ok":"bad")}
   const box=document.getElementById("fbox"),line=`<b lang="zh-Latn-pinyin">${esc(item.py[0])}</b>${ZH(item.zh[0])} : ${esc(item.fr[0])}`;
   if(s===1){
     box.innerHTML=`<section class="fb ok" role="status" aria-label="Bonne réponse"><div class="fb-in">
       <div class="fb-t"><span class="c32">${I.check(18)}</span><h2>${why==="manual"?"Validé par toi":"Bonne réponse"}</h2></div>
-      <p class="fb-line">${line}</p>${why==="typo"?`<p class="fb-small">Faute de frappe tolérée.</p>`:""}
+      <p class="fb-line">${line}</p>${why==="typo"?`<p class="fb-small">Faute de frappe tolérée.</p>`:""}${combo>=3?`<p class="fb-small combo">${combo} bonnes réponses d'affilée</p>`:""}
       <button class="btn ok" id="cont">Continuer</button></div></section>`;
   }else{
     const notes=R.kind==="ctl"?[]:[...new Set(items.map(v=>v.note).filter(Boolean))];
@@ -2361,6 +2527,7 @@ function nextQ(){
   const {q,item,s}=cur;
   if(q.last){R.res[q.ri].last={s,ans:cur.ans}}
   else{
+    srsUpdate(item.id,s);R.combo=s===1?(R.combo||0)+1:0;
     R.res.push({id:q.id,ex:q.ex,s,ans:cur.ans,why:cur.why,th:q.th||(R.kind==="level"?R.th:item.th),review:!!q.review});
     const e=state.errors[item.id];
     if(s<1){const ne=e||{n:0,ok:0,ex:[]};if(item.gen)ne.item=genCopy(item);ne.n++;ne.ok=0;const x=q.ex==="qcm"?3:q.ex;if(!ne.ex.includes(x))ne.ex.push(x);state.errors[item.id]=ne}
@@ -2404,8 +2571,9 @@ function errsCard(errs,withLC,title){
 function finishLevel(){
   const r=R,n=r.res.length,good=r.res.filter(x=>x.s===1).length,pct=n?Math.round(good/n*100):0;
   const l=LESSON_OF[r.th],ti=l.themes.indexOf(r.th),i=r.lv,L=LEVELS[i];
-  const wasOk=lvOk(r.th,i),wasCtl=ctlOpen(l);
+  const wasOk=lvOk(r.th,i),wasCtl=ctlOpen(l),wasThemeDone=themeDone(r.th),wasGold=lvGold(r.th,i);
   const a=lvArr(r.th).slice();a[i]=Math.max(a[i]??0,pct);state.lv[r.th]=a;
+  const sday=pct>=PASS?markDay():null;
   state.run=null;state.view=l.id;save();R=null;
   const passed=pct>=PASS,need=Math.ceil(n*PASS/100),errs=r.res.filter(x=>x.s<1);
   const cl=curLevel(l);
@@ -2413,6 +2581,11 @@ function finishLevel(){
   if(cl) nextBtn={label:cl.th===r.th?`Passer au niveau ${cl.i+1}`:"Passer au thème suivant",go:()=>startLevel(l,cl.ti,cl.i)};
   else if(ctlOpen(l)&&!ctlPassed(l)) nextBtn={label:"Passer au contrôle",go:()=>renderCtlIntro(l)};
   if(passed){
+    const gold=pct>=100,kk=nOk(r.th),nl=[];
+    if(pct<100)nl.push(`Un sans-faute (100 %) passe ce niveau en or. Il t'a manqué ${n-good} ${plural(n-good,"réponse","réponses")}.`);
+    if(kk<4)nl.push(`Plus que ${4-kk} ${plural(4-kk,"niveau","niveaux")} pour finir ce thème.`);
+    const nudge=nl.length?`<p class="nudge">${esc(nl.join(" "))}</p>`:(gold&&!wasGold?`<p class="nudge gold">Niveau en or.</p>`:"");
+    const cando=!wasThemeDone&&themeDone(r.th)?candoCard(CANDO[r.th]):"";
     let unlock="";
     if(!wasOk){
       if(i<3) unlock=`<section class="unlock" aria-label="Niveau débloqué"><span class="c40">${i+2}</span><span class="tx"><b>Niveau ${i+2} débloqué</b><span>${LEVELS[i+1].name} : ${lower(LEVELS[i+1].desc)}</span></span></section>`;
@@ -2420,10 +2593,10 @@ function finishLevel(){
       else if(!wasCtl&&ctlOpen(l)) unlock=`<section class="unlock" aria-label="Contrôle débloqué"><span class="c40">${I.flag(20)}</span><span class="tx"><b>Contrôle débloqué</b><span>20 questions sur la leçon, 16 pour valider</span></span></section>`;
     }
     app.innerHTML=`<div class="end">
-      <div class="end-top"><span class="c72">${I.check(36,2.6)}</span><h1>Niveau ${i+1} validé</h1><p>${esc(r.th)}, ${L.name}</p></div>
+      <div class="end-top"><span class="c72${gold?" gold":""}">${gold?I.star(36):I.check(36,2.6)}</span><h1>Niveau ${i+1} ${gold?"parfait":"validé"}</h1><p>${esc(r.th)}, ${L.name}</p></div>
       <section class="card scorebox" aria-label="Score"><div class="top"><span class="pct">${pct} %</span><span>${good} ${plural(good,"bonne réponse","bonnes réponses")} sur ${n}</span></div>
         <div class="meter"><div class="tr"><i style="width:${pct}%"></i></div><div class="mk" aria-hidden="true"></div><span class="ml">80 % requis</span></div></section>
-      ${unlock}${errsCard(errs)}
+      ${unlock}${cando}${nudge}${streakCard(sday)}${errsCard(errs)}
       <div class="spacer"></div>
       ${nextBtn?`<button class="btn" id="nx">${esc(nextBtn.label)}</button><button class="btn link" id="bk">Retour aux leçons</button>`:`<button class="btn" id="bk">Retour aux leçons</button>`}
     </div>`;
@@ -2432,6 +2605,7 @@ function finishLevel(){
       <div class="end-top"><span class="c72 half">${I.redo(34,2.2)}</span><h1>Niveau ${i+1} à refaire</h1><p>${esc(r.th)}, ${L.name}</p></div>
       <section class="card scorebox half" aria-label="Score"><div class="top"><span class="pct">${pct} %</span><span>${good} sur ${n}, il en faut ${need}</span></div>
         <div class="meter"><div class="tr"><i style="width:${pct}%"></i></div><div class="mk" aria-hidden="true"></div><span class="ml">80 % requis</span></div></section>
+      ${need-good<=2?`<p class="nudge">Plus que ${need-good} ${plural(need-good,"bonne réponse","bonnes réponses")} pour valider, tu y es presque.</p>`:""}
       ${wasOk?`<p class="note-p">Ce niveau reste validé avec ton meilleur score, ${a[i]} %.</p>`:""}
       ${errsCard(errs)}
       <div class="spacer"></div>
@@ -2451,6 +2625,7 @@ function finishCtl(){
   state.ctl[l.id]={best:Math.max(prev.best||0,score20),passed:passed||!!prev.passed,date:Date.now()};
   state.series.push({date:nowStr(),score:total?good/total*20:0,themes:`Contrôle, ${lower(l.n)}`,kind:"ctl"});state.series=state.series.slice(-30);
   const nx=LESSONS[LI(l)+1];
+  const sday=passed?markDay():null,perfect=total>0&&good===total;
   if(passed&&nx)state.view=nx.id;
   save();R=null;
   const rows=l.themes.map(th=>{const rr=r.res.filter(x=>x.th===th),ok=rr.filter(x=>x.s===1).length,weak=rr.length>0&&ok/rr.length<.8;return {th,ok,n:rr.length,weak}}).filter(x=>x.n);
@@ -2459,8 +2634,9 @@ function finishCtl(){
   const errs=r.res.filter(x=>x.s<1),pile=pileIdsAll().length;
   if(passed){
     app.innerHTML=`<div class="end">
-      <div class="end-top tight"><span class="eyebrow">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore">${good}<small> / ${total}</small></p><h1>${esc(l.n)} validée</h1><p>${esc(l.t)}</p></div>
+      <div class="end-top tight"><span class="eyebrow">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore${perfect?" gold":""}">${good}<small> / ${total}</small></p><h1>${esc(l.n)} ${perfect?"parfaite":"validée"}</h1><p>${esc(l.t)}</p></div>
       ${resH}
+      ${candoCard(CANDO_L[l.id],true)}${streakCard(sday)}
       <section class="unlock" aria-label="Leçon débloquée"><span class="c40">${I.unlock()}</span><span class="tx"><b>Leçon suivante débloquée</b><span>${nx?`${esc(nx.n)}, ${esc(nx.t)}`:"Elle apparaît dès que tu ajoutes son vocabulaire."}</span></span></section>
       ${errs.length?`<button class="linkcard" id="toRev"><span class="tx"><b>${errs.length} ${plural(errs.length,"erreur ajoutée","erreurs ajoutées")} à ta révision</b><span lang="zh-Latn-pinyin">${esc(errs.slice(0,3).map(x=>IT(x.id)?IT(x.id).py[0]:"").join(", "))}</span></span>${I.chev()}</button>`:""}
       <div class="spacer"></div>
@@ -2469,7 +2645,7 @@ function finishCtl(){
   }else{
     const weak=rows.filter(x=>x.weak);
     app.innerHTML=`<div class="end">
-      <div class="end-top tight"><span class="eyebrow half">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore half">${good}<small> / ${total}</small></p><h1>Pas encore validée</h1><p>Il faut ${need} / ${total}. Tes niveaux restent validés.</p></div>
+      <div class="end-top tight"><span class="eyebrow half">Contrôle, ${esc(lower(l.n))}</span><p class="bigscore half">${good}<small> / ${total}</small></p><h1>Pas encore validée</h1><p>Il faut ${need} / ${total}. ${need-good<=2?`Plus que ${need-good} ${plural(need-good,"point","points")}, tu y es presque. `:""}Tes niveaux restent validés.</p></div>
       ${resH}
       ${weak.length?`<section class="stack8" aria-label="Thèmes à revoir"><h2 class="sub-h">Revoir un thème avant de repasser</h2>${weak.map(x=>`<button class="linkcard sm" data-th="${esc(x.th)}"><span class="tx">${esc(x.th)}</span>${I.chev()}</button>`).join("")}</section>`:""}
       <div class="spacer"></div>
@@ -2487,21 +2663,24 @@ function finishSeries(){
   const r=R,bonus=x=>x.last?(1-x.s)*x.last.s/2:0;
   const nq=r.res.length,total=r.res.reduce((s,x)=>s+x.s+bonus(x),0),note=nq?Math.round(total/nq*20*2)/2:0;
   const lc=r.res.filter(x=>x.last),lcOk=lc.filter(x=>x.last.s===1).length;
-  const label=r.mode==="errors"?"Mes erreurs":selLabel();
-  state.series.push({date:nowStr(),score:note,themes:label,kind:r.mode==="errors"?"errors":"free"});state.series=state.series.slice(-30);save();
+  const label=r.mode==="errors"?"Mes erreurs":r.mode==="due"?"Révision du jour":selLabel();
+  state.series.push({date:nowStr(),score:note,themes:label,kind:r.mode==="errors"?"errors":r.mode==="due"?"due":"free"});state.series=state.series.slice(-30);
+  const sday=note>=10?markDay():null;save();
   const errs=r.res.filter(x=>x.s<1).sort((a,b)=>THEMES.indexOf(IT(a.id).th)-THEMES.indexOf(IT(b.id).th));
   const pile=pileIdsAll().length,mastered=r.res.filter(x=>x.review&&!state.errors[x.id]).length,good=note>=10;
-  const mode=r.mode;R=null;
+  const mode=r.mode,dueLeft=dueIds(true).length;R=null;
   const info=[errs.length?`${errs.length} ${plural(errs.length,"question","questions")} avec erreur`:"Aucune erreur"];
   if(lc.length)info.push(`dernière chance : ${lcOk} / ${lc.length}`);
   if(mastered)info.push(`${mastered} ${plural(mastered,"élément sorti","éléments sortis")} de la liste`);
   info.push(`${pile} à retravailler`);
   app.innerHTML=`<div class="end">
-    <div class="end-top tight"><span class="eyebrow${good?"":" half"}">${mode==="errors"?"Mes erreurs":"Série libre"}</span><p class="bigscore${good?"":" half"}">${fmt(note)}<small> / 20</small></p><h1>Série terminée</h1><p>${esc(info.join(", "))}</p></div>
-    ${errsCard(errs,true,`${errs.length} ${plural(errs.length,"erreur","erreurs")} et corrections`)}
+    <div class="end-top tight"><span class="eyebrow${good?"":" half"}">${mode==="errors"?"Mes erreurs":mode==="due"?"Révision du jour":"Série libre"}</span><p class="bigscore${good?"":" half"}">${fmt(note)}<small> / 20</small></p><h1>Série terminée</h1><p>${esc(info.join(", "))}</p></div>
+    ${streakCard(sday)}${errsCard(errs,true,`${errs.length} ${plural(errs.length,"erreur","erreurs")} et corrections`)}
+    ${dueLeft>0?`<button class="linkcard" id="moredue"><span class="tx"><b>Encore ${dueLeft} ${plural(dueLeft,"élément à réviser","éléments à réviser")} aujourd'hui</b><span>Enchaîne tant que tu y es</span></span>${I.chev()}</button>`:(mode==="due"?`<p class="nudge ok">Tout est révisé pour aujourd'hui.</p>`:"")}
     <div class="spacer"></div>
     <button class="btn" id="again">Nouvelle série</button><button class="btn link" id="bk">Retour à la révision</button></div>`;
   document.getElementById("again").onclick=()=>startSeries(mode);
+  const md=document.getElementById("moredue");if(md)md.onclick=()=>startSeries("due");
   document.getElementById("bk").onclick=()=>go("revision");
 }
 
@@ -2520,6 +2699,7 @@ function seriesSize(){
   return exOn().length?Math.min(SERIES_LEN,P0.filter(v=>v.t==="w"||pOk).length+(TEMPLATES.some(t=>on0.includes(t.th)&&(pOk||t.kind==="w"))?SERIES_LEN:0)):0;
 }
 function histKind(s){
+  if(s.kind==="due")return "Révision du jour";
   if(s.kind==="ctl")return s.themes;
   if(s.kind==="errors"||s.themes==="Révision des erreurs"||s.themes==="Mes erreurs")return "Mes erreurs";
   return "Série libre";
@@ -2560,9 +2740,9 @@ function renderRevision(){
       <button class="btn md" id="goerr">Réviser mes erreurs</button></section>`
     :`<section class="card empty" aria-label="Mes erreurs"><span class="c56">${I.check(28,2.4)}</span><h2 class="h19">Aucune erreur à retravailler</h2><p>${all.length&&si.k!=="all"?`Rien dans cette sélection. ${all.length} ${plural(all.length,"erreur reste","erreurs restent")} dans les autres leçons.`:"Les erreurs des niveaux, des contrôles et des séries libres arrivent ici."}</p></section>`;
   app.innerHTML=`<div class="tabscr"><main class="page">
-    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Révision</h1><p>Tout le vocabulaire, sans verrou</p></div></header>
+    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Révision</h1><p>Tout le vocabulaire, sans verrou</p></div>${flameBtn()}</header>
     <button class="rband" id="sel" aria-label="Changer la leçon à réviser, actuellement ${esc(si.t)}"><span class="tx"><span class="eyebrow">${esc(si.ey)}</span><b>${esc(si.t)}</b><small>${esc(si.s)}</small></span><span class="ic">${I.list()}</span></button>
-    ${errBlock}
+    ${dueBlock()}${errBlock}
     <section class="card freecard" aria-label="Série libre">
       <div class="hd"><h2>Série libre</h2><small>20 questions aléatoires sur la sélection du bandeau, mots et phrases.</small></div>
       <button class="btn md${pile.length?" sec":""}" id="go" ${N?"":"disabled"}>${N?`Lancer une série de ${N}`:"Aucun thème choisi"}</button></section>
@@ -2577,7 +2757,8 @@ function renderRevision(){
   bindNav();
   const ge=document.getElementById("goerr");if(ge)ge.onclick=()=>startSeries("errors");
   document.getElementById("go").onclick=()=>startSeries("normal");
-  document.getElementById("sel").onclick=revLessonSheet;
+  document.getElementById("sel").onclick=revLessonSheet;bindFlame();
+  const gd=document.getElementById("godue");if(gd)gd.onclick=()=>startSeries("due");
 }
 function selSheet(){
   const body=()=>{const off=new Set(state.off||[]);
@@ -2616,12 +2797,17 @@ function renderSettings(){
   const z=zhOn(),ze=!!state.zhEx,th=state.theme||"system";
   const seg=(v,ic,lab)=>`<button role="radio" aria-checked="${th===v}" data-theme="${v}">${ic}${lab}</button>`;
   app.innerHTML=`<div class="tabscr"><main class="page">
-    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Paramètres</h1><p>Révisions chinois</p></div></header>
+    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Paramètres</h1><p>Révisions chinois</p></div>${flameBtn()}</header>
     <h2 class="sec-title">Caractères chinois</h2>
     <section class="card set">
       <button class="swrow" role="switch" aria-checked="${z}" id="sw-zh"><span class="tx"><b>Afficher les caractères</b><small>En petit sous le pinyin, dans les exercices et les corrections.</small></span><span class="sw" aria-hidden="true"><i></i></span></button>
       <button class="swrow" role="switch" aria-checked="${z&&ze}" id="sw-zhex" ${z?"":"disabled"}><span class="tx"><b>Exercices sur les caractères</b><small>${z?"Ajoute des questions à écrire au clavier chinois.":"Ajoute des questions à écrire au clavier chinois. Nécessite l'affichage des caractères."}</small></span><span class="sw" aria-hidden="true"><i></i></span></button>
       <div class="preview"><small>Aperçu</small><span class="pv"><b lang="zh-Latn-pinyin">gēge</b>${z?`<span lang="zh">哥哥</span>`:""}</span><span>grand frère</span></div>
+    </section>
+    <h2 class="sec-title">Pendant les exercices</h2>
+    <section class="card set">
+      <button class="swrow" role="switch" aria-checked="${fxOn("vib")}" id="sw-vib"><span class="tx"><b>Vibrations</b><small>Un léger retour à chaque réponse (Android).</small></span><span class="sw" aria-hidden="true"><i></i></span></button>
+      <button class="swrow" role="switch" aria-checked="${fxOn("snd")}" id="sw-snd"><span class="tx"><b>Sons</b><small>Un petit son pour une bonne ou une mauvaise réponse.</small></span><span class="sw" aria-hidden="true"><i></i></span></button>
     </section>
     <h2 class="sec-title">Apparence</h2>
     <section class="card themebox"><b id="theme-l">Thème</b>
@@ -2641,6 +2827,9 @@ function renderSettings(){
     </section>
   </main></div>${navHTML("settings")}`;
   bindNav();
+  bindFlame();
+  document.getElementById("sw-vib").onclick=()=>{setFx("vib",!fxOn("vib"));if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}renderSettings()};
+  document.getElementById("sw-snd").onclick=()=>{setFx("snd",!fxOn("snd"));if(fxOn("snd"))beep(true);renderSettings()};
   document.getElementById("sw-zh").onclick=()=>{state.showZh=!state.showZh;save();renderSettings()};
   document.getElementById("sw-zhex").onclick=()=>{state.zhEx=!state.zhEx;save();renderSettings()};
   app.querySelectorAll(".seg3 button").forEach(b=>b.onclick=()=>{state.theme=b.dataset.theme;save();applyTheme();renderSettings()});
@@ -2689,6 +2878,9 @@ I.pen=()=>svg(22,'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l
 I.back=()=>svg(24,'<path d="M15 6l-6 6 6 6"/>');
 I.sound=()=>svg(22,'<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>');
 I.warn=()=>svg(22,'<path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/>');
+I.flame=(w=22)=>svg(w,'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>');
+I.star=(w=22)=>svg(w,'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.8 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>');
+I.grid=()=>svg(22,'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>');
 
 /* ---------- Mots et caractères d'une leçon ----------
    Un mot est gardé s'il apporte au moins un caractère nouveau dans la leçon.
@@ -2728,26 +2920,119 @@ function speak(text){
 }
 const canSpeak=()=>{try{return "speechSynthesis" in window&&typeof SpeechSynthesisUtterance==="function"}catch(e){return false}};
 
-/* ===== Accueil Écriture ===== */
-function renderWriting(){
-  screen="writing";closeSheet();
+/* ===== Flamme : série de jours et calendrier ===== */
+function flameBtn(){
+  const st=streakInfo(),cls=st.doneToday?"on":st.alive?"pend":"off",n=st.len,j=plural(n,"jour","jours");
+  const lab=st.doneToday?`Flamme allumée, ${n} ${j}. Voir le calendrier`:st.alive?`Flamme en attente, ${n} ${j}. Fais une série réussie aujourd'hui. Voir le calendrier`:"Flamme éteinte. Voir le calendrier";
+  return `<button class="flame ${cls}" id="flame" aria-label="${lab}">${I.flame(22)}<b>${n}</b></button>`;
+}
+function bindFlame(){const f=document.getElementById("flame");if(f)f.onclick=()=>streakSheet()}
+const JS_LET=["L","M","M","J","V","S","D"];
+function streakSheet(){
+  const st=streakInfo(),days=state.days||{},has=n=>!!days[keyOf(n)],t=todayN();
+  const msg=st.doneToday?"Série du jour réussie. Reviens demain pour garder ta flamme.":st.alive?"Fais une série réussie aujourd'hui pour garder ta flamme.":st.best>0?"Ta flamme s'est éteinte. Une série réussie la rallume.":"Réussis une série pour allumer ta flamme.";
+  const dow=(new Date().getDay()+6)%7,mon=t-dow;
+  const week=Array.from({length:7},(_,k)=>{const n=mon+k;return `<div>${JS_LET[k]}<i class="${has(n)?"a":n===t?"t":""}" aria-label="${has(n)?"série réussie":n===t?"aujourd'hui":n>t?"à venir":"aucune série"}"></i></div>`}).join("");
+  let off=0;
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">Ma flamme</span><h2>${st.len} ${plural(st.len,"jour d'affilée","jours d'affilée")}</h2><p>${esc(msg)}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+    <div class="wstats"><div class="hl"><b>${st.len}</b><span>en cours</span></div><div><b>${st.best}</b><span>record</span></div><div><b>${st.total}</b><span>${plural(st.total,"jour actif","jours actifs")}</span></div></div>
+    <div class="week" aria-label="Cette semaine">${week}</div>
+    <div id="cal"></div>
+    <p class="note-p">Pour garder la flamme : une série réussie par jour. Un niveau validé à 80 %, un contrôle réussi, une révision notée 10/20 ou plus, ou une série d'écriture avec au moins la moitié des caractères sans faute.</p>`,"Calendrier de la flamme",ov=>{
+    const draw=()=>{
+      const base=new Date(),m0=new Date(base.getFullYear(),base.getMonth()+off,1),y=m0.getFullYear(),mo=m0.getMonth();
+      const first=(m0.getDay()+6)%7,dim=new Date(y,mo+1,0).getDate();
+      let cells="";for(let i=0;i<first;i++)cells+=`<span></span>`;
+      for(let d=1;d<=dim;d++){
+        const n=dayNum(`${y}-${pad(mo+1)}-${pad(d)}`),a=has(n),col=(first+d-1)%7;
+        const cls=["cday",a?"a":"",a&&col>0&&has(n-1)?"jl":"",a&&col<6&&d<dim&&has(n+1)?"jr":"",n===t?"t":"",n>t?"f":""].filter(Boolean).join(" ");
+        cells+=`<span class="${cls}"${a?' aria-label="'+d+' '+MOIS[mo]+', série réussie"':""}>${d}</span>`;
+      }
+      const ml=MOIS[mo].charAt(0).toUpperCase()+MOIS[mo].slice(1);
+      ov.querySelector("#cal").innerHTML=`<div class="calh"><button id="cprev" aria-label="Mois précédent">${I.back()}</button><b>${esc(ml)} ${y}</b><button id="cnext" aria-label="Mois suivant" ${off>=0?"disabled":""}><span style="transform:scaleX(-1);display:flex">${I.back()}</span></button></div>
+        <div class="calg" role="grid" aria-label="${esc(ml)} ${y}">${JS_LET.map(x=>`<span class="dn">${x}</span>`).join("")}${cells}</div>`;
+      ov.querySelector("#cprev").onclick=()=>{off--;draw()};
+      ov.querySelector("#cnext").onclick=()=>{if(off<0){off++;draw()}};
+    };
+    draw();
+  });
+}
+
+/* ===== Onglet Collection : un tableau de tous les caractères =====
+   Sombre : pas encore appris. Jade : niveau 2 du thème validé et aucune erreur en cours sur un mot qui le contient.
+   À corriger : appris, mais une erreur reste dans la liste de révision. Or : jade + tracé de mémoire maîtrisé. */
+const LEARN_LV=1; // index du niveau qui rend un caractère « appris » (niveau 2, Reconnaissance)
+let _ct=null,_cc=null;
+function charWords(){
+  if(_ct)return _ct;_ct=new Map();
+  V.forEach(v=>{if(v.t!=="w")return;const z=v.zh[0];if(!HAN_RE.test(z))return;[...new Set([...z])].forEach(c=>{if(!_ct.has(c))_ct.set(c,[]);_ct.get(c).push(v)})});
+  return _ct;
+}
+const charLearned=c=>(charWords().get(c)||[]).some(v=>lvOk(v.th,LEARN_LV));
+const charFix=c=>(charWords().get(c)||[]).some(v=>state.errors[v.id]);
+function charState(c){if(!charLearned(c))return"n";if(charFix(c))return"f";return wrSt(c)==="m"?"g":"j"}
+const CS_LABEL={n:"pas encore appris",f:"à corriger",j:"appris",g:"or"};
+function collChars(){
+  if(_cc)return _cc;const seen=new Set();
+  _cc=LESSONS.map(l=>{const items=[];wrWords(l).forEach(w=>w.chars.forEach(c=>{if(!seen.has(c)){seen.add(c);items.push({c,l,w})}}));return {l,items}}).filter(g=>g.items.length);
+  return _cc;
+}
+function collStats(){
+  const o={n:0,f:0,j:0,g:0,t:0};
+  collChars().forEach(g=>g.items.forEach(it=>{o.t++;o[charState(it.c)]++}));
+  return o;
+}
+function collBestLesson(){
+  let best=null,bn=0;
+  collChars().forEach(g=>{const n=g.items.filter(it=>charState(it.c)==="j").length;if(n>bn){bn=n;best=g.l}});
+  return best||(collChars()[0]&&collChars()[0].l)||LESSONS[0];
+}
+function renderCollection(){
+  screen="collection";closeSheet();
+  const st=collStats(),groups=collChars(),pc=k=>st.t?st[k]/st.t*100:0;
   const run=state.wrun&&state.wrun.chars&&state.wrun.idx<state.wrun.chars.length?state.wrun:null;
   const runL=run&&LESSONS.find(l=>l.id===run.lid);
+  const words=V.filter(v=>v.t==="w"&&lvOk(v.th,LEARN_LV)).length;
   let h=`<div class="tabscr"><main class="page">
-    <header class="phead"><div class="seal" aria-hidden="true">复习</div><div><h1>Écriture</h1><p>Tracer les caractères, leçon par leçon</p></div></header>`;
+    <header class="phead"><div class="seal" aria-hidden="true">字</div><div><h1>Collection</h1><p>${st.g+st.j} / ${st.t} ${plural(st.t,"caractère appris","caractères appris")}</p></div>${flameBtn()}</header>
+    <section class="card cstats" aria-label="Progression de la collection">
+      <div class="cbar" role="img" aria-label="${st.g} en or, ${st.j} en jade, ${st.f} à corriger, ${st.n} pas encore appris"><i class="g" style="width:${pc("g")}%"></i><i class="j" style="width:${pc("j")}%"></i><i class="f" style="width:${pc("f")}%"></i></div>
+      <div class="ccount"><div><b class="g">${st.g}</b><span>or</span></div><div><b class="j">${st.j}</b><span>jade</span></div><div><b>${st.f}</b><span>à corriger</span></div><div><b>${st.n}</b><span>sombres</span></div></div>
+      <p class="note-p">Jade : niveau 2 du thème validé et aucune erreur en cours. Or : en plus, tracé de mémoire sans faute 2 fois. ${words?`Tu reconnais ${words} ${plural(words,"mot","mots")} grâce à tes niveaux validés.`:""}</p></section>`;
   if(!wrOk()) h+=`<p class="dashed">Le module de tracé n'a pas pu se charger. Recharge la page.</p>`;
-  if(runL) h+=`<button class="resume" id="wres"><span class="tx"><span class="eyebrow">Reprendre</span><b>${esc(runL.n)}, ${esc(runL.t)}</b><span>Série de ${run.chars.length} ${plural(run.chars.length,"caractère","caractères")}, ${run.idx} ${plural(run.idx,"fait","faits")}</span></span>${svg(24,'<path d="M9 6l6 6-6 6"/>',2.2)}</button>`;
-  h+=`<div class="wlegend" aria-label="Légende"><span><i class="m"></i>Maîtrisé</span><span><i class="c"></i>En cours</span><span><i class="n"></i>Nouveau</span></div>`;
-  LESSONS.forEach(l=>{
-    const cs=wrChars(l);if(!cs.length)return;
-    const shown=cs.slice(0,7),more=cs.length-shown.length;
-    h+=`<button class="card wlcard" data-l="${l.id}"><span class="top"><span class="tx"><span class="eyebrow">${esc(l.n)}</span><b>${esc(l.t)}</b></span><span class="sc">${wrMastered(l)} / ${cs.length} ${plural(cs.length,"maîtrisé","maîtrisés")}</span></span>
-      <span class="wchips" aria-hidden="true">${shown.map(c=>chip(c,wrSt(c))).join("")}${more>0?`<span class="wmore">+${more}</span>`:""}</span></button>`;
+  if(runL) h+=`<button class="resume" id="wres"><span class="tx"><span class="eyebrow">Reprendre</span><b>${esc(runL.n)}, ${esc(runL.t)}</b><span>Série de ${run.chars.length} ${plural(run.chars.length,"caractère","caractères")}, ${run.idx} ${plural(run.idx,"fait","faits")}</span></span>${svg(24,'<path d="M9 6l6 6-6 6"/>')}</button>`;
+  h+=`<button class="btn" id="cseries" ${wrOk()?"":"disabled"}>Lancer une série d'écriture</button>
+    <p class="note-p" style="text-align:center">Priorité aux caractères jade pas encore en or.</p>
+    <div class="clegend" aria-label="Légende"><span><i class="n"></i>Sombre</span><span><i class="f"></i>À corriger</span><span><i class="j"></i>Jade</span><span><i class="g"></i>Or</span></div>`;
+  groups.forEach(g=>{
+    const tot=g.items.length,gg=g.items.filter(it=>charState(it.c)==="g").length,jj=g.items.filter(it=>charState(it.c)==="j").length;
+    h+=`<section class="card cgroup" aria-label="${esc(g.l.n)}, ${esc(g.l.t)}"><div class="chead"><span class="tx"><span class="eyebrow">${esc(g.l.n)}</span><b>${esc(g.l.t)}</b></span><span class="sc">${gg} or · ${jj} jade · ${tot}</span></div>
+      <div class="cgrid">${g.items.map(it=>{const k=charState(it.c);return `<button class="ctile ${k}" data-c="${esc(it.c)}" aria-label="${esc(it.c)}, ${CS_LABEL[k]}"><span lang="zh">${esc(it.c)}</span></button>`}).join("")}</div>
+      <button class="btn sec sm" data-wl="${g.l.id}">Écriture de la leçon</button></section>`;
   });
-  h+=`<p class="note-p">Tracé et ordre des traits : Hanzi Writer et les données Make Me a Hanzi.</p></main></div>${navHTML("writing")}`;
-  app.innerHTML=h;bindNav();
+  h+=`<p class="note-p">Tracé et ordre des traits : Hanzi Writer et les données Make Me a Hanzi.</p></main></div>${navHTML("collection")}`;
+  app.innerHTML=h;bindNav();bindFlame();
   const r=document.getElementById("wres");if(r)r.onclick=()=>startWRun(state.wrun);
-  app.querySelectorAll(".wlcard").forEach(b=>b.onclick=()=>renderWLesson(LESSONS.find(l=>l.id===b.dataset.l)));
+  document.getElementById("cseries").onclick=()=>startWRun(newWRun(collBestLesson()));
+  app.querySelectorAll(".ctile").forEach(b=>b.onclick=()=>charSheet(b.dataset.c));
+  app.querySelectorAll("[data-wl]").forEach(b=>b.onclick=()=>renderWLesson(LESSONS.find(l=>l.id===b.dataset.wl)));
+}
+function charSheet(c){
+  const it=collChars().flatMap(g=>g.items).find(x=>x.c===c);if(!it)return;
+  const k=charState(c),vs=charWords().get(c)||[],th=vs[0]?vs[0].th:"",rec=wrRec(c)||{ok:0},fixes=vs.filter(v=>state.errors[v.id]);
+  const msg={
+    n:`Pas encore appris. Valide le niveau 2 du thème « ${th} » pour le passer en jade.`,
+    f:`À corriger : ${fixes.map(v=>v.py[0]).slice(0,3).join(", ")} reste dans ta liste d'erreurs. Corrige-le dans Révision pour retrouver ${wrSt(c)==="m"?"l'or":"le jade"}.`,
+    j:`Appris. Trace-le de mémoire 2 fois sans faute pour le passer en or (${Math.min(rec.ok,WR_MASTER)} / ${WR_MASTER}).`,
+    g:"En or : appris dans le parcours et tracé de mémoire."}[k];
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(it.l.n)}, ${esc(it.l.t)}</span><h2>${CS_LABEL[k].charAt(0).toUpperCase()+CS_LABEL[k].slice(1)}</h2></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+    <span class="csheet-ch ${k}" lang="zh">${esc(c)}</span>
+    <div class="cinfo"><b lang="zh-Latn-pinyin">${esc(it.w.py)}</b><span>${esc(it.w.fr)}</span><span>${esc(msg)}</span></div>
+    <div class="stack8"><button class="btn" id="cs-go" ${wrOk()?"":"disabled"}>Tracer ce mot</button>${k==="f"?`<button class="btn sec" id="cs-rev">Corriger dans Révision</button>`:""}</div>`,
+    "Détail du caractère "+c,ov=>{
+      ov.querySelector("#cs-go").onclick=()=>{closeSheet();startWRun(newWRun(it.l,it.w.chars))};
+      const rv=ov.querySelector("#cs-rev");if(rv)rv.onclick=()=>go("revision");
+    });
 }
 
 /* ===== Mots d'une leçon ===== */
@@ -2772,9 +3057,9 @@ function renderWLesson(l,keepScroll){
       return `<li><button class="wrow" data-w="${esc(w.zh)}"${wrOk()?"":" disabled"}><span class="wchips">${w.chars.map(c=>chip(c,wrSt(c),"lg")).join("")}</span>
         <span class="tx"><b lang="zh-Latn-pinyin">${esc(w.py)}</b><small>${esc(w.fr)}</small></span><span class="st">${wrStLabel[st]}</span></button></li>`}).join("")}</ul>`
       :`<p class="dashed">${wFilter==="done"?"Aucun mot maîtrisé pour l'instant.":"Tout est maîtrisé dans cette leçon."}</p>`}
-  </main></div>${navHTML("writing")}`;
+  </main></div>${navHTML("collection")}`;
   bindNav();
-  document.getElementById("wback").onclick=()=>{wFilter="all";go("writing")};
+  document.getElementById("wback").onclick=()=>{wFilter="all";go("collection")};
   document.getElementById("wgo").onclick=()=>startWRun(newWRun(l));
   app.querySelectorAll(".wtab").forEach(b=>b.onclick=()=>{wFilter=b.dataset.f;renderWLesson(l,true)});
   app.querySelectorAll(".wrow").forEach(b=>b.onclick=()=>{const w=words.find(x=>x.zh===b.dataset.w);startWRun(newWRun(l,w.chars))});
@@ -2786,7 +3071,8 @@ function newWRun(l,only){
   let chars;
   if(only)chars=only.slice();
   else{const cs=wrChars(l);
-    chars=[...cs.filter(c=>wrSt(c)==="c"),...cs.filter(c=>wrSt(c)==="n"),...shuffle(cs.filter(c=>wrSt(c)==="m"))].slice(0,WR_SERIES)}
+    const pr=c=>{const k=charState(c);return k==="j"?(wrSt(c)==="c"?0:1):k==="f"?2:k==="n"?3:4};
+    chars=shuffle(cs.slice()).sort((x,y)=>pr(x)-pr(y)).slice(0,WR_SERIES)}
   return {lid:l.id,chars,idx:0,step:null,res:[]};
 }
 let WRN=null,WS=null; // WRN : série en cours ; WS : état de l'écran (writer, compteurs)
@@ -2932,20 +3218,23 @@ function recordWChar(){
 function finishWRun(){
   stopWriter();screen="wend";
   const r=WRN,l=LESSONS.find(x=>x.id===r.lid),res=r.res.filter(x=>!x.skip);
+  const clean=res.filter(x=>x.clean).length,newM=res.filter(x=>x.nowM).length,newG=res.filter(x=>x.nowM&&charLearned(x.c)&&!charFix(x.c)).length;
+  const sday=res.length&&clean*2>=res.length?markDay():null;
   state.wrun=null;save();WRN=null;
-  const clean=res.filter(x=>x.clean).length,newM=res.filter(x=>x.nowM).length;
   const rows=res.map(x=>{const w=wrWordOf(l,x.c)||{py:""};
     const det=x.nowM?`${x.ok}e essai sans faute`:x.clean&&x.wasM?"Déjà maîtrisé":x.clean?`Sans faute ${Math.min(x.ok,WR_MASTER)} / ${WR_MASTER}`:x.hint?"Indice utilisé":"À retracer";
-    const pill=x.nowM?`<span class="wpl m">Maîtrisé</span>`:x.clean?`<span class="wpl ok">Sans faute</span>`:`<span class="wpl err">${x.mistakes} ${plural(x.mistakes,"erreur","erreurs")}</span>`;
+    const pill=x.nowM?`<span class="wpl m">${charLearned(x.c)&&!charFix(x.c)?"Or":"Maîtrisé"}</span>`:x.clean?`<span class="wpl ok">Sans faute</span>`:`<span class="wpl err">${x.mistakes} ${plural(x.mistakes,"erreur","erreurs")}</span>`;
     return `<li>${chip(x.c,"plain","lg")}<span class="tx"><b lang="zh-Latn-pinyin">${esc(w.py)}</b><small>${esc(det)}</small></span>${pill}</li>`}).join("");
   app.innerHTML=`<div class="end">
     <div class="end-top tight"><span class="eyebrow">Écriture, ${esc(lower(l.n))}</span><h1>Série terminée</h1></div>
     <div class="wstats"><div><b>${res.length}</b><span>${plural(res.length,"caractère","caractères")}</span></div><div><b class="ok">${clean}</b><span>sans faute</span></div><div class="hl"><b>+${newM}</b><span>${plural(newM,"maîtrisé","maîtrisés")}</span></div></div>
+    ${newG?`<p class="nudge gold">${newG} ${plural(newG,"caractère passé","caractères passés")} en or dans ta collection.</p>`:""}${streakCard(sday)}
     ${rows?`<ul class="card wlist wres">${rows}</ul>`:""}
     <div class="spacer"></div>
-    <button class="btn" id="w-again">Nouvelle série</button><button class="btn link" id="w-back">Retour à la leçon</button></div>`;
+    <button class="btn" id="w-again">Nouvelle série</button><button class="btn link" id="w-back">Retour à la leçon</button><button class="btn link" id="w-coll">Voir ma collection</button></div>`;
   document.getElementById("w-again").onclick=()=>startWRun(newWRun(l));
   document.getElementById("w-back").onclick=()=>renderWLesson(l);
+  document.getElementById("w-coll").onclick=()=>go("collection");
   window.scrollTo(0,0);
 }
 
