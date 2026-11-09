@@ -20,6 +20,8 @@ Source : canvas Claude Design « Révisions chinois, refonte » (`design/maquett
 | Erreur | `#A93434` / fond `#F6E1E1` |
 | À revoir | `#9A6A12` / fond `#F6EBD3` |
 | Verrouillé | `#E7ECEA` |
+| Or (niveau parfait, collection) | `#C99A1D`, ombre `#8A6410`, fond doux `#F8EBC4`, texte `#2A1D00` / `#7A5806` |
+| Case sombre (collection) | `#3A4642` |
 
 Le thème sombre redéfinit les mêmes variables (`--bg #111816`, `--jade #62C2A6`, etc.) dans `index.html`.
 
@@ -46,3 +48,9 @@ Le thème sombre redéfinit les mêmes variables (`--bg #111816`, `--jade #62C2A
 
 ## Limite connue
 Les `.dc.html` appellent `./support.js` (moteur Claude Design) : ouvertes seules, elles ne s'affichent pas. Les rouvrir dans Claude Design en important `canvas.json`.
+
+## Ajouts du 09/11/2026 (hors maquettes)
+- Onglet **Collection** (remplace Écriture) : grille de cases par leçon, états sombre / à corriger (pointillés jade) / jade / or.
+- **Flamme** en haut à droite : pastille avec le nombre de jours ; feuille de calendrier mensuel avec jours consécutifs reliés.
+- Médailles or : étoile sur fond or pour un niveau à 100 %.
+- Ces écrans ne sont pas dans `design/maquettes/`.

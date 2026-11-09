@@ -5,7 +5,12 @@
 - **Parcours** : thèmes en îlots, 4 niveaux par thème (découverte QCM, reconnaissance pinyin→français, production français→pinyin avec tons, phrases), validation à 80 %.
 - **Contrôle de leçon** : 20 questions mélangées, 16/20 pour valider.
 - **Révision** : série libre, « Mes erreurs » (badge du nombre d'erreurs), choix d'une leçon ou de toutes.
-- **Écriture** : tracé avec Hanzi Writer, 3 étapes (observer, guidé, mémoire), 242 caractères dont les données de traits sont intégrées au fichier (hors ligne). Testé au doigt sur téléphone.
+- **Collection** (remplace l'onglet Écriture) : tableau des 228 caractères du cours. Sombre = pas appris, jade = appris, or = appris et tracé de mémoire maîtrisé, pointillés = à corriger. Séries d'écriture de 8 (jade pas encore or en priorité), écriture par leçon, détail par caractère. Tracé avec Hanzi Writer, données de traits intégrées (hors ligne).
+- **Médailles or** : un niveau à 100 % passe en or (étoile), un thème dont les 4 niveaux sont en or est « parfait », un contrôle à 20/20 est en or.
+- **Flamme** (en haut à droite) : une série réussie par jour. Jade pleine = fait aujourd'hui, pointillés = en attente, grise = éteinte. Au clic : record, semaine, calendrier mensuel.
+- **Révision espacée** : chaque réponse planifie le rappel (1, 2, 4, 8, 16, 32 jours). Carte « À réviser aujourd'hui » dans Révision, bandeau sur Leçons, pastille sur l'onglet et sur l'icône de l'app installée.
+- **Retour immédiat** : animation, vibration (Android) et son, réglables dans Paramètres (vibration oui, son non par défaut).
+- **Compétences** : « Tu sais maintenant… » à la fin d'un thème ou d'une leçon ; encouragements de fin (« plus que 2 réponses », « un sans-faute passe en or »).
 - **Paramètres** : afficher les caractères, thème clair/sombre/système, code de transfert de progression, remise à zéro.
 - **Aide et retours** (Paramètres) : « Signaler un bug » et « Demander une fonctionnalité » ouvrent un formulaire d'issue GitHub prérempli (version, mode installé ou navigateur, taille d'écran, navigateur). Formulaires dans `.github/ISSUE_TEMPLATE/`. Pas de jeton ni d'envoi automatique : l'utilisateur relit puis valide, avec un compte GitHub.
 - **Sauvegarde** : `localStorage` ; synchro Claude seulement dans l'artefact.
