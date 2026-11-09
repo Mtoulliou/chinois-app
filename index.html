@@ -727,6 +727,13 @@ a.actrow{text-decoration:none;box-sizing:border-box}
 .imini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--surface);border:1.5px solid var(--line)}
 .imini .gr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .imini .gr .ctile{height:56px;font-size:28px}
+.inst-head{display:flex;align-items:center;gap:14px}
+.inst-head img{width:56px;height:56px;border-radius:14px;flex-shrink:0}
+.inst-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.inst-steps li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.4}
+.inst-steps .ic{display:inline-flex;vertical-align:middle;margin:0 2px;padding:3px;border-radius:7px;background:var(--jade-soft);color:var(--jade)}
+.inst-steps .ic svg{display:block}
+.inst-note{font-size:14px;line-height:1.4;color:var(--muted)}
 .imini .lg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;font-size:13px;color:var(--muted);text-align:center}
 
 
@@ -3010,6 +3017,7 @@ function renderSettings(){
     </section>
     <h2 class="sec-title">Aide et retours</h2>
     <section class="card set">
+      ${canInstallHere()?`<button class="actrow" id="inst-again"><b>Ajouter à l'écran d'accueil</b><small>Comment installer l'app sur ton téléphone.</small></button>`:""}
       <button class="actrow" id="intro-again"><b>Revoir l'introduction</b><small>Caractères, pinyin et tons en 5 écrans.</small></button>
       <a class="actrow" id="fb-bug" href="${fbURL("bug")}" target="_blank" rel="noopener noreferrer"><b>Signaler un bug</b><small>Ouvre un formulaire GitHub déjà rempli. Il faut un compte GitHub gratuit.</small></a>
       <a class="actrow" id="fb-feat" href="${fbURL("feature")}" target="_blank" rel="noopener noreferrer"><b>Demander une fonctionnalité</b><small>Même principe : tu relis le formulaire, puis tu l'envoies.</small></a>
@@ -3018,6 +3026,7 @@ function renderSettings(){
   bindNav();
   bindFlame();
   document.getElementById("intro-again").onclick=()=>renderIntro(0,"settings");
+  const ia=document.getElementById("inst-again");if(ia)ia.onclick=()=>installPopup(true);
   document.getElementById("sw-vib").onclick=()=>{setFx("vib",!fxOn("vib"));if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}renderSettings()};
   document.getElementById("sw-snd").onclick=()=>{setFx("snd",!fxOn("snd"));if(fxOn("snd"))beep(true);renderSettings()};
   document.getElementById("sw-zh").onclick=()=>{state.showZh=!state.showZh;save();renderSettings()};
@@ -3474,6 +3483,67 @@ function renderIntro(i,from){
   app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say));
 }
 
+/* ===== Ajouter l'app à l'écran d'accueil =====
+   Fenêtre proposée dans le navigateur d'un téléphone (iOS ou Android), adaptée au navigateur.
+   Jamais pendant l'introduction du premier lancement, ni dans l'app installée, ni en cours d'exercice.
+   Au plus 3 fois, espacées d'au moins 3 jours ; « Ne plus me le proposer » l'éteint pour de bon. */
+let deferredInstall=null,startupIntro=false;
+try{
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e});
+  window.addEventListener("appinstalled",()=>{state.install={...(state.install||{}),never:true};save()});
+}catch(e){}
+function installEnv(){
+  const ua=navigator.userAgent||"";
+  const ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const android=/Android/.test(ua);
+  let br="other";
+  if(/EdgiOS|EdgA|Edg\//.test(ua))br="edge";
+  else if(/SamsungBrowser/.test(ua))br="samsung";
+  else if(/FxiOS|Firefox/.test(ua))br="firefox";
+  else if(/OPiOS|OPR\/|Opera/.test(ua))br="opera";
+  else if(/CriOS|Chrome\//.test(ua))br="chrome";
+  else if(/Safari/.test(ua))br="safari";
+  return {ios,android,br,mobile:ios||android};
+}
+const isStandalone=()=>{try{return (window.matchMedia&&(matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: fullscreen)").matches||matchMedia("(display-mode: minimal-ui)").matches))||navigator.standalone===true}catch(e){return false}};
+const canInstallHere=()=>!ON_CLAUDE&&window.top===window&&!isStandalone()&&installEnv().mobile;
+const icoShare=()=>`<span class="ic">${svg(18,'<path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/>')}</span>`;
+const icoDots=()=>`<span class="ic">${svg(18,'<circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/>')}</span>`;
+const icoMenu=()=>`<span class="ic">${svg(18,'<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>')}</span>`;
+function installSteps(env){
+  const {ios,android,br}=env;
+  if(ios&&br==="safari")return {steps:[`Touche le bouton <b>Partager</b> ${icoShare()} (en bas de l'écran, ou en haut sur iPad).`,"Fais défiler et touche <b>« Sur l'écran d'accueil »</b>.","Touche <b>« Ajouter »</b> en haut à droite."]};
+  if(ios)return {steps:["Ouvre ce site dans <b>Safari</b> (copie l'adresse du site et colle-la dans Safari).",`Touche le bouton <b>Partager</b> ${icoShare()}.`,"Touche <b>« Sur l'écran d'accueil »</b>, puis <b>« Ajouter »</b>."]};
+  if(android&&br==="samsung")return {steps:[`Touche le menu ${icoMenu()} en bas à droite.`,"Touche <b>« Ajouter la page à »</b>, puis <b>« Écran d'accueil »</b>.","Confirme avec <b>« Ajouter »</b>."]};
+  if(android&&br==="firefox")return {steps:[`Touche le menu ${icoDots()} du navigateur.`,"Touche <b>« Installer »</b>.","Confirme avec <b>« Ajouter »</b>."]};
+  if(android&&br==="edge")return {steps:[`Touche le menu <b>…</b> en bas de l'écran.`,"Touche <b>« Ajouter au téléphone »</b> (ou <b>« Ajouter à l'écran d'accueil »</b>).","Confirme."]};
+  return {steps:[`Touche le menu ${icoDots()} en haut à droite.`,"Touche <b>« Installer l'application »</b> (ou <b>« Ajouter à l'écran d'accueil »</b>).","Confirme avec <b>« Installer »</b>."],native:android&&(br==="chrome")};
+}
+function installPopup(force){
+  const env=installEnv();
+  if(!canInstallHere())return;
+  const inst=state.install||{};
+  if(!force){
+    if(inst.never||(inst.n||0)>=3||(inst.last&&Date.now()-inst.last<3*864e5))return;
+    if(screen!=="lessons"||document.getElementById("ov"))return;
+  }
+  if(!force){state.install={...inst,n:(inst.n||0)+1,last:Date.now()};save()}
+  const {steps}=installSteps(env),canNative=!!deferredInstall;
+  openSheet(`<div class="inst-head"><img src="icons/icon-192.png" alt="" width="56" height="56"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><h2 style="font-size:21px;font-weight:700;line-height:1.2">Ajoute l'app à ton écran d'accueil</h2><span style="font-size:15px;color:var(--muted)">Plein écran, plus rapide, et elle marche hors ligne.</span></div></div>
+    ${canNative?"":`<ol class="inst-steps">${steps.map((t,i)=>`<li><span class="num24">${i+1}</span><span>${t}</span></li>`).join("")}</ol>`}
+    ${canNative?`<p class="inst-note">Un seul geste : touche « Installer » puis confirme.</p>`:`<p class="inst-note">L'icône apparaît ensuite avec tes autres applications.</p>`}
+    <div class="stack8"><button class="btn" id="inst-go">${canNative?"Installer":"J'ai compris"}</button><button class="btn link" id="inst-later">Plus tard</button>${force?"":`<button class="btn link" id="inst-never" style="height:40px;font-size:14px;color:var(--muted)">Ne plus me le proposer</button>`}</div>`,"Ajouter l'app à l'écran d'accueil",ov=>{
+      ov.querySelector("#inst-later").onclick=closeSheet;
+      const nv=ov.querySelector("#inst-never");if(nv)nv.onclick=()=>{state.install={...(state.install||{}),never:true};save();closeSheet()};
+      ov.querySelector("#inst-go").onclick=()=>{
+        if(canNative){try{const d=deferredInstall;deferredInstall=null;d.prompt();d.userChoice&&d.userChoice.then(r=>{if(r&&r.outcome==="accepted"){state.install={...(state.install||{}),never:true};save()}})}catch(e){}}
+        closeSheet();
+      };
+    });
+}
+// Une proposition par session au plus, un peu après l'arrivée sur l'écran Leçons, et jamais le jour de l'introduction.
+function scheduleInstall(){if(startupIntro||!canInstallHere())return;setTimeout(()=>installPopup(false),2500)}
+
 /* Hors ligne : uniquement sur le site (GitHub Pages). Dans l'artefact Claude, la page est
    dans un cadre et les service workers sont refusés, donc rien ne se passe. */
 try{
@@ -3486,7 +3556,7 @@ state.exOff=[]; // le choix des sens a disparu de l'interface : les séries mél
 state.run=null;state.wrun=null; // aucune série en cours n'est conservée : fermer l'app ou quitter annule la série
 restoreGen(state.run);
 applyTheme();
-if(introNeeded())renderIntro(0,"start");else render();
+if(introNeeded()){startupIntro=true;renderIntro(0,"start")}else{render();scheduleInstall()}
 </script>
 
 </body></html>
