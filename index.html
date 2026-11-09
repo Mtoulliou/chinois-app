@@ -117,7 +117,9 @@ svg{display:block;flex-shrink:0}
 .tsep{width:100%;display:flex;align-items:center;gap:12px;padding:0 16px;margin:0 0 26px;background:none;border:0;text-align:center}
 .tsep.first{margin-bottom:22px}
 .tsep>i{flex:1;height:1px;background:var(--grid)}
-.tsep>span{display:flex;flex-direction:column;align-items:center;max-width:72%}
+.tsep-t{display:flex;flex-direction:column;align-items:center;max-width:62%;padding:0;border:0;background:none;color:inherit;text-align:center}
+.tsep-b{width:44px;height:44px;flex-shrink:0;padding:0;border:0;border-radius:50%;background:var(--jade-soft);color:var(--jade);display:flex;align-items:center;justify-content:center}
+.tsep.locked .tsep-b{background:var(--lock);color:var(--lock-ic)}
 .tsep b{font-size:16px;font-weight:700;color:var(--ink);line-height:1.25}
 .tsep small{font-size:13px;font-weight:600;color:var(--muted)}
 .tsep small.ok{font-weight:700;color:var(--ok)}
@@ -2256,7 +2258,7 @@ function renderLessons(){
     else if(k===0&&!started(th,0)) st="À commencer";
     else if(k===0){st="En cours";cls="part"}
     else {st=`${k} / 4 ${plural(k,"validé","validés")}`;cls="part"}
-    h+=`<button class="tsep${open?"":" locked"}${first&&ti===0?" first":""}" data-th="${ti}"><i aria-hidden="true"></i><span><b>${esc(th)}</b><small class="${cls}">${esc(st)}</small></span><i aria-hidden="true"></i></button>`;
+    h+=`<div class="tsep${open?"":" locked"}${first&&ti===0?" first":""}"><i aria-hidden="true"></i><button class="tsep-t" data-th="${ti}"><b>${esc(th)}</b><small class="${cls}">${esc(st)}</small></button><button class="tsep-b" data-cours="${ti}" aria-label="Cours du thème ${esc(th)}">${I.book()}</button><i aria-hidden="true"></i></div>`;
     const off=ti%2===0?[0,50,80,50]:[0,-50,-80,-50];
     LEVELS.forEach((L,i)=>{
       const ok=lvOk(th,i),lo=levelOpen(l,ti,i),isCur=cl&&cl.th===th&&cl.i===i,sc=lvArr(th)[i];
@@ -2289,7 +2291,8 @@ function renderLessons(){
   app.innerHTML=h;bindNav();
   document.getElementById("lessons").onclick=lessonsSheet;bindFlame();
   const dg=document.getElementById("duego");if(dg)dg.onclick=()=>startSeries("due");
-  app.querySelectorAll(".tsep").forEach(b=>b.onclick=()=>themeSheet(l,+b.dataset.th));
+  app.querySelectorAll(".tsep-t").forEach(b=>b.onclick=()=>themeSheet(l,+b.dataset.th));
+  app.querySelectorAll(".tsep-b").forEach(b=>b.onclick=()=>renderCours(l,+b.dataset.cours,true));
   app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ti,i]=b.dataset.lv.split(":").map(Number);startLevel(l,ti,i)});
   const c=document.getElementById("ctl");if(c)c.onclick=()=>renderCtlIntro(l);
   app.querySelectorAll(".nextl[data-view]").forEach(b=>b.onclick=()=>{state.view=b.dataset.view;save();window.scrollTo(0,0);renderLessons()});
@@ -2336,7 +2339,7 @@ function themeSheet(l,ti){
 }
 
 /* ===== Mini-cours d'un thème ===== */
-function renderCours(l,ti){
+function renderCours(l,ti,fromBook){
   screen="cours";closeSheet();
   const th=l.themes[ti],own=V.some(v=>v.th===th&&v.t==="w"),words=themeWords([th]);
   const ex=V.filter(v=>v.th===th&&v.t==="p").slice(0,3);
@@ -2351,7 +2354,7 @@ function renderCours(l,ti){
     <div class="spacer"></div>
     <button class="btn" id="cgo" ${act.disabled?"disabled":""}>${esc(act.label)}</button>
   </div>`;
-  document.getElementById("cx").onclick=()=>{screen="lessons";renderLessons();themeSheet(l,ti)};
+  document.getElementById("cx").onclick=()=>{screen="lessons";if(fromBook){state.view=l.id;renderLessons();return}renderLessons();themeSheet(l,ti)};
   if(act.go) document.getElementById("cgo").onclick=act.go;
   window.scrollTo(0,0);
 }
