@@ -29,7 +29,7 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Séries (niveau, contrôle, série libre, écriture) : jamais reprises. Quitter par la croix ou fermer l'app annule la série (`state.run` et `state.wrun` sont remis à null au chargement). Ne pas réintroduire de sauvegarde de série en cours.
 - Flamme : `state.days` (date locale). Compte une série **réussie** : niveau ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
 - Révision espacée : `state.srs[id]={b,d}`, intervalles `SRS_INT`. Seuls les éléments du cours (`BYID`) sont suivis, pas les phrases générées.
-- Phrases : un niveau « Phrases » ne propose que des phrases dont les caractères ont été enseignés comme **mots** (`W(...)`) dans la leçon ou avant (`phraseOk`, `taughtChars`), et les phrases générées n'utilisent que des caractères du cours jusqu'à la leçon du thème (`allKnown`). Si une phrase du cours contient un mot jamais enseigné, ajouter ce mot en `W(...)` dans le même thème.
+- Mots enseignés (règle impérative) : tout mot d'une phrase de niveau 4 (cours, générée, complément) doit avoir été présenté aux niveaux 1 à 3 de ce thème ou d'un thème précédent. Les niveaux 1 à 3 présentent TOUS les mots du thème (`shownWords`, plafond `LV_CAP`=22, jamais de tirage partiel) ; les phrases sont filtrées par `taughtDict` (`phraseOk`, `allKnown`). Pronoms de base 我你他她们 connus d'office. Si une phrase contient un mot jamais enseigné, l'ajouter en `W(...)` dans le thème qui l'utilise en premier (pas de doublon : un mot = un seul `W`). L'ordre des thèmes dans `LESSONS` compte : le vocabulaire avant les structures.
 - Tout nouvel état persistant doit être ajouté à `freshState`, `exportCode` et `importCode`.
 
 ## Workflow Git

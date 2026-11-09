@@ -16,6 +16,9 @@
 - **Sauvegarde** : `localStorage` ; synchro Claude seulement dans l'artefact.
 - **Installable et hors ligne** : `manifest.webmanifest`, `sw.js` (réseau d'abord, cache en secours, polices mises en cache) et `icons/` (习 blanc sur jade). Ajoutable à l'écran d'accueil sur Android et iOS.
 
+## Mots enseignés avant les phrases
+Les niveaux 1 à 3 d'un thème présentent tous ses mots (jusqu'à 22) ; un niveau 4 ne contient que des mots déjà présentés. Mots ajoutés le 09/11/2026 pour respecter cette règle : 好, 吗, 呢, 多大, 几岁, 记得, 还 (leçon 1), 不 (pays), 英语, 德语 (langues), 怎么写, 王, 小明, 饭. Leçon 3 : Loisirs, Nourriture et boissons, puis Aimer et demander.
+
 ## Phrases générées
 Chaque thème avec générateur (`TEMPLATES` dans `index.html`) crée des phrases qui réutilisent le vocabulaire des leçons précédentes : nationalités, langues, famille, activités, heures. Générateurs ajoutés le 09/11/2026 : Pronoms (avec 你们), Nombres (personnes, mois, numéros de téléphone), Qui est-ce ?, Membres de la famille, La journée de Xiaoming, Dire l'heure. Seul « Caractères et vocabulaire » n'en a pas (3 mots seulement).
 Pour ajouter un générateur : une entrée `{th, subj, make(s,p)}` dans `TEMPLATES` ; tester qu'une réponse canonique est jugée juste (`gradePy`, `gradeFr`).
