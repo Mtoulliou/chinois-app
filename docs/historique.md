@@ -66,6 +66,9 @@ Choix : jade = niveau 2 validé et aucune erreur en cours ; flamme = séries ré
 ## 5. Niveaux variables et outillage (09/11/2026)
 Niveaux adaptés au besoin de chaque thème (5 nouveaux mots par niveau, cumul des mots précédents, niveau final de phrases) ; progression des niveaux remise à zéro à cette occasion. Pourcentages retirés du parcours. Règle « tout mot d'une phrase est enseigné avant » appliquée et auditée ; mots manquants ajoutés ; leçon 3 réordonnée. Ajout de `tools/run-audit.sh` et du prompt `docs/PROMPT-ajout-contenu.md`.
 
+## 6. Introduction au chinois (09/11/2026)
+Script, maquettes (texte avant schéma) puis intégration : intro de 5 écrans au premier lancement, relançable depuis Paramètres.
+
 ## Organisation de travail
 - Réfléchir et décider: chat Claude. Coder: Claude Code, sur une branche.
 - `main` = prod (GitHub Pages), `dev` = intégration, `feature/*` = une feature.
