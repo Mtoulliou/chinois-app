@@ -2,6 +2,7 @@
 
 ## Présentes (dans `index.html`)
 - **7 leçons** : Se présenter, Qui suis-je, Goûts et loisirs, Ma famille, Ma journée, L'heure, Mon samedi (leçons 1 à 6 et 8 du cours ; la leçon 7 manque dans le cours).
+- **Introduction** : 5 écrans (caractères, pinyin, tons, ce que l'on apprend) affichés une seule fois au premier lancement d'un nouvel utilisateur (aucune progression), « Passer » disponible, voix du téléphone sur les petits haut-parleurs. Revoir depuis Paramètres → « Revoir l'introduction ». Maquettes : canvas Claude Design « Intro au chinois ». Contenu dans `INTRO` (`index.html`).
 - **Parcours** : thèmes en îlots, nombre de niveaux variable selon le thème : 5 nouveaux mots par niveau (QCM) plus tous les mots des niveaux précédents (pinyin→français, français→pinyin), puis un niveau final de phrases. Validation à 80 %. Aucun pourcentage affiché sur le parcours ni dans la feuille du thème.
 - **Contrôle de leçon** : 20 questions mélangées, 16/20 pour valider.
 - **Révision** : série libre, « Mes erreurs » (badge du nombre d'erreurs), choix d'une leçon ou de toutes.
