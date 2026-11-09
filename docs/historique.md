@@ -59,6 +59,10 @@ Canvas de 19 écrans + planche de composants, puis 7 écrans Écriture et 5 écr
 ### Point de passage vers la prod
 La conversation s'est arrêtée à « Pousse en prod »: Claude ne pouvait pas créer le dépôt. Elle annonçait que la progression Claude ne passerait pas sur le site; or **le code de transfert de l'app (Paramètres) le permet.**
 
+## 4. Motivation et collection (09/11/2026)
+Ajouts après la mise en prod : collection de caractères (sombre, jade, or) à la place de l'onglet Écriture, médailles or pour les niveaux à 100 %, flamme de série quotidienne avec calendrier, révision espacée avec compteur « à réviser », retour immédiat (animation, vibration, son), compétences « Tu sais maintenant… ».
+Choix : jade = niveau 2 validé et aucune erreur en cours ; flamme = séries réussies seulement ; vibration oui, son non par défaut ; écriture possible sur les caractères sombres mais l'or exige le jade.
+
 ## Organisation de travail
 - Réfléchir et décider: chat Claude. Coder: Claude Code, sur une branche.
 - `main` = prod (GitHub Pages), `dev` = intégration, `feature/*` = une feature.

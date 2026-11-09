@@ -24,7 +24,11 @@ App web de révision de mandarin (LV2), en français. **Un seul fichier : `index
 - Un niveau est validé à 80 %. Les thèmes se débloquent dans l'ordre.
 - Tous les niveaux d'une leçon validés → contrôle (16/20 requis) → leçon suivante.
 - Révision : tout le vocabulaire accessible sans verrou.
-- Écriture : 3 étapes (observer, guidé, mémoire), maîtrisé après 2 tracés de mémoire sans faute, séries de 8.
+- Écriture : 3 étapes (observer, guidé, mémoire), maîtrisé après 2 tracés de mémoire sans faute, séries de 8. Accessible depuis l'onglet **Collection**.
+- Collection : caractère **jade** = niveau 2 (`LEARN_LV`) du thème d'un mot qui le contient validé ET aucune erreur en cours sur ces mots ; **à corriger** si une erreur reste ; **or** = jade + écriture maîtrisée. Niveau **or** = 100 %, contrôle or = 20/20.
+- Flamme : `state.days` (date locale). Compte une série **réussie** : niveau ≥ 80 %, contrôle réussi, révision/à réviser ≥ 10/20, écriture avec au moins la moitié sans faute.
+- Révision espacée : `state.srs[id]={b,d}`, intervalles `SRS_INT`. Seuls les éléments du cours (`BYID`) sont suivis, pas les phrases générées.
+- Tout nouvel état persistant doit être ajouté à `freshState`, `exportCode` et `importCode`.
 
 ## Workflow Git
 - `main` = prod (Pages déploie à chaque push). `dev` = travail. Une feature = une branche `feature/nom` depuis `dev`, PR vers `dev`, puis `dev` → `main`.
