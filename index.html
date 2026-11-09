@@ -670,6 +670,65 @@ a.actrow{text-decoration:none;box-sizing:border-box}
 .cinfo{text-align:center;display:flex;flex-direction:column;gap:4px}
 .cinfo b{font-size:20px}
 .cinfo span{font-size:15px;color:var(--muted);line-height:1.4}
+/* ---------- Introduction (premier lancement) ---------- */
+.intro{min-height:100vh;min-height:100dvh;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:16px 20px calc(28px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+.intro-top{display:flex;align-items:center;justify-content:space-between;height:44px;font-size:14px;font-weight:600;color:var(--muted)}
+.intro-skip{min-height:44px;padding:0 4px;border:0;background:none;color:var(--jade);font-size:16px;font-weight:700}
+.intro-txt{display:flex;flex-direction:column;gap:10px;padding:16px 0 8px}
+.intro-txt h1{font-size:28px;font-weight:700;line-height:1.15}
+.intro-txt p{font-size:17px;line-height:1.4;color:var(--soft-ink)}
+.intro-vis{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:8px 0}
+.intro-dots{display:flex;justify-content:center;gap:8px;padding:12px 0 16px}
+.intro-dots i{width:8px;height:8px;border-radius:4px;background:var(--grid)}
+.intro-dots i.on{width:24px;background:var(--jade)}
+.brick{display:flex;align-items:center;gap:16px;height:96px;padding:0 20px;border-radius:18px;box-sizing:border-box}
+.brick .bex{width:110px;flex-shrink:0;display:flex}
+.brick .tx{display:flex;flex-direction:column;gap:2px}
+.brick b{font-size:20px}.brick small{font-size:15px}
+.brick.b1{background:var(--jade);color:var(--on-jade);box-shadow:0 4px 0 var(--jade-sh)}.brick.b1 small{color:var(--hd-eyebrow)}
+.brick.b2{background:var(--jade-soft);color:var(--ink);box-shadow:0 4px 0 var(--dash)}.brick.b2 small{color:var(--soft-ink)}
+.brick.b3{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);box-shadow:0 4px 0 var(--line)}.brick.b3 small{color:var(--soft-ink)}
+.icard{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0 14px;border-radius:18px;background:var(--surface);border:1.5px solid var(--line);box-shadow:0 4px 0 var(--line);box-sizing:border-box}
+.icard.hi{background:var(--jade);color:var(--on-jade);border-color:var(--jade);box-shadow:0 4px 0 var(--jade-sh)}
+.icard .zh{font-family:var(--f-han);font-weight:700;line-height:1.1}
+.icard b{font-size:18px}
+.icard small{font-size:14px;color:var(--muted)}.icard.hi small{color:var(--hd-eyebrow)}
+.eqrow{display:flex;align-items:center;justify-content:space-between}
+.eqrow .icard{width:94px;flex-shrink:0}
+.eqrow .op{width:24px;height:24px;font-size:18px}
+.op{width:28px;height:28px;border-radius:50%;background:var(--jade-soft);color:var(--jade);font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.inote{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);font-size:15px;line-height:1.35;color:var(--soft-ink)}
+.inote svg{color:var(--jade)}
+.intro-spk{width:44px;height:44px;border:0;border-radius:50%;background:var(--jade-soft);color:var(--jade);display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0}
+.intro-spk.w{background:var(--surface)}
+.pyin{display:flex;align-items:center;justify-content:center;gap:16px;padding:22px 20px;border-radius:18px;background:var(--jade);color:var(--on-jade);box-shadow:0 4px 0 var(--jade-sh)}
+.pyin b{font-size:44px;line-height:1.1}
+.iarrow{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--jade)}
+.iarrow span{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.chips4{display:flex;gap:10px;flex-wrap:wrap}
+.chips4 span{min-width:56px;height:48px;padding:0 14px;border-radius:12px;background:var(--jade-soft);color:var(--jade);font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.tones4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tcard{display:flex;flex-direction:column;gap:6px;padding:14px 14px 12px;border-radius:18px;background:var(--surface);border:1.5px solid var(--line);box-shadow:0 4px 0 var(--line);box-sizing:border-box}
+.tcard .hd{display:flex;align-items:center;justify-content:space-between;min-height:28px}
+.tcard .hd span{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tcard .intro-spk{margin:-8px -8px 0 0}
+.tcard svg.cv{width:100%;height:44px;stroke:var(--jade)}
+.tcard .py{font-size:36px;font-weight:700;line-height:1}
+.tcard .mn{display:flex;align-items:baseline;gap:8px}
+.tcard .mn .han{font-family:var(--f-han);font-size:24px;font-weight:500}
+.tcard .mn span+span{font-size:16px;font-weight:600;color:var(--soft-ink)}
+.itone{text-align:center;font-size:14px;line-height:1.35;color:var(--muted)}
+.isteps{display:flex;align-items:flex-start;justify-content:space-between;padding:0 6px}
+.istep{width:84px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.istep b{font-size:17px}.istep small{font-size:14px;color:var(--muted)}
+.istep .c{width:64px;height:64px;border-radius:50%;background:var(--jade);color:var(--on-jade);box-shadow:0 5px 0 var(--jade-sh);display:flex;align-items:center;justify-content:center}
+.istep .c.gold{background:var(--gold);color:var(--on-gold);box-shadow:0 5px 0 var(--gold-sh)}
+.isteps>svg{margin-top:17px;color:var(--grid)}
+.imini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--surface);border:1.5px solid var(--line)}
+.imini .gr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.imini .gr .ctile{height:56px;font-size:28px}
+.imini .lg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;font-size:13px;color:var(--muted);text-align:center}
+
 
 </style>
 
@@ -1950,7 +2009,7 @@ function save(){state.updated=Date.now();saveLocal();saveRemote()}
 /* ===== Code de transfert de progression ===== */
 const CODE_PREFIX="RC1-";
 function exportCode(){
-  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,lv:state.lv,lvVer:2,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
+  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,lv:state.lv,lvVer:2,introSeen:true,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
   const bytes=new TextEncoder().encode(JSON.stringify(data));
   let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
   return CODE_PREFIX+btoa(bin);
@@ -1962,7 +2021,7 @@ function importCode(code){
   try{const bin=atob(c.slice(CODE_PREFIX.length));data=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))))}
   catch(e){throw new Error("Code incomplet ou abîmé. Recopie-le en entier.")}
   if(!data||typeof data.errors!=="object"||!Array.isArray(data.series)) throw new Error("Code illisible.");
-  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},lvVer:2,lv:data.lvVer===2&&data.lv&&typeof data.lv==="object"?data.lv:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
+  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},introSeen:true,lvVer:2,lv:data.lvVer===2&&data.lv&&typeof data.lv==="object"?data.lv:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
   registerGen(); save();
 }
 
@@ -2951,12 +3010,14 @@ function renderSettings(){
     </section>
     <h2 class="sec-title">Aide et retours</h2>
     <section class="card set">
+      <button class="actrow" id="intro-again"><b>Revoir l'introduction</b><small>Caractères, pinyin et tons en 5 écrans.</small></button>
       <a class="actrow" id="fb-bug" href="${fbURL("bug")}" target="_blank" rel="noopener noreferrer"><b>Signaler un bug</b><small>Ouvre un formulaire GitHub déjà rempli. Il faut un compte GitHub gratuit.</small></a>
       <a class="actrow" id="fb-feat" href="${fbURL("feature")}" target="_blank" rel="noopener noreferrer"><b>Demander une fonctionnalité</b><small>Même principe : tu relis le formulaire, puis tu l'envoies.</small></a>
     </section>
   </main></div>${navHTML("settings")}`;
   bindNav();
   bindFlame();
+  document.getElementById("intro-again").onclick=()=>renderIntro(0,"settings");
   document.getElementById("sw-vib").onclick=()=>{setFx("vib",!fxOn("vib"));if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}renderSettings()};
   document.getElementById("sw-snd").onclick=()=>{setFx("snd",!fxOn("snd"));if(fxOn("snd"))beep(true);renderSettings()};
   document.getElementById("sw-zh").onclick=()=>{state.showZh=!state.showZh;save();renderSettings()};
@@ -3358,6 +3419,61 @@ function finishWRun(){
   window.scrollTo(0,0);
 }
 
+/* ===== Introduction au chinois (premier lancement, et depuis Paramètres) =====
+   5 écrans : caractères, pinyin, tons, ce que l'on apprend. Texte d'abord, schéma ensuite. */
+const spkBtn=(say,label,cls="")=>canSpeak()?`<button class="intro-spk ${cls}" data-say="${esc(say)}" aria-label="${esc(label)}">${I.sound()}</button>`:"";
+const toneSvg=d=>`<svg class="cv" viewBox="0 0 100 44" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const tcard=(lab,say,curve,py,han,fr)=>`<div class="tcard"><div class="hd"><span>${lab}</span>${spkBtn(say,"Écouter "+py)}</div>${toneSvg(curve)}<span class="py" lang="zh-Latn-pinyin">${py}</span><div class="mn"><span class="han" lang="zh">${han}</span><span>${fr}</span></div></div>`;
+const INTRO=[
+ {h:"Pour lire et parler chinois, il faut 3 choses.",p:"Les <b>caractères</b> (l'écriture), le <b>pinyin</b> (la prononciation) et les <b>tons</b> (la mélodie).",
+  vis:()=>`<div class="brick b1"><span class="bex"><span lang="zh" style="font-family:var(--f-han);font-weight:700;font-size:44px;line-height:1">你好</span></span><span class="tx"><b>Les caractères</b><small>L'écriture</small></span></div>
+   <div class="brick b2"><span class="bex"><span lang="zh-Latn-pinyin" style="font-weight:700;font-size:26px;line-height:1.1">nǐ hǎo</span></span><span class="tx"><b>Le pinyin</b><small>La prononciation</small></span></div>
+   <div class="brick b3"><span class="bex" aria-hidden="true"><svg width="48" height="40" viewBox="0 0 48 40" fill="none" stroke="var(--jade)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14 L16 30 L42 6"></path></svg></span><span class="tx"><b>Les tons</b><small>La mélodie</small></span></div>`},
+ {h:"Pas d'alphabet : un caractère = une syllabe + un sens.",p:"En assembler deux crée de nouveaux mots.",
+  vis:()=>`<div class="eqrow"><div class="icard"><span class="zh" lang="zh" style="font-size:56px">人</span><b lang="zh-Latn-pinyin">rén</b><small>personne</small></div><span class="op" aria-hidden="true">+</span>
+   <div class="icard"><span class="zh" lang="zh" style="font-size:56px">大</span><b lang="zh-Latn-pinyin">dà</b><small>grand</small></div><span class="op" aria-hidden="true">=</span>
+   <div class="icard hi"><span class="zh" lang="zh" style="font-size:44px;line-height:1.35">大人</span><b lang="zh-Latn-pinyin">dàrén</b><small>adulte</small></div></div>
+   <div class="inote">${svg(26,'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 3v18"/><path d="M3 12h18"/>')}<span>Chaque caractère s'écrit dans un carré, en suivant un ordre de traits.</span></div>`},
+ {h:"Le pinyin écrit la prononciation avec nos lettres.",p:"C'est ta clé pour lire à voix haute et taper au clavier.",
+  vis:()=>`<div class="icard" style="padding:20px 0 16px"><span class="zh" lang="zh" style="font-size:68px">你好</span><small>les caractères</small></div>
+   <div class="iarrow">${svg(30,'<path d="M12 4v15"/><path d="M6 13l6 6 6-6"/>',2.4)}<span>se lit</span></div>
+   <div class="pyin"><b lang="zh-Latn-pinyin">nǐ hǎo</b>${spkBtn("你好","Écouter la prononciation","w")}</div>
+   <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px"><span style="font-size:15px;line-height:1.35;color:var(--soft-ink)">Attention : certaines lettres ne sonnent pas comme en français.</span>
+   <div class="chips4" lang="zh-Latn-pinyin"><span>q</span><span>x</span><span>zh</span><span>c</span></div></div>`},
+ {h:"La mélodie change le sens.",p:"Même syllabe, quatre tons, quatre mots différents.",
+  vis:()=>`<div class="tones4">
+   ${tcard("1er ton, plat","妈",'<path d="M10 10 L82 10"/><circle cx="88" cy="10" r="4" fill="var(--jade)" stroke="none"/>',"mā","妈","maman")}
+   ${tcard("2e ton, montant","麻",'<path d="M10 34 L82 10"/><circle cx="88" cy="8" r="4" fill="var(--jade)" stroke="none"/>',"má","麻","chanvre")}
+   ${tcard("3e ton, creux","马",'<path d="M10 14 L34 36 L82 12"/><circle cx="88" cy="9" r="4" fill="var(--jade)" stroke="none"/>',"mǎ","马","cheval")}
+   ${tcard("4e ton, tombant","骂",'<path d="M10 8 L82 36"/><circle cx="88" cy="38" r="4" fill="var(--jade)" stroke="none"/>',"mà","骂","gronder")}</div>
+   <span class="itone">Il existe aussi un ton léger : court, sans accent.</span>`},
+ {h:"D'abord comprendre et dire, ensuite écrire.",p:"Ta Collection se remplit au fil des leçons : sombre, puis jade, puis or.",
+  vis:()=>`<div class="isteps"><div class="istep"><span class="c">${I.book()}</span><b>Mots</b><small>avec les tons</small></div>${svg(30,'<path d="M9 6l6 6-6 6"/>',2.4)}
+   <div class="istep"><span class="c">${svg(30,'<path d="M21 12a8 8 0 0 1-11.6 7.1L3 20l1-4.5A8 8 0 1 1 21 12z"/>')}</span><b>Phrases</b><small>comprendre, dire</small></div>${svg(30,'<path d="M9 6l6 6-6 6"/>',2.4)}
+   <div class="istep"><span class="c gold">${svg(30,'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')}</span><b>Écriture</b><small>tracer les caractères</small></div></div>
+   <div class="imini"><span class="eyebrow" style="color:var(--jade)">Ta collection</span>
+   <div class="gr"><span class="ctile n" lang="zh">人</span><span class="ctile n" lang="zh">大</span><span class="ctile j" lang="zh">好</span><span class="ctile j" lang="zh">你</span><span class="ctile g" lang="zh">我</span></div>
+   <div class="lg"><span style="grid-column:span 2">pas encore appris</span><span style="grid-column:span 2">appris</span><span>maîtrisé</span></div></div>`}
+];
+let introFrom="start";
+// L'introduction s'affiche une seule fois, pour un tout nouvel utilisateur (aucune progression enregistrée).
+const introNeeded=()=>!state.introSeen&&!Object.keys(state.lv||{}).length&&!Object.keys(state.ctl||{}).length&&!(state.series||[]).length&&!Object.keys(state.days||{}).length&&!Object.keys(state.errors||{}).length;
+function introDone(){state.introSeen=true;save();const f=introFrom;introFrom="start";go(f==="settings"?"settings":"lessons")}
+function renderIntro(i,from){
+  if(from)introFrom=from;
+  screen="intro";closeSheet();window.scrollTo(0,0);
+  const st=INTRO[i],last=i===INTRO.length-1;
+  app.innerHTML=`<div class="intro">
+    <div class="intro-top"><span>${i+1} / ${INTRO.length}</span>${last?`<span style="min-height:44px"></span>`:`<button class="intro-skip" id="isk">Passer</button>`}</div>
+    <div class="intro-txt"><h1>${st.h}</h1><p>${st.p}</p></div>
+    <div class="intro-vis">${st.vis()}</div>
+    <div class="intro-dots" aria-hidden="true">${INTRO.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>
+    <button class="btn" id="inx">${last?(introFrom==="start"?"Commencer la leçon 1":"Terminer"):"Suivant"}</button></div>`;
+  document.getElementById("inx").onclick=()=>last?introDone():renderIntro(i+1);
+  const sk=document.getElementById("isk");if(sk)sk.onclick=introDone;
+  app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say));
+}
+
 /* Hors ligne : uniquement sur le site (GitHub Pages). Dans l'artefact Claude, la page est
    dans un cadre et les service workers sont refusés, donc rien ne se passe. */
 try{
@@ -3370,7 +3486,7 @@ state.exOff=[]; // le choix des sens a disparu de l'interface : les séries mél
 state.run=null;state.wrun=null; // aucune série en cours n'est conservée : fermer l'app ou quitter annule la série
 restoreGen(state.run);
 applyTheme();
-render();
+if(introNeeded())renderIntro(0,"start");else render();
 </script>
 
 </body></html>
