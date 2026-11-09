@@ -3026,7 +3026,7 @@ function renderSettings(){
   bindNav();
   bindFlame();
   document.getElementById("intro-again").onclick=()=>renderIntro(0,"settings");
-  const ia=document.getElementById("inst-again");if(ia)ia.onclick=()=>installPopup(true);
+  const ia=document.getElementById("inst-again");if(ia)ia.onclick=()=>installPopup();
   document.getElementById("sw-vib").onclick=()=>{setFx("vib",!fxOn("vib"));if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}renderSettings()};
   document.getElementById("sw-snd").onclick=()=>{setFx("snd",!fxOn("snd"));if(fxOn("snd"))beep(true);renderSettings()};
   document.getElementById("sw-zh").onclick=()=>{state.showZh=!state.showZh;save();renderSettings()};
@@ -3484,13 +3484,11 @@ function renderIntro(i,from){
 }
 
 /* ===== Ajouter l'app à l'écran d'accueil =====
-   Fenêtre proposée dans le navigateur d'un téléphone (iOS ou Android), adaptée au navigateur.
-   Jamais pendant l'introduction du premier lancement, ni dans l'app installée, ni en cours d'exercice.
-   Au plus 3 fois, espacées d'au moins 3 jours ; « Ne plus me le proposer » l'éteint pour de bon. */
-let deferredInstall=null,startupIntro=false;
+   Fenêtre affichée dès l'ouverture, à chaque fois, tant que l'app est utilisée dans le navigateur d'un téléphone (iOS ou Android) :
+   y compris au tout premier lancement, AVANT l'introduction. Jamais dans l'app installée. Adaptée au navigateur. */
+let deferredInstall=null;
 try{
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e});
-  window.addEventListener("appinstalled",()=>{state.install={...(state.install||{}),never:true};save()});
 }catch(e){}
 function installEnv(){
   const ua=navigator.userAgent||"";
@@ -3519,30 +3517,21 @@ function installSteps(env){
   if(android&&br==="edge")return {steps:[`Touche le menu <b>…</b> en bas de l'écran.`,"Touche <b>« Ajouter au téléphone »</b> (ou <b>« Ajouter à l'écran d'accueil »</b>).","Confirme."]};
   return {steps:[`Touche le menu ${icoDots()} en haut à droite.`,"Touche <b>« Installer l'application »</b> (ou <b>« Ajouter à l'écran d'accueil »</b>).","Confirme avec <b>« Installer »</b>."],native:android&&(br==="chrome")};
 }
-function installPopup(force){
+function installPopup(){
   const env=installEnv();
   if(!canInstallHere())return;
-  const inst=state.install||{};
-  if(!force){
-    if(inst.never||(inst.n||0)>=3||(inst.last&&Date.now()-inst.last<3*864e5))return;
-    if(screen!=="lessons"||document.getElementById("ov"))return;
-  }
-  if(!force){state.install={...inst,n:(inst.n||0)+1,last:Date.now()};save()}
   const {steps}=installSteps(env),canNative=!!deferredInstall;
   openSheet(`<div class="inst-head"><img src="icons/icon-192.png" alt="" width="56" height="56"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><h2 style="font-size:21px;font-weight:700;line-height:1.2">Ajoute l'app à ton écran d'accueil</h2><span style="font-size:15px;color:var(--muted)">Plein écran, plus rapide, et elle marche hors ligne.</span></div></div>
     ${canNative?"":`<ol class="inst-steps">${steps.map((t,i)=>`<li><span class="num24">${i+1}</span><span>${t}</span></li>`).join("")}</ol>`}
     ${canNative?`<p class="inst-note">Un seul geste : touche « Installer » puis confirme.</p>`:`<p class="inst-note">L'icône apparaît ensuite avec tes autres applications.</p>`}
-    <div class="stack8"><button class="btn" id="inst-go">${canNative?"Installer":"J'ai compris"}</button><button class="btn link" id="inst-later">Plus tard</button>${force?"":`<button class="btn link" id="inst-never" style="height:40px;font-size:14px;color:var(--muted)">Ne plus me le proposer</button>`}</div>`,"Ajouter l'app à l'écran d'accueil",ov=>{
+    <div class="stack8"><button class="btn" id="inst-go">${canNative?"Installer":"J'ai compris"}</button><button class="btn link" id="inst-later">Plus tard</button></div>`,"Ajouter l'app à l'écran d'accueil",ov=>{
       ov.querySelector("#inst-later").onclick=closeSheet;
-      const nv=ov.querySelector("#inst-never");if(nv)nv.onclick=()=>{state.install={...(state.install||{}),never:true};save();closeSheet()};
       ov.querySelector("#inst-go").onclick=()=>{
-        if(canNative){try{const d=deferredInstall;deferredInstall=null;d.prompt();d.userChoice&&d.userChoice.then(r=>{if(r&&r.outcome==="accepted"){state.install={...(state.install||{}),never:true};save()}})}catch(e){}}
+        if(canNative){try{const d=deferredInstall;deferredInstall=null;d.prompt()}catch(e){}}
         closeSheet();
       };
     });
 }
-// Une proposition par session au plus, un peu après l'arrivée sur l'écran Leçons, et jamais le jour de l'introduction.
-function scheduleInstall(){if(startupIntro||!canInstallHere())return;setTimeout(()=>installPopup(false),2500)}
 
 /* Hors ligne : uniquement sur le site (GitHub Pages). Dans l'artefact Claude, la page est
    dans un cadre et les service workers sont refusés, donc rien ne se passe. */
@@ -3556,7 +3545,8 @@ state.exOff=[]; // le choix des sens a disparu de l'interface : les séries mél
 state.run=null;state.wrun=null; // aucune série en cours n'est conservée : fermer l'app ou quitter annule la série
 restoreGen(state.run);
 applyTheme();
-if(introNeeded()){startupIntro=true;renderIntro(0,"start")}else{render();scheduleInstall()}
+if(introNeeded())renderIntro(0,"start");else render();
+installPopup(); // tout de suite, y compris avant l'introduction du premier lancement
 </script>
 
 </body></html>
