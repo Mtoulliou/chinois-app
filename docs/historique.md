@@ -44,7 +44,7 @@ Mise au propre le 2026-11-09. Les résumés ci-dessous viennent des conversation
 - Niveaux de difficulté croissante, **pas de gamification** (exclus: XP, streak, mascotte, confettis, badges, classement), identité visuelle conservée: jade `#256E5E`, fond `#F2F5F3`, Noto Serif SC + Source Sans 3, sceau 复习, format iPhone 390 × 844.
 - Structure: leçon → thèmes → 4 niveaux par thème → contrôle de fin de leçon.
 - 4 niveaux: Découverte (QCM), Reconnaissance (pinyin → français), Production (pinyin avec tons), Phrases.
-- Seuils: 80 % pour valider un niveau, 16/20 pour le contrôle.
+- Seuils: 80 % pour valider un niveau, 18/20 pour le contrôle.
 - Parcours en îlots en serpentin, bandeau fixe (leçon en cours + progression). États d'un îlot: validé, en cours, disponible, verrouillé. Le contrôle est un grand îlot à drapeau.
 - Niveau 1 de chaque thème ouvert dès le départ; carte « Leçon 5 » verrouillée; caractères en second plan sous le pinyin; pastille rouge sur Révision = nombre d'erreurs.
 - Paramètres: afficher les caractères, ajouter des exercices sur les caractères, thème Clair / Sombre / Système.
