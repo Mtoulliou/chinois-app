@@ -2558,7 +2558,7 @@ function render(){
 function onRemoteLoad(){applyTheme();restoreGen(state.run);if(["lessons","revision","settings","collection"].includes(screen))render()}
 
 /* ===== Onglet Leçons ===== */
-function renderLessons(){
+function renderLessons(focus=true){
   screen="lessons";
   const l=viewLesson(),done=lessonDone(l),tot=lessonTotal(l),cl=curSeries(l);
   const anyOk=Object.values(state.ser||{}).some(o=>o&&Object.values(o).some(x=>(x??-1)>=PASS));
@@ -2617,7 +2617,8 @@ function renderLessons(){
   app.querySelectorAll(".tsep-b").forEach(b=>b.onclick=()=>renderCours(l,+b.dataset.cours,true));
   app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ci,i]=b.dataset.lv.split(":").map(Number);startSer(l,ci,i)});
   const c=document.getElementById("ctl");if(c)c.onclick=()=>renderCtlIntro(l);
-  app.querySelectorAll(".nextl[data-view]").forEach(b=>b.onclick=()=>{state.view=b.dataset.view;save();window.scrollTo(0,0);renderLessons()});
+  if(focus&&!first){const t=app.querySelector(".isl.cur")||app.querySelector(".ctl.cur");if(t)requestAnimationFrame(()=>t.scrollIntoView({block:"center"}))}
+  app.querySelectorAll(".nextl[data-view]").forEach(b=>b.onclick=()=>{state.view=b.dataset.view;save();window.scrollTo(0,0);renderLessons(false)});
 }
 function lessonsSheet(){
   const v=viewLesson();
@@ -2629,7 +2630,7 @@ function lessonsSheet(){
   }).join("");
   openSheet(`<div class="sh-head"><div><h2>Toutes les leçons</h2><p>Chaque contrôle réussi ouvre la leçon suivante.</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
     <ol class="lvlist">${rows}</ol>`,"Toutes les leçons",ov=>{
-      ov.querySelectorAll(".lrow").forEach(b=>b.onclick=()=>{state.view=b.dataset.l;save();closeSheet();window.scrollTo(0,0);renderLessons()});
+      ov.querySelectorAll(".lrow").forEach(b=>b.onclick=()=>{state.view=b.dataset.l;save();closeSheet();window.scrollTo(0,0);renderLessons(false)});
     });
 }
 function chapterActions(l,ci){
