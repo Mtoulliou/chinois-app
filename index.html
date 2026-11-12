@@ -159,6 +159,12 @@ svg{display:block;flex-shrink:0}
 .nextl .tx{display:flex;flex-direction:column;flex:1;min-width:0}
 .nextl .tx .eyebrow{color:var(--muted)}
 .nextl .tx b{font-size:16px;font-weight:700}
+.exc h3{font-size:16px;font-weight:700;margin:0 0 6px}
+.exc p{margin:0 0 8px;font-size:15px;line-height:1.45}
+.exc-ex{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.exc-ex li{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding:8px 10px;border-radius:10px;background:var(--bg)}
+.exc-ex b{font-size:17px}.exc-ex span{font-size:17px}.exc-ex small{color:var(--muted);font-size:13px}
+.fb .exc-b{height:44px;font-size:15px}
 .nextl .tx small{font-size:13px;color:var(--muted)}
 
 /* ---------- Feuilles (thème, leçons, sélection, confirmation) ---------- */
@@ -2035,7 +2041,7 @@ const LS_KEY="revisions-chinois-v1";
 const ON_CLAUDE=!!(window.claude&&window.claude.use);
 /* Champs ajoutés par la refonte : lv (scores des niveaux par thème), ctl (contrôles par leçon),
    run (toujours null : une série interrompue est annulée, jamais reprise), showZh, zhEx, theme, view (leçon affichée). */
-const freshState=()=>({ser:{},days:{},srs:{},fx:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
+const freshState=()=>({ser:{},days:{},srs:{},fx:{},exc:{},errors:{},series:[],off:[],exOff:[],lv:{},ctl:{},run:null,showZh:false,zhEx:false,theme:"system",view:null,wr:{},wrun:null,updated:0});
 let state=freshState();
 try{const raw=localStorage.getItem(LS_KEY);if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}
 // Ancienne version : pas encore de champs du parcours
@@ -2069,7 +2075,7 @@ function save(){state.updated=Date.now();saveLocal();saveRemote()}
 /* ===== Code de transfert de progression ===== */
 const CODE_PREFIX="RC1-";
 function exportCode(){
-  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,ser:state.ser,lvVer:3,introSeen:true,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{}};
+  const data={errors:state.errors,series:state.series,off:state.off,exOff:state.exOff,themeScores:state.themeScores,ser:state.ser,lvVer:3,introSeen:true,ctl:state.ctl,showZh:state.showZh,zhEx:state.zhEx,theme:state.theme,wr:state.wr||{},days:state.days||{},srs:state.srs||{},fx:state.fx||{},exc:state.exc||{}};
   const bytes=new TextEncoder().encode(JSON.stringify(data));
   let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
   return CODE_PREFIX+btoa(bin);
@@ -2081,7 +2087,7 @@ function importCode(code){
   try{const bin=atob(c.slice(CODE_PREFIX.length));data=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))))}
   catch(e){throw new Error("Code incomplet ou abîmé. Recopie-le en entier.")}
   if(!data||typeof data.errors!=="object"||!Array.isArray(data.series)) throw new Error("Code illisible.");
-  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},introSeen:true,lvVer:3,ser:data.lvVer===3&&data.ser&&typeof data.ser==="object"?data.ser:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},updated:0};
+  state={...freshState(),errors:data.errors,series:data.series,off:Array.isArray(data.off)?data.off:[],exOff:Array.isArray(data.exOff)?data.exOff:[],themeScores:data.themeScores||{},introSeen:true,lvVer:3,ser:data.lvVer===3&&data.ser&&typeof data.ser==="object"?data.ser:{},ctl:data.ctl||{},showZh:!!data.showZh,zhEx:!!data.zhEx,theme:data.theme||state.theme,wr:data.wr&&typeof data.wr==="object"?data.wr:{},days:data.days&&typeof data.days==="object"?data.days:{},srs:data.srs&&typeof data.srs==="object"?data.srs:{},fx:data.fx&&typeof data.fx==="object"?data.fx:{},exc:data.exc&&typeof data.exc==="object"?data.exc:{},updated:0};
   registerGen(); save();
 }
 
@@ -2676,6 +2682,7 @@ function renderCours(l,ci,fromBook){
     const rules=RULES[th]||[];
     return `${multi?`<h2 class="sub-h" style="margin-top:6px">${esc(th)}</h2>`:""}
     ${rules.length?`<section class="card cs"><h3>Règles</h3><ul class="rules">${rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></section>`:""}
+    ${EXC.filter(e=>EXC_TH[e.id]===th).map(e=>`<div class="card cs">${excCardHTML(e)}</div>`).join("")}
     ${words.length?`<section class="card cs"><h3>${own?"Vocabulaire":"Mots utilisés"}</h3><table class="vt"><tbody>${words.map(w=>`<tr><td>${PY(w.py[0])}${ZH(w.zh[0])}</td><td>${esc(w.fr[0])}</td></tr>`).join("")}</tbody></table></section>`:""}
     ${ex.length?`<section class="card cs"><h3>Phrases modèles</h3><ul class="exs">${ex.map(p=>`<li><b>${PY(p.py[0])}</b>${zhOn()?`<span lang="zh">${esc(p.zh[0])}</span>`:""}<small>${esc(p.fr[0])}</small></li>`).join("")}</ul></section>`:""}`;
   }).join("");
@@ -2748,6 +2755,107 @@ function startSeries(mode){
   if(zhExOn()) shuffle(qs.filter(q=>hasHan(IT(q.id)))).slice(0,Math.round(qs.length/4)).forEach(q=>q.ex=2);
   R={kind:"series",mode,qs:qs.map(withGen),res:[],qi:0,main:qs.length};
   window.scrollTo(0,0);renderQ();
+}
+
+/* ===== Exceptions de prononciation : fiches ===== */
+const toneOf=c=>({"̄":1,"́":2,"̌":3,"̀":4}[c]||0);
+const pyPlain=s=>s.normalize("NFD").replace(/[̀́̄̌]/g,"").toLowerCase();
+// Tons de chaque syllabe (0 = ton léger), par groupe de mots séparés par une ponctuation ; null si le pinyin ne se découpe pas.
+function pySylTones(py){
+  const out=[];
+  for(const clause of py.split(/[,.?!;:，。？！、…]+/)){
+    const t=[];
+    for(const run of clause.split(/[\s'’]+/).filter(Boolean)){
+      const L=pyLetters(run.normalize("NFD")),plain=L.map(x=>x.plain).join(""),memo={};
+      const seg=i=>{
+        if(i===plain.length)return [];
+        if(i in memo)return memo[i];
+        let r=null;
+        for(let e=Math.min(plain.length,i+6);e>i&&!r;e--){
+          if(!PY_SYL.has(plain.slice(i,e)))continue;
+          let m=0,tn=0;for(let k=i;k<e;k++)if(L[k].tone){m++;tn=toneOf(L[k].tone)}
+          if(m>1)continue;
+          const rest=seg(e);if(rest)r=[tn,...rest];
+        }
+        return memo[i]=r;
+      };
+      const s=seg(0);if(!s)return null;t.push(...s);
+    }
+    out.push(t);
+  }
+  return out;
+}
+const EXC=[
+  {id:"bu",t:"不 devient bú",r:"Devant un mot au 4e ton, 不 se prononce bú (2e ton). Dans tous les autres cas, il reste bù.",
+   ex:[["bú shì","不是","ce n'est pas"],["bú rè","不热","pas chaud"],["bù hǎo","不好","pas bien (3e ton : bù)"]],
+   d:c=>c.zh.includes("不")&&/bú/i.test(c.py)},
+  {id:"yi",t:"一 change de ton",r:"Seul, dans un nombre ou une date, 一 reste yī. Devant un 4e ton il devient yí ; devant un 1er, 2e ou 3e ton il devient yì.",
+   ex:[["yí gè rén","一个人","une personne"],["yí kè","一刻","un quart d'heure"],["yì bǎi","一百","cent"]],
+   d:c=>c.zh.includes("一")&&/y[íì]/i.test(c.py)},
+  {id:"san3",t:"Deux 3e tons de suite",r:"Quand deux 3e tons se suivent, le premier se prononce comme un 2e ton. L'écriture ne change pas : on garde le 3e ton dans le pinyin.",
+   ex:[["nǐ hǎo","你好","se dit ní hǎo"],["hěn hǎo","很好","se dit hén hǎo"]],
+   d:c=>!!c.syl&&c.syl.some(g=>g.some((t,i)=>i>0&&t===3&&g[i-1]===3))},
+  {id:"leger",t:"Le ton léger",r:"Certaines syllabes sont courtes et légères : elles s'écrivent sans accent. C'est le cas de 的, 吗, 呢, 们, de 个 (ge) et de la 2e syllabe de nombreux mots.",
+   ex:[["bàba","爸爸","papa"],["de","的","marque de possession"],["xǐhuan","喜欢","aimer"]],
+   d:c=>!!c.syl&&c.han===c.syl.flat().length&&c.syl.flat().includes(0)},
+  {id:"ue",t:"u se lit ü après j, q, x, y",r:"Après j, q, x et y, la lettre u représente le son ü (lèvres arrondies, comme pour dire « i »). Le tréma n'est pas écrit.",
+   ex:[["qù","去","aller"],["xué","学","étudier"],["yuè","月","mois"]],
+   d:c=>/[jqxy]u/.test(c.pl)},
+  {id:"iuui",t:"iu, ui, un : voyelles cachées",r:"Après une consonne, iu se lit iou, ui se lit uei et un se lit uen. Le ton se place sur la dernière voyelle écrite.",
+   ex:[["jiǔ","九","j + iou"],["suì","岁","s + uei"],["chūn","春","ch + uen"]],
+   d:c=>/(?:[bcdfghjklmnpqrstxz]|zh|ch|sh)(?:iu|ui)/.test(c.pl)||/(?:[bcdfghklmnprstz]|zh|ch|sh)un/.test(c.pl)},
+  {id:"apos",t:"L'apostrophe",r:"Quand une syllabe commence par a, o ou e juste après une autre, une apostrophe les sépare, pour qu'on ne lise pas autrement.",
+   ex:[["shí'èr","十二","douze"],["xī'ān","西安","Xi'an"]],
+   d:c=>/['’]/.test(c.py)},
+  {id:"liang",t:"二, 两 et 幺",r:"Pour compter, on dit èr. Devant un classificateur, on dit liǎng. Au téléphone, 1 se dit yāo pour ne pas être confondu avec 7.",
+   ex:[["èr shí","二十","vingt"],["liǎng gè rén","两个人","deux personnes"],["yāo","幺","un (téléphone)"]],
+   d:c=>/[两幺]/.test(c.zh)},
+  {id:"tata",t:"他 et 她 : le même son",r:"Il (他) et elle (她) se prononcent tous les deux tā. Seul le caractère, ou le contexte, les distingue.",
+   ex:[["tā","他","il"],["tā","她","elle"]],
+   d:c=>/[他她]/.test(c.zh)}
+];
+// Thème où chaque exception apparaît pour la première fois (la fiche est ajoutée au cours de ce chapitre). Vérifié par tools/audit.js.
+const EXC_TH={san3:"Salutations et présentation",leger:"Salutations et présentation",iuui:"Salutations et présentation",tata:"Pays et nationalités",bu:"Pays et nationalités",ue:"Langues",apos:"Mois et jours",yi:"Classificateurs",liang:"Classificateurs"};
+const EXC_BY=Object.fromEntries(EXC.map(e=>[e.id,e]));
+const _excMemo=new WeakMap();
+function itemExc(item){
+  if(!item)return[];
+  let r=_excMemo.get(item);if(r)return r;
+  const py=item.py[0],zh=item.zh[0];let syl=null;
+  try{syl=pySylTones(py)}catch(e){}
+  const c={py,zh,pl:pyPlain(py),syl,han:[...zh].filter(ch=>/[㐀-鿿]/.test(ch)).length};
+  r=EXC.filter(e=>{try{return e.d(c)}catch(x){return false}}).map(e=>e.id);
+  _excMemo.set(item,r);return r;
+}
+function excCardHTML(e){
+  return `<section class="exc"><h3>${esc(e.t)}</h3><p>${esc(e.r)}</p>
+    <ul class="exc-ex">${e.ex.map(x=>`<li><b lang="zh-Latn-pinyin">${esc(x[0])}</b><span lang="zh">${esc(x[1])}</span><small>${esc(x[2])}</small></li>`).join("")}</ul></section>`;
+}
+// Fiche d'exception en fenêtre (première apparition ou consultation après une erreur)
+function excSheet(ids,first,back){
+  const list=ids.map(i=>EXC_BY[i]).filter(Boolean);if(!list.length)return;
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">${first?"Nouvelle exception":"Exception"}</span><h2>${list.length>1?"Exceptions à connaître":esc(list[0].t)}</h2></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+    ${list.map(e=>list.length>1?excCardHTML(e):`<section class="exc"><p>${esc(e.r)}</p><ul class="exc-ex">${e.ex.map(x=>`<li><b lang="zh-Latn-pinyin">${esc(x[0])}</b><span lang="zh">${esc(x[1])}</span><small>${esc(x[2])}</small></li>`).join("")}</ul></section>`).join("")}
+    <button class="btn" data-close>${first?"Compris":back?"Retour à la liste":"Fermer"}</button>`,"Exception de prononciation",ov=>{
+      if(back){ov.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",back));ov.addEventListener("click",e=>{if(e.target===ov)back()})}
+    });
+}
+// Liste de toutes les fiches (Paramètres) : on peut les rouvrir à tout moment et tester l'affichage.
+function excListSheet(){
+  const seen=state.exc||{};
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">Prononciation</span><h2>Les exceptions</h2><p>${EXC.length} fiches. Touche une fiche pour l'ouvrir.</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+    <ol class="lvlist">${EXC.map(e=>`<li><button class="lrow" data-e="${e.id}"><span class="tx"><b>${esc(e.t)}</b><small>${esc(e.ex.map(x=>x[1]+" "+x[0]).join(", "))}</small></span><span class="rt${seen[e.id]?" ok":""}">${seen[e.id]?"Déjà vue":"Pas encore vue"}</span></button></li>`).join("")}</ol>
+    <button class="btn sec" id="exc-reset">Réafficher les fiches à leur première apparition</button>`,"Les exceptions",ov=>{
+      ov.querySelectorAll(".lrow[data-e]").forEach(b=>b.onclick=()=>excSheet([b.dataset.e],false,excListSheet));
+      ov.querySelector("#exc-reset").onclick=()=>{state.exc={};save();excListSheet()};
+    });
+}
+// Première question d'une série qui contient une exception jamais vue : la fiche s'ouvre une seule fois.
+function excFirstSeen(item){
+  if(!R||R.kind==="ctl")return;
+  const ids=itemExc(item).filter(i=>!(state.exc||{})[i]).slice(0,2);if(!ids.length)return;
+  state.exc=state.exc||{};ids.forEach(i=>state.exc[i]=1);save();
+  setTimeout(()=>{if(screen==="q"&&cur&&cur.item===item)excSheet(ids,true)},120);
 }
 
 /* ===== Écran d'exercice ===== */
@@ -2827,6 +2935,7 @@ function renderQ(){
     setTimeout(()=>{try{inp.focus({preventScroll:true})}catch(e){}},50);
   }
   val.onclick=validate;
+  excFirstSeen(item);
 }
 function quitRun(){
   // Une série quittée est annulée : elle ne peut pas être reprise, il faut la recommencer.
@@ -2873,8 +2982,10 @@ function showFb(){
       <dl><dt>Ta réponse</dt><dd class="yours"${k==="py"?' lang="zh-Latn-pinyin"':""}>${esc(ans.trim()||"(vide)")}</dd><dt>Réponse</dt><dd class="ans">${ansH}</dd></dl>
       ${s===.5?`<p class="cnote">Les syllabes sont justes, vérifie les tons.</p>`:""}
       ${notes.length?`<p class="cnote"><b>Note du cours :</b> ${notes.map(esc).join(" ")}</p>`:""}
+      ${R.kind==="ctl"?"":itemExc(item).slice(0,2).map(i=>`<button class="btn link exc-b" data-exc="${i}">Voir l'exception : ${esc(EXC_BY[i].t)}</button>`).join("")}
       <p class="fb-small">Ajoutée à ta liste d'erreurs.</p>
       <div class="row-btns">${!isOptQ(q)&&ans.trim()?`<button class="btn bad-sec" id="ovr">J'avais juste</button>`:""}<button class="btn bad grow" id="cont">Continuer</button></div></div></section>`;
+    box.querySelectorAll("[data-exc]").forEach(b=>b.onclick=()=>excSheet([b.dataset.exc],false));
     const o=document.getElementById("ovr");if(o)o.onclick=()=>{cur.s=1;cur.why="manual";showFb()};
   }
   const ex=document.getElementById("ex"),fb=box.firstElementChild;
@@ -3190,6 +3301,7 @@ function renderSettings(){
     <h2 class="sec-title">Aide et retours</h2>
     <section class="card set">
       ${canInstallHere()?`<button class="actrow" id="inst-again"><b>Ajouter à l'écran d'accueil</b><small>Comment installer l'app sur ton téléphone.</small></button>`:""}
+      <button class="actrow" id="exc-list"><b>Consulter les exceptions</b><small>Les fiches sur les tons qui changent, le ton léger, le u qui se lit ü…</small></button>
       <button class="actrow" id="intro-again"><b>Revoir l'introduction</b><small>Caractères, pinyin et tons en 5 écrans.</small></button>
       <a class="actrow" id="fb-bug" href="${fbURL("bug")}" target="_blank" rel="noopener noreferrer"><b>Signaler un bug</b><small>Ouvre un formulaire GitHub déjà rempli. Il faut un compte GitHub gratuit.</small></a>
       <a class="actrow" id="fb-feat" href="${fbURL("feature")}" target="_blank" rel="noopener noreferrer"><b>Demander une fonctionnalité</b><small>Même principe : tu relis le formulaire, puis tu l'envoies.</small></a>
@@ -3197,6 +3309,7 @@ function renderSettings(){
   </main></div>${navHTML("settings")}`;
   bindNav();
   bindFlame();
+  document.getElementById("exc-list").onclick=excListSheet;
   document.getElementById("intro-again").onclick=()=>renderIntro(0,"settings");
   const ia=document.getElementById("inst-again");if(ia)ia.onclick=()=>installPopup();
   document.getElementById("sw-vib").onclick=()=>{setFx("vib",!fxOn("vib"));if(fxOn("vib")&&navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}renderSettings()};
