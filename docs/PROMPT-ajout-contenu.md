@@ -45,7 +45,7 @@ pose la question avant de coder. Tu ne modifies pas ce qui n'est pas demandé.
 - Groupes et séries : les mots du chapitre sont répartis en groupes équilibrés de 8 au plus. Par groupe : Découverte (cartes de présentation, puis 20 questions), Renforcement, Révision (mélange du groupe et des précédents).
   Puis une série Phrases (20 phrases) et une série Défi (tes erreurs du chapitre). Toutes les séries font 20 questions et se valident à 80 %. Scores rangés par identifiant stable `g1a, g1b, g1m, g2a, …, p, h` (`state.ser[chapitre]`).
 - Phrases : 20 phrases (cours + générées + compléments de thèmes précédents), filtrées pour que tous leurs mots soient enseignés. Un chapitre qui a peu de phrases (moins de 10) est complété par des mots : l'audit le signale ; ajoute des phrases de cours ou un générateur.
-- Contrôle de leçon : 30 questions jusqu'à 45 mots de vocabulaire dans la leçon, 40 au-delà (80 % pour valider), au moins 1 question par chapitre ; la leçon suivante s'ouvre à la réussite du contrôle.
+- Contrôle de leçon : 30 questions jusqu'à 45 mots de vocabulaire dans la leçon, 40 au-delà (90 % pour valider), au moins 1 question par chapitre ; la leçon suivante s'ouvre à la réussite du contrôle.
 - Collection : un caractère devient jade quand la série Renforcement du groupe d'un mot le contenant est validée (et sans erreur en cours), or une fois tracé de mémoire.
   Seuls les caractères ayant des données de tracé (`window.HANZI_DATA`) apparaissent.
 - Révision espacée et séries libres piochent dans tous les éléments `V`.
