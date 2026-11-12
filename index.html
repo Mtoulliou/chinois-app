@@ -2236,19 +2236,21 @@ const serIdx=ch=>ch.series.map((_,i)=>i);
 const nOk=ch=>serIdx(ch).filter(i=>serOk(ch,i)).length;
 const chapDone=ch=>nOk(ch)===ch.series.length;
 const ctlPassed=l=>!!(state.ctl[l.id]&&state.ctl[l.id].passed);
-const lessonOpen=l=>LI(l)===0||ctlPassed(LESSONS[LI(l)-1]);
-const chapOpen=(l,ci)=>lessonOpen(l)&&(ci===0||chapDone(chaptersOf(l)[ci-1]));
-const serOpen=(l,ci,i)=>chapOpen(l,ci)&&(i===0||serOk(chaptersOf(l)[ci],i-1));
+const lessonOpen=l=>LI(l)===0||ctlPassed(LESSONS[LI(l)-1])||ctlPassed(l);
+const chapOpen=(l,ci)=>chapDone(chaptersOf(l)[ci])||lessonOpen(l)&&(ci===0||chapDone(chaptersOf(l)[ci-1]));
+const serSeq=(l,ci,i)=>chapOpen(l,ci)&&(i===0||serOk(chaptersOf(l)[ci],i-1));
+// Le Défi de chaque chapitre est toujours ouvert (il permet de sauter le chapitre) ; les autres séries suivent l'ordre.
+const serOpen=(l,ci,i)=>chaptersOf(l)[ci].series[i].kind==="hard"||serSeq(l,ci,i);
 const lessonDone=l=>chaptersOf(l).reduce((n,c)=>n+nOk(c),0);
 const lessonTotal=l=>chaptersOf(l).reduce((n,c)=>n+c.series.length,0);
-const ctlOpen=l=>lessonOpen(l)&&lessonDone(l)===lessonTotal(l);
+const ctlOpen=l=>true; // le contrôle est toujours ouvert : le réussir valide toute la leçon
 function curSeries(l){
   const cs=chaptersOf(l);
-  for(let ci=0;ci<cs.length;ci++)for(let i=0;i<cs[ci].series.length;i++)if(serOpen(l,ci,i)&&!serOk(cs[ci],i))return {ci,i,ch:cs[ci]};
+  for(let ci=0;ci<cs.length;ci++)for(let i=0;i<cs[ci].series.length;i++)if(serSeq(l,ci,i)&&!serOk(cs[ci],i))return {ci,i,ch:cs[ci]};
   return null;
 }
 const curLesson=()=>LESSONS.find(l=>lessonOpen(l)&&!ctlPassed(l))||[...LESSONS].reverse().find(lessonOpen);
-function viewLesson(){const l=LESSONS.find(x=>x.id===state.view);return l&&lessonOpen(l)?l:curLesson()}
+function viewLesson(){const l=LESSONS.find(x=>x.id===state.view);return l||curLesson()}
 // « started » : la série a déjà été tentée (un score existe) ; une série interrompue n'est jamais reprise.
 const started=(ch,i)=>serScore(ch,i)!=null;
 const pileIdsAll=()=>Object.keys(state.errors).filter(id=>IT(id));
@@ -2582,7 +2584,7 @@ function renderLessons(focus=true){
   chaptersOf(l).forEach((ch,ci)=>{
     const open=chapOpen(l,ci),k=nOk(ch),N=ch.series.length;
     let st,cls="";
-    if(!open) st=ci>0&&chapOpen(l,ci-1)?"Termine d'abord le chapitre précédent":"Verrouillé";
+    if(!open) st=(ci>0&&chapOpen(l,ci-1)?"Termine d'abord le chapitre précédent":"Verrouillé")+", Défi ouvert";
     else if(k===N){if(chapGold(ch)){st="Parfait, toutes les séries en or";cls="gold"}else{st="Validé";cls="ok"}}
     else if(k===0&&!started(ch,0)) st="À commencer";
     else if(k===0){st="En cours";cls="part"}
@@ -2609,7 +2611,7 @@ function renderLessons(focus=true){
   if(!cO) h+=`<div class="ctl"><button class="ctl-b" disabled aria-label="Contrôle de la ${esc(lower(l.n))}, verrouillé">${I.flag()}<span class="ctl-badge" aria-hidden="true">${I.lock(15,2.2)}</span></button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span>Valide les ${tot} séries pour le débloquer</span></span></div>`;
   else if(!cP) h+=`<div class="ctl cur"><span class="bubble">${best!=null?"Repasser":"Commencer"}</span><button class="ctl-b" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ouvert">${I.flag()}</button>
-    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:`${ctlLen(l)} questions, 16 / 20 pour valider`}</span></span></div>`;
+    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:`${ctlLen(l)} questions, 16 / 20 pour valider${lessonDone(l)<lessonTotal(l)?", saute la leçon":""}`}</span></span></div>`;
   else{const cg=ctlGold(l);h+=`<div class="ctl"><button class="ctl-b${cg?" gold":""}" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ${cg?"parfait":"validé"}">${I.flag()}<span class="ctl-badge ok" aria-hidden="true">${I.check(15,3)}</span></button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span class="${cg?"gold":"ok"}">${cg?"Parfait, 20 / 20":"Validé, "+best+" / 20"}</span></span></div>`}
   const nx=LESSONS[LI(l)+1];
@@ -2634,10 +2636,10 @@ function lessonsSheet(){
   const rows=LESSONS.map(l=>{
     const open=lessonOpen(l),p=ctlPassed(l),d=lessonDone(l),t=lessonTotal(l);
     const ic=p?`<span class="c40">${I.check(18,2.6)}</span>`:open?`<span class="c40 ring">${esc(lessonNo(l))}</span>`:`<span class="c40 lk">${I.lock(16)}</span>`;
-    const rt=p?`<span class="rt ok">Validée</span>`:open?`<span class="rt">${d} / ${t}</span>`:`<span class="rt" style="color:var(--muted);font-weight:400">Verrouillée</span>`;
-    return `<li><button class="lrow" data-l="${l.id}" ${open?"":"disabled"} ${l===v?'aria-current="true"':""}>${ic}<span class="tx"><span class="eyebrow">${esc(l.n)}</span><b>${esc(l.t)}</b><small>${l.themes.length} thèmes, ${t} niveaux</small></span>${rt}</button></li>`;
+    const rt=p?`<span class="rt ok">Validée</span>`:open?`<span class="rt">${d} / ${t}</span>`:`<span class="rt" style="color:var(--muted);font-weight:400">Verrouillée, contrôle ouvert</span>`;
+    return `<li><button class="lrow" data-l="${l.id}" ${l===v?'aria-current="true"':""}>${ic}<span class="tx"><span class="eyebrow">${esc(l.n)}</span><b>${esc(l.t)}</b><small>${l.themes.length} thèmes, ${t} niveaux</small></span>${rt}</button></li>`;
   }).join("");
-  openSheet(`<div class="sh-head"><div><h2>Toutes les leçons</h2><p>Chaque contrôle réussi ouvre la leçon suivante.</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+  openSheet(`<div class="sh-head"><div><h2>Toutes les leçons</h2><p>Chaque contrôle réussi ouvre la leçon suivante. Tu peux aussi passer un contrôle directement pour sauter une leçon.</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
     <ol class="lvlist">${rows}</ol>`,"Toutes les leçons",ov=>{
       ov.querySelectorAll(".lrow").forEach(b=>b.onclick=()=>{state.view=b.dataset.l;save();closeSheet();window.scrollTo(0,0);renderLessons(false)});
     });
@@ -2660,7 +2662,7 @@ function chapterSheet(l,ci){
   }).join("");
   const act=chapterActions(l,ci);
   const sub=k===N?(chapGold(ch)?`Chapitre parfait, ${N} séries en or`:`Chapitre validé, ${N} séries sur ${N}`):k===0?`Aucune série validée sur ${N}`:`${k} ${plural(k,"série validée","séries validées")} sur ${N}`;
-  openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h2>${esc(ch.name)}</h2><p>${open?sub:"Termine d'abord le chapitre précédent"}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
+  openSheet(`<div class="sh-head"><div><span class="eyebrow">${esc(l.n)}, ${esc(l.t)}</span><h2>${esc(ch.name)}</h2><p>${open?sub:"Termine d'abord le chapitre précédent. Le Défi reste ouvert pour sauter ce chapitre."}</p></div><button class="xbtn" data-close aria-label="Fermer">${I.x(20)}</button></div>
     ${ch.sub?`<p class="inst-note">Ce chapitre regroupe aussi : ${esc(ch.sub)}.</p>`:""}
     <ol class="lvlist">${rows}</ol>
     ${ch.words.length?`<div class="vocab"><h3>Vocabulaire du chapitre (${ch.words.length} mots)</h3><div class="chips">${ch.words.map(w=>`<span class="vchip"><b>${PY(w.py[0])}${ZH(w.zh[0])}</b><small>${esc(w.fr[0])}</small></span>`).join("")}</div></div>`:""}
@@ -2741,7 +2743,7 @@ function renderCtlIntro(l){
       <div><dt>Pour valider</dt><dd>${Math.round(ctlLen(l)*.8)} / ${ctlLen(l)}</dd></div></dl></section>
     <section class="stack8" aria-label="Chapitres couverts"><h2 class="sub-h">Chapitres couverts</h2>
       <div class="chips">${chaptersOf(l).map(c=>`<span class="tchip"><span class="c20">${I.check(12,3.2)}</span>${esc(c.name)}</span>`).join("")}</div></section>
-    <p class="note-p">En cas d'échec, tes séries restent validées et tu peux repasser le contrôle quand tu veux.</p>
+    ${lessonDone(l)<lessonTotal(l)&&!passed?`<p class="note-p">Il reste des séries à faire dans cette leçon. En réussissant le contrôle, elles sont toutes validées et la leçon suivante s'ouvre.</p>`:""}<p class="note-p">En cas d'échec, tes séries restent validées et tu peux repasser le contrôle quand tu veux.</p>
     <div class="spacer"></div>
     <button class="btn" id="go">Commencer le contrôle</button>
   </div>`;
@@ -3050,6 +3052,9 @@ function finishSer(){
   const l=LESSONS.find(x=>x.id===r.lid),cs=chaptersOf(l),ci=cs.findIndex(c=>c.id===r.chId),ch=cs[ci],i=r.si,S=ch.series[i],N=ch.series.length;
   const wasOk=serOk(ch,i),wasCtl=ctlOpen(l),wasDone=chapDone(ch),wasGold=serGold(ch,i);
   state.ser=state.ser||{};const so=Object.assign({},state.ser[ch.id]);so[S.id]=Math.max(so[S.id]??0,pct);state.ser[ch.id]=so;
+  // Défi réussi : tout le chapitre est validé d'un coup (or si 100 %).
+  const skipped=S.kind==="hard"&&pct>=PASS&&!wasDone;
+  if(skipped)ch.series.forEach(x=>{so[x.id]=Math.max(so[x.id]??0,pct>=100?100:PASS)});
   const sday=pct>=PASS?markDay():null;
   state.run=null;state.view=l.id;save();R=null;
   const passed=pct>=PASS,need=Math.ceil(n*PASS/100),errs=gr.filter(x=>x.s<1);
@@ -3063,6 +3068,7 @@ function finishSer(){
     if(pct<100)nl.push(`Un sans-faute (100 %) passe cette série en or. Il t'a manqué ${n-good} ${plural(n-good,"réponse","réponses")}.`);
     if(kk<N)nl.push(`Plus que ${N-kk} ${plural(N-kk,"série","séries")} pour finir ce chapitre.`);
     const nudge=nl.length?`<p class="nudge">${esc(nl.join(" "))}</p>`:(gold&&!wasGold?`<p class="nudge gold">Série en or.</p>`:"");
+    const skipNote=skipped?`<p class="nudge ok">Défi réussi : toutes les séries du chapitre sont validées${pct>=100?" en or":""}.</p>`:"";
     const cando=!wasDone&&chapDone(ch)?candoCard(ch.themes.map(t=>CANDO[t]).filter(Boolean).join(", ")):"";
     let unlock="";
     if(!wasOk){
@@ -3074,7 +3080,7 @@ function finishSer(){
       <div class="end-top"><span class="c72${gold?" gold":""}">${gold?I.star(36):I.check(36,2.6)}</span><h1>Série ${i+1} ${gold?"parfaite":"validée"}</h1><p>${esc(ch.name)}, ${esc(S.name)}</p></div>
       <section class="card scorebox" aria-label="Score"><div class="top"><span class="pct">${pct} %</span><span>${good} ${plural(good,"bonne réponse","bonnes réponses")} sur ${n}</span></div>
         <div class="meter"><div class="tr"><i style="width:${pct}%"></i></div><div class="mk" aria-hidden="true"></div><span class="ml">80 % requis</span></div></section>
-      ${rapp}${unlock}${cando}${nudge}${streakCard(sday)}${errsCard(errs)}
+      ${rapp}${skipNote}${unlock}${cando}${nudge}${streakCard(sday)}${errsCard(errs)}
       <div class="spacer"></div>
       ${nextBtn?`<button class="btn" id="nx">${esc(nextBtn.label)}</button><button class="btn link" id="bk">Retour aux leçons</button>`:`<button class="btn" id="bk">Retour aux leçons</button>`}
     </div>`;
@@ -3101,6 +3107,8 @@ function finishCtl(){
   const passed=good>=need,prev=state.ctl[l.id]||{};
   const score20=total?Math.round(good/total*20):0;
   state.ctl[l.id]={best:Math.max(prev.best||0,score20),passed:passed||!!prev.passed,date:Date.now()};
+  // Contrôle réussi : toutes les séries de la leçon sont validées (or si 20 / 20).
+  if(passed){state.ser=state.ser||{};const v=good===total?100:PASS;chaptersOf(l).forEach(c=>{const o=Object.assign({},state.ser[c.id]);c.series.forEach(x=>{o[x.id]=Math.max(o[x.id]??0,v)});state.ser[c.id]=o})}
   state.series.push({date:nowStr(),score:total?good/total*20:0,themes:`Contrôle, ${lower(l.n)}`,kind:"ctl"});state.series=state.series.slice(-30);
   const nx=LESSONS[LI(l)+1];
   const sday=passed?markDay():null,perfect=total>0&&good===total;
