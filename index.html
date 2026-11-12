@@ -2235,6 +2235,7 @@ const serOk=(ch,i)=>(serScore(ch,i)??-1)>=PASS;
 const serIdx=ch=>ch.series.map((_,i)=>i);
 const nOk=ch=>serIdx(ch).filter(i=>serOk(ch,i)).length;
 const chapDone=ch=>nOk(ch)===ch.series.length;
+const CTL_PASS=90; // contrôle : 90 % (18 / 20) pour valider
 const ctlPassed=l=>!!(state.ctl[l.id]&&state.ctl[l.id].passed);
 const lessonOpen=l=>LI(l)===0||ctlPassed(LESSONS[LI(l)-1])||ctlPassed(l);
 const chapOpen=(l,ci)=>chapDone(chaptersOf(l)[ci])||lessonOpen(l)&&(ci===0||chapDone(chaptersOf(l)[ci-1]));
@@ -2611,7 +2612,7 @@ function renderLessons(focus=true){
   if(!cO) h+=`<div class="ctl"><button class="ctl-b" disabled aria-label="Contrôle de la ${esc(lower(l.n))}, verrouillé">${I.flag()}<span class="ctl-badge" aria-hidden="true">${I.lock(15,2.2)}</span></button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span>Valide les ${tot} séries pour le débloquer</span></span></div>`;
   else if(!cP) h+=`<div class="ctl cur"><span class="bubble">${best!=null?"Repasser":"Commencer"}</span><button class="ctl-b" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ouvert">${I.flag()}</button>
-    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 16`:`${ctlLen(l)} questions, 16 / 20 pour valider${lessonDone(l)<lessonTotal(l)?", saute la leçon":""}`}</span></span></div>`;
+    <span class="ctl-t"><b>Contrôle de la leçon</b><span>${best!=null?`Meilleure note ${best} / 20, il faut 18`:`${ctlLen(l)} questions, 18 / 20 pour valider${lessonDone(l)<lessonTotal(l)?", saute la leçon":""}`}</span></span></div>`;
   else{const cg=ctlGold(l);h+=`<div class="ctl"><button class="ctl-b${cg?" gold":""}" id="ctl" aria-label="Contrôle de la ${esc(lower(l.n))}, ${cg?"parfait":"validé"}">${I.flag()}<span class="ctl-badge ok" aria-hidden="true">${I.check(15,3)}</span></button>
     <span class="ctl-t"><b>Contrôle de la leçon</b><span class="${cg?"gold":"ok"}">${cg?"Parfait, 20 / 20":"Validé, "+best+" / 20"}</span></span></div>`}
   const nx=LESSONS[LI(l)+1];
@@ -2740,7 +2741,7 @@ function renderCtlIntro(l){
       <div><dt>Questions</dt><dd>${ctlLen(l)}, sur les ${chaptersOf(l).length} chapitres</dd></div>
       <div><dt>Exercices</dt><dd>Tous types mélangés</dd></div>
       <div><dt>Aide</dt><dd>Aucune note de cours</dd></div>
-      <div><dt>Pour valider</dt><dd>${Math.round(ctlLen(l)*.8)} / ${ctlLen(l)}</dd></div></dl></section>
+      <div><dt>Pour valider</dt><dd>${Math.ceil(ctlLen(l)*CTL_PASS/100)} / ${ctlLen(l)}</dd></div></dl></section>
     <section class="stack8" aria-label="Chapitres couverts"><h2 class="sub-h">Chapitres couverts</h2>
       <div class="chips">${chaptersOf(l).map(c=>`<span class="tchip"><span class="c20">${I.check(12,3.2)}</span>${esc(c.name)}</span>`).join("")}</div></section>
     ${lessonDone(l)<lessonTotal(l)&&!passed?`<p class="note-p">Il reste des séries à faire dans cette leçon. En réussissant le contrôle, elles sont toutes validées et la leçon suivante s'ouvre.</p>`:""}<p class="note-p">En cas d'échec, tes séries restent validées et tu peux repasser le contrôle quand tu veux.</p>
@@ -3074,7 +3075,7 @@ function finishSer(){
     if(!wasOk){
       if(i<N-1) unlock=`<section class="unlock" aria-label="Série débloquée"><span class="c40">${i+2}</span><span class="tx"><b>Série ${i+2} débloquée</b><span>${esc(ch.series[i+1].name)}</span></span></section>`;
       else if(ci<cs.length-1) unlock=`<section class="unlock" aria-label="Chapitre débloqué"><span class="c40">${I.unlock()}</span><span class="tx"><b>Chapitre suivant débloqué</b><span>${esc(cs[ci+1].name)}</span></span></section>`;
-      else if(!wasCtl&&ctlOpen(l)) unlock=`<section class="unlock" aria-label="Contrôle débloqué"><span class="c40">${I.flag(20)}</span><span class="tx"><b>Contrôle débloqué</b><span>${ctlLen(l)} questions sur la leçon, 80 % pour valider</span></span></section>`;
+      else if(!wasCtl&&ctlOpen(l)) unlock=`<section class="unlock" aria-label="Contrôle débloqué"><span class="c40">${I.flag(20)}</span><span class="tx"><b>Contrôle débloqué</b><span>${ctlLen(l)} questions sur la leçon, 90 % pour valider</span></span></section>`;
     }
     app.innerHTML=`<div class="end">
       <div class="end-top"><span class="c72${gold?" gold":""}">${gold?I.star(36):I.check(36,2.6)}</span><h1>Série ${i+1} ${gold?"parfaite":"validée"}</h1><p>${esc(ch.name)}, ${esc(S.name)}</p></div>
@@ -3103,7 +3104,7 @@ function finishSer(){
 
 /* ---------- Fin de contrôle ---------- */
 function finishCtl(){
-  const r=R,l=LESSONS.find(x=>x.id===r.lid),total=r.res.length,good=r.res.filter(x=>x.s===1).length,need=Math.round(total*.8);
+  const r=R,l=LESSONS.find(x=>x.id===r.lid),total=r.res.length,good=r.res.filter(x=>x.s===1).length,need=Math.ceil(total*CTL_PASS/100);
   const passed=good>=need,prev=state.ctl[l.id]||{};
   const score20=total?Math.round(good/total*20):0;
   state.ctl[l.id]={best:Math.max(prev.best||0,score20),passed:passed||!!prev.passed,date:Date.now()};

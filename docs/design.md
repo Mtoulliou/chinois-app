@@ -42,7 +42,7 @@ Le thème sombre redéfinit les mêmes variables (`--bg #111816`, `--jade #62C2A
 ## Règles d'interaction notées sur le canvas
 - Un îlot est validé à 80 % et ouvre le suivant.
 - Le 4e îlot d'un thème ouvre le 1er du thème suivant.
-- Les 16 îlots validés ouvrent le contrôle (16/20 requis), qui ouvre la leçon suivante.
+- Les 16 îlots validés ouvrent le contrôle (18/20 requis), qui ouvre la leçon suivante.
 - Révision : tout le vocabulaire reste accessible sans verrou.
 - Écriture : organisée par leçon, toutes ouvertes ; ordre et sens des traits vérifiés, indice au 2e trait raté ; maîtrisé après 2 tracés de mémoire sans faute ; série de 8, priorité aux non maîtrisés ; suivi indépendant des niveaux et des erreurs.
 
