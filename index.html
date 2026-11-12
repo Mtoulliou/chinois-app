@@ -153,6 +153,8 @@ svg{display:block;flex-shrink:0}
 .nextl{width:calc(100% - 32px);border:1.5px dashed var(--dash);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;background:none;text-align:left;color:var(--muted);margin-bottom:24px}
 .nextl.open{border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .nextl .ic44{width:44px;height:44px;flex-shrink:0;border-radius:50%;background:var(--lock);display:flex;align-items:center;justify-content:center;color:var(--lock-ic)}
+#duego{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--lhh,96px) + 4px);z-index:2;padding:8px 14px;gap:10px;box-shadow:0 6px 10px -4px rgba(0,0,0,.18);width:calc(100% - 32px)}
+#duego .ic44{width:36px;height:36px}
 .nextl.open .ic44{background:var(--jade);color:var(--on-jade)}
 .nextl .tx{display:flex;flex-direction:column;flex:1;min-width:0}
 .nextl .tx .eyebrow{color:var(--muted)}
@@ -2617,6 +2619,7 @@ function renderLessons(focus=true){
   app.querySelectorAll(".tsep-b").forEach(b=>b.onclick=()=>renderCours(l,+b.dataset.cours,true));
   app.querySelectorAll(".isl-b[data-lv]").forEach(b=>b.onclick=()=>{const [ci,i]=b.dataset.lv.split(":").map(Number);startSer(l,ci,i)});
   const c=document.getElementById("ctl");if(c)c.onclick=()=>renderCtlIntro(l);
+  const lh=app.querySelector(".lhead");if(lh)document.documentElement.style.setProperty("--lhh",lh.offsetHeight+"px");
   if(focus&&!first){const t=app.querySelector(".isl.cur")||app.querySelector(".ctl.cur");if(t)requestAnimationFrame(()=>t.scrollIntoView({block:"center"}))}
   app.querySelectorAll(".nextl[data-view]").forEach(b=>b.onclick=()=>{state.view=b.dataset.view;save();window.scrollTo(0,0);renderLessons(false)});
 }
