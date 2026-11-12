@@ -38,6 +38,19 @@ chk("leçons",()=>{
   extra.length?warn("RULES/CANDO pour des thèmes qui n'existent pas : "+uniq(extra).join(", ")):0;
 });
 
+/* 2b. Fiches d'exception : thème d'apparition cohérent, aucune apparition plus tôt */
+chk("exceptions",()=>{
+  const ths=LESSONS.flatMap(l=>l.themes),bad=[];
+  EXC.forEach(e=>{
+    const t=EXC_TH[e.id];
+    if(!t||!ths.includes(t)){bad.push(e.id+" : thème "+t+" inconnu");return}
+    const early=V.filter(v=>ths.indexOf(v.th)<ths.indexOf(t)&&itemExc(v).includes(e.id));
+    if(early.length)bad.push(e.id+" apparaît avant « "+t+" » : "+early[0].zh[0]);
+    if(!V.some(v=>itemExc(v).includes(e.id))&&e.id!=="bu")bad.push(e.id+" : aucun élément ne le déclenche");
+  });
+  bad.length?err("fiches d'exception : "+bad.join(" ; ")):ok(EXC.length+" fiches d'exception cohérentes avec le parcours");
+});
+
 /* 3. Générateurs de phrases */
 chk("générateurs",()=>{
   const bad=[];
